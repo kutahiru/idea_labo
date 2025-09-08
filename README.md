@@ -136,9 +136,11 @@ RUNTEQ生の役に立つアプリを主題に考えました。
 - TypeScript
 - Tailwind CSS
 - Next.js
-- Supabase(認証で利用)
+- NextAuth.js
 - PostgreSQL
 - Drizzle
 
 ## 画面遷移図
 https://www.figma.com/design/sfQLmmaGqgEwSyDF21QqVL/%E3%82%A2%E3%82%A4%E3%83%87%E3%82%A2%E7%A0%94%E7%A9%B6%E6%89%80?node-id=0-1&t=B8EOwROTfxx0Zpa1-1
+
+## ER図

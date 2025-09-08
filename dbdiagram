@@ -1,18 +1,8 @@
-
-Table auth.users {
-  id uuid [pk, note: "システム生成UUID"]
-  email varchar
-  raw_user_meta_data jsonb [note: "Googleプロフィール等の生データ"]
-  raw_app_meta_data jsonb [note: "アプリ管理用メタデータ"]
-  created_at timestamp
-  updated_at timestamp
-  
-  Note: 'Supabase認証テーブル（システム管理・直接操作禁止）'
-}
-
 Table users {
-  id uuid [pk, ref: > auth.users.id, note: "auth.users.idと同じ値"]
+  id integer [pk, increment, not null]
   name varchar [not null, note: "名前"]
+  provider varchar [not null, note: "google"]
+  provider_uid varchar [not null, note: "各プロバイダーのユーザーID"]
   created_at timestamp [not null]
   updated_at timestamp [not null]
 
@@ -20,12 +10,12 @@ Table users {
 }
 
 Table brainwritings {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id, note: "ユーザーID"]
+  id integer [pk, increment, not null]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
   usage_scope varchar [not null, note: "利用タイプ team、xpost"]
   title varchar [not null, note: "タイトル"]
   theme_name varchar [not null, note: "テーマ名"]
-  description varchar [not null, note: "説明　"]
+  description varchar [note: "説明　"]
   invite_url varchar [unique, note: "招待URL"]
   is_invite_url_active boolean [not null, default: true, note: "招待URLが有効かどうか"]
   created_at timestamp [not null]
@@ -35,18 +25,18 @@ Table brainwritings {
 }
 
 Table brainwriting_users {
-  id uuid [pk]
-  brainwriting_id uuid [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
-  user_id uuid [not null, ref: > users.id, note: "ユーザーID"]
+  id integer [pk, increment, not null]
+  brainwriting_id integer [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
   created_at timestamp [not null]
   updated_at timestamp [not null]
   Note: 'ブレインライティングユーザー'
 }
 
 Table brainwriting_sheets {
-  id uuid [pk]
-  brainwriting_id uuid [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
-  current_user_id uuid [not null, ref: > users.id, note: "現在のユーザーID"]
+  id integer [pk, increment, not null]
+  brainwriting_id integer [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
+  current_user_id integer [not null, ref: > users.id, note: "現在のユーザーID"]
   lock_expires_at timestamp [note: "ロック期限(X投稿版のみ)"]
   created_at timestamp [not null]
   updated_at timestamp [not null]
@@ -55,10 +45,10 @@ Table brainwriting_sheets {
 }
 
 Table brainwriting_inputs {
-  id uuid [pk]
-  brainwriting_id uuid [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
-  brainwriting_sheet_id uuid [not null, ref: > brainwriting_sheets.id, note: "ブレインライティングシートID"]
-  input_user_id uuid [not null, ref: > users.id, note: "入力ユーザーID 利用タイプがxpostの場合はシートの持ち主と同一IDを設定"]
+  id integer [pk, increment, not null]
+  brainwriting_id integer [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
+  brainwriting_sheet_id integer [not null, ref: > brainwriting_sheets.id, note: "ブレインライティングシートID"]
+  input_user_id integer [not null, ref: > users.id, note: "入力ユーザーID 利用タイプがxpostの場合はシートの持ち主と同一IDを設定"]
   row_index integer [not null, note: "行インデックス"]
   column_index integer [not null, note: "列インデックス"]
   content text [note: "入力内容"]
@@ -69,11 +59,11 @@ Table brainwriting_inputs {
 }
 
 Table mandala_arts {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id, note: "ユーザーID"]
+  id integer [pk, increment, not null]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
   title varchar [not null, note: "タイトル"]
   theme_name varchar [not null, note: "テーマ名"]
-  description varchar [not null, note: "説明　"]
+  description varchar [note: "説明　"]
   created_at timestamp [not null]
   updated_at timestamp [not null]
 
@@ -81,8 +71,8 @@ Table mandala_arts {
 }
 
 Table mandala_art_inputs {
-  id uuid [pk]
-  mandala_art_id uuid [not null, ref: > mandala_arts.id, note: "マンダラートID"]
+  id integer [pk, increment, not null]
+  mandala_art_id integer [not null, ref: > mandala_arts.id, note: "マンダラートID"]
   row_index integer [not null, note: "行インデックス"]
   column_index integer [not null, note: "列インデックス"]
   content text [note: "入力内容"]
@@ -92,13 +82,12 @@ Table mandala_art_inputs {
   Note: 'マンダラート入力データ'
 }
 
-
 Table osborn_checklists {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id, note: "ユーザーID"]
+  id integer [pk, increment, not null]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
   title varchar [not null, note: "タイトル"]
   theme_name varchar [not null, note: "テーマ名"]
-  description varchar [not null, note: "説明　"]
+  description varchar [note: "説明　"]
   transfer_content text [note: "転用"]
   apply_content text [note: "応用"]
   modify_content text [note: "変更"]
@@ -115,8 +104,8 @@ Table osborn_checklists {
 }
 
 Table idea_categories {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id, note: "ユーザーID"]
+  id integer [pk, increment, not null]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
   name varchar [not null, note: "カテゴリ名"]
   description text [note: "説明"]
   created_at timestamp [not null]
@@ -126,8 +115,8 @@ Table idea_categories {
 }
 
 Table ideas {
-  id uuid [pk]
-  idea_category_id uuid [not null, ref: > idea_categories.id, note: "アイデアカテゴリID"]
+  id integer [pk, increment, not null]
+  idea_category_id integer [not null, ref: > idea_categories.id, note: "アイデアカテゴリID"]
   name varchar [not null, note: "アイデア名"]
   description text [note: "説明"]
   priority varchar [not null, default: "medium", note: "重要度 low, medium, high"]
@@ -136,5 +125,3 @@ Table ideas {
 
   Note: 'アイデア'
 }
-
-

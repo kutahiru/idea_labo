@@ -1,0 +1,127 @@
+Table users {
+  id integer [pk, increment, not null]
+  name varchar [not null, note: "名前"]
+  provider varchar [not null, note: "google"]
+  provider_uid varchar [not null, note: "各プロバイダーのユーザーID"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: 'ユーザー'
+}
+
+Table brainwritings {
+  id integer [pk, increment, not null]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
+  usage_scope varchar [not null, note: "利用タイプ team、xpost"]
+  title varchar [not null, note: "タイトル"]
+  theme_name varchar [not null, note: "テーマ名"]
+  description varchar [note: "説明　"]
+  invite_url varchar [unique, note: "招待URL"]
+  is_invite_url_active boolean [not null, default: true, note: "招待URLが有効かどうか"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: 'ブレインライティング'
+}
+
+Table brainwriting_users {
+  id integer [pk, increment, not null]
+  brainwriting_id integer [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  Note: 'ブレインライティングユーザー'
+}
+
+Table brainwriting_sheets {
+  id integer [pk, increment, not null]
+  brainwriting_id integer [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
+  current_user_id integer [not null, ref: > users.id, note: "現在のユーザーID"]
+  lock_expires_at timestamp [note: "ロック期限(X投稿版のみ)"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: 'ブレインライティングシート'
+}
+
+Table brainwriting_inputs {
+  id integer [pk, increment, not null]
+  brainwriting_id integer [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
+  brainwriting_sheet_id integer [not null, ref: > brainwriting_sheets.id, note: "ブレインライティングシートID"]
+  input_user_id integer [not null, ref: > users.id, note: "入力ユーザーID 利用タイプがxpostの場合はシートの持ち主と同一IDを設定"]
+  row_index integer [not null, note: "行インデックス"]
+  column_index integer [not null, note: "列インデックス"]
+  content text [note: "入力内容"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: 'ブレインライティング入力データ'
+}
+
+Table mandala_arts {
+  id integer [pk, increment, not null]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
+  title varchar [not null, note: "タイトル"]
+  theme_name varchar [not null, note: "テーマ名"]
+  description varchar [note: "説明　"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: 'マンダラート'
+}
+
+Table mandala_art_inputs {
+  id integer [pk, increment, not null]
+  mandala_art_id integer [not null, ref: > mandala_arts.id, note: "マンダラートID"]
+  row_index integer [not null, note: "行インデックス"]
+  column_index integer [not null, note: "列インデックス"]
+  content text [note: "入力内容"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: 'マンダラート入力データ'
+}
+
+Table osborn_checklists {
+  id integer [pk, increment, not null]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
+  title varchar [not null, note: "タイトル"]
+  theme_name varchar [not null, note: "テーマ名"]
+  description varchar [note: "説明　"]
+  transfer_content text [note: "転用"]
+  apply_content text [note: "応用"]
+  modify_content text [note: "変更"]
+  magnify_content text [note: "拡大"]
+  minify_content text [note: "縮小"]
+  substitute_content text [note: "代用"]
+  replace_content text [note: "置換"]
+  reverse_content text [note: "逆転"]
+  combine_content text [note: "結合"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  
+  Note: 'マンダラート'
+}
+
+Table idea_categories {
+  id integer [pk, increment, not null]
+  user_id integer [not null, ref: > users.id, note: "ユーザーID"]
+  name varchar [not null, note: "カテゴリ名"]
+  description text [note: "説明"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: 'アイデアカテゴリ'
+}
+
+Table ideas {
+  id integer [pk, increment, not null]
+  idea_category_id integer [not null, ref: > idea_categories.id, note: "アイデアカテゴリID"]
+  name varchar [not null, note: "アイデア名"]
+  description text [note: "説明"]
+  priority varchar [not null, default: "medium", note: "重要度 low, medium, high"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: 'アイデア'
+}

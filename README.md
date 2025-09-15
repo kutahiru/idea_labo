@@ -144,3 +144,4 @@ RUNTEQ生の役に立つアプリを主題に考えました。
 https://www.figma.com/design/sfQLmmaGqgEwSyDF21QqVL/%E3%82%A2%E3%82%A4%E3%83%87%E3%82%A2%E7%A0%94%E7%A9%B6%E6%89%80?node-id=0-1&t=B8EOwROTfxx0Zpa1-1
 
 ## ER図
+<img width="1931" height="1787" alt="ER図" src="https://github.com/user-attachments/assets/6e34b6a7-3bc3-4d27-b936-6166d6fad3ec" />

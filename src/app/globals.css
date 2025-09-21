@@ -51,3 +51,34 @@ body {
     transparent 8px
   );
 }
+
+.menu-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(250, 170, 32, 0.4), rgba(255, 255, 255, 0.5), transparent);
+  transition: left 0.7s ease-out;
+  z-index: 1;
+}
+
+.menu-link:hover::before {
+  left: 100%;
+}
+
+.menu-link > * {
+  position: relative;
+  z-index: 2;
+}
+
+.menu-link:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(250, 170, 32, 0.3);
+}

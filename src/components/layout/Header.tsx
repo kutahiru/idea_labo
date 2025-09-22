@@ -14,7 +14,7 @@ function Navigation({ isLoggedIn, onItemClick }: NavigationProps) {
     <div className="space-y-1 text-right md:text-left md:space-y-0 md:flex md:items-center md:space-x-4">
       <Link
         href="/guide"
-        className="text-gray-700 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors"
+        className="text-primary hover:text-accent block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors"
         onClick={onItemClick}
       >
         使い方
@@ -55,12 +55,12 @@ export default function Header() {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-white shadow-sm border-b border-primary/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* 左側：タイトル */}
           <div className="flex-shrink-0">
-            <Link href="/" className="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
+            <Link href="/" className="text-xl font-bold text-primary hover:text-accent transition-colors">
               アイデア研究所
             </Link>
           </div>

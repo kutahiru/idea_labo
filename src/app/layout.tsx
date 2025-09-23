@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Mochiy_Pop_One, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/app/lib/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,20 +32,23 @@ export const metadata: Metadata = {
   description: "アイデア発想・管理アプリケーション",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang="ja">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${mochiyPopOne.variable} ${notoSansJP.variable} antialiased`}
       >
-        <Header />
-        <main>
-          {children}
-        </main>
+        <SessionProvider session={session}>
+          <Header />
+          <main>
+            {children}
+          </main>
+        </SessionProvider>
       </body>
     </html>
   );

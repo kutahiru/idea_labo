@@ -3,19 +3,20 @@
 
 import { useState } from 'react';
 import Link from 'next/link'
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 interface NavigationProps {
   isLoggedIn: boolean;
-  onItemClick?: () => void;
+  closeMenu?: () => void;
 }
 
-function Navigation({ isLoggedIn, onItemClick }: NavigationProps) {
+function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
   return (
     <div className="space-y-1 text-right md:text-left md:space-y-0 md:flex md:items-center md:space-x-4">
       <Link
         href="/guide"
-        className="text-primary hover:text-accent block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors"
-        onClick={onItemClick}
+        className="text-primary block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors hover:bg-gray-100"
+        onClick={closeMenu}
       >
         使い方
       </Link>
@@ -24,22 +25,25 @@ function Navigation({ isLoggedIn, onItemClick }: NavigationProps) {
         <>
           <Link
             href="/mypage"
-            className="text-gray-700 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors"
-            onClick={onItemClick}
+            className="text-gray-700 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors hover:bg-gray-100"
+            onClick={closeMenu}
           >
             マイページ
           </Link>
           <button
-            className="text-gray-700 hover:text-gray-900 block w-full text-left px-3 py-2 rounded-md text-base font-medium md:w-auto md:text-sm md:transition-colors"
-            onClick={onItemClick}
+            className="text-gray-700 hover:text-gray-900 block w-full text-left px-3 py-2 rounded-md text-base font-medium md:w-auto md:text-sm md:transition-colors cursor-pointer hover:bg-gray-100"
+            onClick={() => {
+              signOut({ callbackUrl: '/' });
+              closeMenu?.();
+            }}
           >
             ログアウト
           </button>
         </>
       ) : (
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white inline-block text-center px-4 py-2 rounded-md text-base font-medium transition-colors md:text-sm"
-          onClick={onItemClick}
+          className="bg-primary text-white inline-block text-center px-4 py-2 rounded-md text-base font-medium transition-colors md:text-sm cursor-pointer hover:scale-105"
+          onClick={() => signIn('google', { callbackUrl: '/' })}
         >
           Googleアカウントでログイン
         </button>
@@ -49,7 +53,8 @@ function Navigation({ isLoggedIn, onItemClick }: NavigationProps) {
 }
 
 export default function Header() {
-  const isLoggedIn = false;
+  const { data: session } = useSession();
+  const isLoggedIn = Boolean(session);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -60,7 +65,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* 左側：タイトル */}
           <div className="flex-shrink-0">
-            <Link href="/" className="text-xl font-bold text-primary hover:text-accent transition-colors">
+            <Link href="/" className="text-xl font-bold text-primary transition-colors hover:bg-gray-100 px-2 py-1 rounded-md">
               アイデア研究所
             </Link>
           </div>
@@ -105,7 +110,7 @@ export default function Header() {
           <div className="px-2 pt-2 pb-3 sm:px-3 bg-gray-50 border-t border-gray-200">
             <Navigation
               isLoggedIn={isLoggedIn}
-              onItemClick={closeMobileMenu}
+              closeMenu={closeMobileMenu}
             />
           </div>
         </div>

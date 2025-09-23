@@ -16,7 +16,7 @@
   --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-mochiy: var(--font-mochiy-pop-one);
+  --font-noto-sans-jp: var(--font-noto-sans-jp);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,7 +29,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-mochiy-pop-one), Arial, Helvetica, sans-serif;
+  font-family: var(--font-noto-sans-jp), Arial, Helvetica, sans-serif;
 }
 
 .border-dashed-wide {

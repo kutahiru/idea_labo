@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Mochiy_Pop_One } from "next/font/google";
+import { Geist, Geist_Mono, Mochiy_Pop_One, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 
@@ -19,6 +19,12 @@ const mochiyPopOne = Mochiy_Pop_One({
   weight: "400",
 });
 
+const notoSansJP = Noto_Sans_JP({
+  variable: "--font-noto-sans-jp",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
 export const metadata: Metadata = {
   title: "アイデア研究所",
   description: "アイデア発想・管理アプリケーション",
@@ -32,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${mochiyPopOne.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${mochiyPopOne.variable} ${notoSansJP.variable} antialiased`}
       >
         <Header />
         <main>

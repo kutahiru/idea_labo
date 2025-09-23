@@ -3,24 +3,34 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="container mx-auto min-h-screen overflow-hidden 2xl:scale-125 2xl:origin-top-left">
-      <div className="pt-8 pl-4 md:pl-8 lg:pl-12 xl:pl-16">
+      <div className="pt-8 text-center">
         <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-primary mb-4">
           アイデア研究所
         </h1>
       </div>
 
       <div className="relative">
-        <div className="px-10 md:px-0 md:absolute md:left-78 lg:left-114 xl:left-144 top-8">
-          <h2 className="text-2xl lg:text-3xl xl:text-4xl font-medium text-primary bg-accent md:[writing-mode:vertical-rl] whitespace-nowrap px-2 py-1 rounded-lg">
+        <div className="px-10 md:px-0 md:absolute md:left-80 lg:left-116 xl:left-150 top-8">
+          <h2 className="text-2xl lg:text-3xl xl:text-4xl font-medium text-primary md:[writing-mode:vertical-rl] whitespace-nowrap px-2 py-1 rounded-lg">
             発想を抽出しアイデアを結晶化する
           </h2>
         </div>
 
         {/* 左側の装飾枠 */}
-        <div className="mx-4 my-4 md:m-0 md:absolute -left-6 top-24 md:w-80 lg:w-116 xl:w-144 h-90 xl:h-120 rounded-3xl border-4 border-primary" />
+        <div className="mx-4 my-4 md:m-0 md:absolute -left-6 top-24 md:w-80 lg:w-116 xl:w-144 h-90 xl:h-120 rounded-3xl overflow-hidden">
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src="/top-video.mp4" type="video/mp4" />
+          </video>
+        </div>
 
         {/* 右側のメニューエリア */}
-        <div className="mx-4 my-4 md:m-0 md:absolute -right-6 top-8 md:w-106 lg:w-134 xl:w-164 2xl:w-228 h-90 xl:h-120 rounded-3xl border-4 border-primary">
+        <div className="mx-4 my-4 md:m-0 md:absolute -right-6 top-8 md:w-106 lg:w-134 xl:w-164 2xl:w-228 h-90 xl:h-120 rounded-3xl">
         <div className="h-full flex flex-col justify-center items-start gap-4 xl:gap-6 p-6 xl:p-12">
           {/* メニュー項目 - ブレインライティング */}
           <div className="relative">

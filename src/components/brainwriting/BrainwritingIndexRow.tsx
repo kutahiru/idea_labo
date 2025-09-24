@@ -55,7 +55,7 @@ export default function BrainwritingIndexRow({
               編集
             </Link>
             <button
-              className="inline-flex items-center rounded-md bg-red-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+              className="inline-flex items-center rounded-md bg-red-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105 cursor-pointer"
               onClick={() => {
                 if (confirm("本当に削除しますか？")) {
                   // 削除処理を実装

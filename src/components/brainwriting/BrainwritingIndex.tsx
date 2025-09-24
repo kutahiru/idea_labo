@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import BrainwritingIndexRow from "./BrainwritingIndexRow";
 import { BrainwritingListItem } from "@/types/brainwriting";
 
@@ -10,19 +10,62 @@ interface BrainwritingIndexProps {
 
 export default function BrainwritingIndex({ initialData }: BrainwritingIndexProps) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [allData] = useState<BrainwritingListItem[]>(initialData); // 全データ
+  const [displayedData, setDisplayedData] = useState<BrainwritingListItem[]>(
+    initialData.slice(0, 10)
+  ); // 表示データ
+  const [loading, setLoading] = useState(false);
+  const observerRef = useRef<HTMLDivElement>(null);
 
-  // 検索機能
-  const filteredBrainwritings = useMemo(() => {
-    if (!searchTerm.trim()) {
-      return initialData;
+  // ローカルデータから追加読み込み
+  const loadMoreData = useCallback(() => {
+    if (loading) return;
+
+    const currentLength = displayedData.length;
+    const hasMore = currentLength < allData.length;
+
+    if (!hasMore) return;
+
+    setLoading(true);
+    // 視覚的に追加されたことが分かるような遅延
+    setTimeout(() => {
+      const nextData = allData.slice(0, currentLength + 10);
+      setDisplayedData(nextData);
+      setLoading(false);
+    }, 300);
+  }, [allData, displayedData.length, loading]);
+
+  // Intersection Observer の設定
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        const hasMore = displayedData.length < allData.length;
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          loadMoreData();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
     }
 
-    return initialData.filter(
+    return () => observer.disconnect();
+  }, [loadMoreData, displayedData.length, allData.length, loading]);
+
+  // 検索機能（全データから検索）
+  const filteredBrainwritings = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return displayedData;
+    }
+
+    return allData.filter(
       brainwriting =>
         brainwriting.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         brainwriting.themeName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [initialData, searchTerm]);
+  }, [allData, displayedData, searchTerm]);
 
   return (
     <div>
@@ -102,6 +145,30 @@ export default function BrainwritingIndex({ initialData }: BrainwritingIndexProp
           {filteredBrainwritings.map(brainwriting => (
             <BrainwritingIndexRow key={brainwriting.id} {...brainwriting} />
           ))}
+
+          {/* 無限スクロール用の監視要素 */}
+          {!searchTerm && displayedData.length < allData.length && (
+            <div ref={observerRef} className="min-h-[50px] py-4 text-center">
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-blue-500"></div>
+                  <span className="ml-2 text-sm text-gray-500">読み込み中...</span>
+                </div>
+              ) : (
+                <div className="text-sm text-gray-400">スクロールして続きを読み込む</div>
+              )}
+            </div>
+          )}
+
+          {/* 全データ表示完了メッセージ */}
+          {!searchTerm && displayedData.length >= allData.length && allData.length > 10 && (
+            <div className="py-4 text-center text-sm text-gray-400">全てのデータを表示しました</div>
+          )}
+
+          {/* 検索時の下部余白 */}
+          {searchTerm && (
+            <div className="py-4"></div>
+          )}
         </div>
       )}
     </div>

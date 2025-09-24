@@ -3,7 +3,7 @@ import { brainwritings } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { BrainwritingListItem } from "@/types/brainwriting";
 
-// ブレインライティング一覧取得（共通ロジック）
+// ブレインライティング一覧取得
 export async function getBrainwritingsByUserId(userId: string): Promise<BrainwritingListItem[]> {
   return await db
     .select({

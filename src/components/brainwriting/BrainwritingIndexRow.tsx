@@ -28,29 +28,29 @@ export default function BrainwritingIndexRow({
           <div className="flex flex-col items-end gap-2">
             {/* アクションボタン */}
             <div className="flex items-center gap-2">
-            <Link
-              href={`/brainwriting/${id}`}
-              className="bg-primary inline-flex items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
-            >
-              詳細
-            </Link>
-            <Link
-              href={`/brainwriting/${id}/edit`}
-              className="inline-flex items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
-            >
-              編集
-            </Link>
-            <button
-              className="inline-flex items-center rounded-md bg-red-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105 cursor-pointer"
-              onClick={() => {
-                if (confirm("本当に削除しますか？")) {
-                  // 削除処理を実装
-                  console.log(`Delete brainwriting ${id}`);
-                }
-              }}
-            >
-              削除
-            </button>
+              <Link
+                href={`/brainwriting/${id}`}
+                className="bg-primary inline-flex items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+              >
+                詳細
+              </Link>
+              <Link
+                href={`/brainwriting/${id}/edit`}
+                className="inline-flex items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+              >
+                編集
+              </Link>
+              <button
+                className="bg-alert inline-flex cursor-pointer items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+                onClick={() => {
+                  if (confirm("本当に削除しますか？")) {
+                    // 削除処理を実装
+                    console.log(`Delete brainwriting ${id}`);
+                  }
+                }}
+              >
+                削除
+              </button>
             </div>
 
             {/* 時刻を右端に表示 */}

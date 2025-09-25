@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Mochiy_Pop_One, Noto_Sans_JP } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import { SessionProvider } from "next-auth/react";
@@ -13,12 +13,6 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const mochiyPopOne = Mochiy_Pop_One({
-  variable: "--font-mochiy-pop-one",
-  subsets: ["latin"],
-  weight: "400",
 });
 
 const notoSansJP = Noto_Sans_JP({
@@ -41,13 +35,11 @@ export default async function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${mochiyPopOne.variable} ${notoSansJP.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansJP.variable} antialiased`}
       >
         <SessionProvider session={session}>
           <Header />
-          <main>
-            {children}
-          </main>
+          <main>{children}</main>
         </SessionProvider>
       </body>
     </html>

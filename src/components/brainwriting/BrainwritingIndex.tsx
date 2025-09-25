@@ -1,73 +1,32 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import BrainwritingIndexRow from "./BrainwritingIndexRow";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { SearchIcon, LoadingSpinner } from "@/components/layout/Icons";
 import SearchBar from "@/components/layout/SearchBar";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { useSearch } from "@/hooks/useSearch";
 
 interface BrainwritingIndexProps {
   initialData: BrainwritingListItem[];
 }
 
 export default function BrainwritingIndex({ initialData }: BrainwritingIndexProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [allData] = useState<BrainwritingListItem[]>(initialData);
-  const [displayedData, setDisplayedData] = useState<BrainwritingListItem[]>(
-    initialData.slice(0, 10)
-  );
-  const [loading, setLoading] = useState(false);
-  const observerRef = useRef<HTMLDivElement>(null);
+  // 無限スクロール機能
+  const { displayedData, loading, observerRef, hasMore } = useInfiniteScroll({
+    allData: initialData,
+    itemsPerPage: 10,
+    loadingDelay: 300
+  });
 
-  // ローカルデータから追加読み込み
-  const loadMoreData = useCallback(() => {
-    if (loading) return;
+  // 検索機能（全データから検索、通常時は表示データのみ）
+  const { searchTerm, setSearchTerm, filteredData: searchResults } = useSearch({
+    data: initialData,
+    searchFields: ['title', 'themeName']
+  });
 
-    const currentLength = displayedData.length;
-    const hasMore = currentLength < allData.length;
-
-    if (!hasMore) return;
-
-    setLoading(true);
-    // 視覚的に追加されたことが分かるような遅延
-    setTimeout(() => {
-      const nextData = allData.slice(0, currentLength + 10);
-      setDisplayedData(nextData);
-      setLoading(false);
-    }, 300);
-  }, [allData, displayedData.length, loading]);
-
-  // IntersectionObserverは特定の要素が画面に表示されかたどうかを監視(無限スクロール用)
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        const hasMore = displayedData.length < allData.length;
-        if (entries[0].isIntersecting && hasMore && !loading) {
-          loadMoreData();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [loadMoreData, displayedData.length, allData.length, loading]);
-
-  // 検索機能（全データから検索）
-  const filteredBrainwritings = useMemo(() => {
-    if (!searchTerm.trim()) {
-      return displayedData;
-    }
-
-    return allData.filter(
-      brainwriting =>
-        brainwriting.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        brainwriting.themeName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [allData, displayedData, searchTerm]);
+  // 検索時は検索結果、通常時は表示データを使用
+  const filteredBrainwritings = searchTerm ? searchResults : displayedData;
 
   return (
     <div>
@@ -98,8 +57,8 @@ export default function BrainwritingIndex({ initialData }: BrainwritingIndexProp
           ))}
 
           {/* 無限スクロール用の監視要素 */}
-          {!searchTerm && displayedData.length < allData.length && (
-            <div ref={observerRef} className="min-h-[50px] py-4 text-center">
+          {!searchTerm && hasMore && (
+            <div ref={observerRef} className="col-span-1 lg:col-span-2 min-h-[50px] py-4 text-center">
               {loading ? (
                 <div className="flex items-center justify-center">
                   <LoadingSpinner />
@@ -112,8 +71,8 @@ export default function BrainwritingIndex({ initialData }: BrainwritingIndexProp
           )}
 
           {/* 全データ表示完了メッセージ */}
-          {!searchTerm && displayedData.length >= allData.length && allData.length > 10 && (
-            <div className="py-4 text-center text-sm text-gray-400">全てのデータを表示しました</div>
+          {!searchTerm && !hasMore && initialData.length > 10 && (
+            <div className="col-span-1 lg:col-span-2 py-4 text-center text-sm text-gray-400">全てのデータを表示しました</div>
           )}
 
           {/* 検索時の下部余白 */}

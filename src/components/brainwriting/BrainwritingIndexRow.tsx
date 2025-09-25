@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { formatDate } from "@/utils/date";
 import { BrainwritingListItem } from "@/types/brainwriting";
+import { ClockIcon } from "@/components/layout/Icons";
 
 export default function BrainwritingIndexRow({
   id,
@@ -17,31 +18,16 @@ export default function BrainwritingIndexRow({
         <div className="mb-4 flex items-start justify-between">
           <div className="min-w-0 flex-1">
             <h3 className="truncate text-lg font-semibold text-gray-900">{title}</h3>
-            <div className="mt-2 flex items-center gap-3">
+            <div className="mt-2">
               <span className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 px-3 py-1 text-sm font-medium text-blue-800">
                 {themeName}
               </span>
-              <time className="flex items-center text-sm text-gray-500">
-                <svg
-                  className="mr-1.5 h-3 w-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                {formatDate(createdAt)}
-              </time>
             </div>
           </div>
 
-          {/* アクションボタン */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-end gap-2">
+            {/* アクションボタン */}
+            <div className="flex items-center gap-2">
             <Link
               href={`/brainwriting/${id}`}
               className="bg-primary inline-flex items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
@@ -65,6 +51,13 @@ export default function BrainwritingIndexRow({
             >
               削除
             </button>
+            </div>
+
+            {/* 時刻を右端に表示 */}
+            <time className="flex items-center text-sm text-gray-500">
+              <ClockIcon className="mr-1.5 h-3 w-3" />
+              {formatDate(createdAt)}
+            </time>
           </div>
         </div>
 

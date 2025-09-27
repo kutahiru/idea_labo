@@ -1,7 +1,2 @@
-export interface BrainwritingListItem {
-  id: number;
-  title: string;
-  themeName: string;
-  description: string | null;
-  createdAt: Date;
-}
+// Zodスキーマから型定義をインポート
+export type { BrainwritingListItem, BrainwritingFormData } from '@/schemas/brainwriting';

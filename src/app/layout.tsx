@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Mochiy_Pop_One, Noto_Sans_JP } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/app/lib/auth";
+import ToastProvider from "@/components/shared/ToastProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,12 +14,6 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const mochiyPopOne = Mochiy_Pop_One({
-  variable: "--font-mochiy-pop-one",
-  subsets: ["latin"],
-  weight: "400",
 });
 
 const notoSansJP = Noto_Sans_JP({
@@ -38,16 +33,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+
+  // フォント変数を優先順位順に結合
+  const fontVariables = `${notoSansJP.variable} ${geistSans.variable} ${geistMono.variable}`;
+
   return (
     <html lang="ja">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${mochiyPopOne.variable} ${notoSansJP.variable} antialiased`}
-      >
+      <body className={`${fontVariables} antialiased`}>
         <SessionProvider session={session}>
           <Header />
-          <main>
-            {children}
-          </main>
+          <main>{children}</main>
+          <ToastProvider />
         </SessionProvider>
       </body>
     </html>

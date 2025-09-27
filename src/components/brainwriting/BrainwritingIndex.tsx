@@ -9,9 +9,11 @@ import { useSearch } from "@/hooks/useSearch";
 
 interface BrainwritingIndexProps {
   initialData: BrainwritingListItem[];
+  onEdit?: (item: BrainwritingListItem) => void;
+  onDelete?: (item: BrainwritingListItem) => void;
 }
 
-export default function BrainwritingIndex({ initialData }: BrainwritingIndexProps) {
+export default function BrainwritingIndex({ initialData, onEdit, onDelete }: BrainwritingIndexProps) {
   // 無限スクロール機能
   const { displayedData, loading, observerRef, hasMore } = useInfiniteScroll({
     allData: initialData,
@@ -53,7 +55,12 @@ export default function BrainwritingIndex({ initialData }: BrainwritingIndexProp
         // 0件以外の場合
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {filteredBrainwritings.map(brainwriting => (
-            <BrainwritingIndexRow key={brainwriting.id} {...brainwriting} />
+            <BrainwritingIndexRow
+              key={brainwriting.id}
+              {...brainwriting}
+              onEdit={onEdit ? () => onEdit(brainwriting) : undefined}
+              onDelete={onDelete ? () => onDelete(brainwriting) : undefined}
+            />
           ))}
 
           {/* 無限スクロール用の監視要素 */}

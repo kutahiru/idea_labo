@@ -34,7 +34,7 @@ export const brainwritings = pgTable('brainwritings', {
   user_id: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  usage_scope: varchar('usage_scope').notNull(),
+  usage_scope: varchar('usage_scope', { enum: ['xpost', 'team'] }).notNull(),
   title: varchar('title').notNull(),
   theme_name: varchar('theme_name').notNull(),
   description: varchar('description'),

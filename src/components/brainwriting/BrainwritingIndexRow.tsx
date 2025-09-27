@@ -4,13 +4,20 @@ import { formatDate } from "@/utils/date";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { ClockIcon } from "@/components/layout/Icons";
 
+interface BrainwritingIndexRowProps extends BrainwritingListItem {
+  onEdit?: () => void;
+  onDelete?: () => void;
+}
+
 export default function BrainwritingIndexRow({
   id,
   title,
   themeName,
   description,
   createdAt,
-}: BrainwritingListItem) {
+  onEdit,
+  onDelete,
+}: BrainwritingIndexRowProps) {
   return (
     <div className="group relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:ring-blue-300/50">
       <div className="relative">
@@ -34,20 +41,15 @@ export default function BrainwritingIndexRow({
               >
                 詳細
               </Link>
-              <Link
-                href={`/brainwriting/${id}/edit`}
+              <button
+                onClick={onEdit}
                 className="inline-flex items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
               >
                 編集
-              </Link>
+              </button>
               <button
                 className="bg-alert inline-flex cursor-pointer items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
-                onClick={() => {
-                  if (confirm("本当に削除しますか？")) {
-                    // 削除処理を実装
-                    console.log(`Delete brainwriting ${id}`);
-                  }
-                }}
+                onClick={onDelete}
               >
                 削除
               </button>

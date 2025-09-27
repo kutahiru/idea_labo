@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/app/lib/auth";
+import ToastProvider from "@/components/shared/ToastProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,14 +33,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+
+  // フォント変数を優先順位順に結合
+  const fontVariables = `${notoSansJP.variable} ${geistSans.variable} ${geistMono.variable}`;
+
   return (
     <html lang="ja">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSansJP.variable} antialiased`}
-      >
+      <body className={`${fontVariables} antialiased`}>
         <SessionProvider session={session}>
           <Header />
           <main>{children}</main>
+          <ToastProvider />
         </SessionProvider>
       </body>
     </html>

@@ -1,0 +1,99 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getBrainwritingById, updateBrainwriting, deleteBrainwriting } from "@/lib/brainwriting";
+import { brainwritingFormDataSchema } from "@/schemas/brainwriting";
+import { checkAuth, apiErrors } from "@/lib/api/utils";
+
+// 個別取得
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    // 認証チェック
+    const authResult = await checkAuth();
+    if ("error" in authResult) {
+      return authResult.error;
+    }
+
+    const id = parseInt((await params).id);
+    if (isNaN(id)) {
+      return apiErrors.invalidId();
+    }
+
+    // ブレインライティングを取得
+    const brainwriting = await getBrainwritingById(id, authResult.userId);
+
+    if (!brainwriting) {
+      return apiErrors.notFound();
+    }
+
+    return NextResponse.json(brainwriting);
+  } catch (error) {
+    console.error("ブレインライティング取得エラー:", error);
+    return apiErrors.serverError();
+  }
+}
+
+// 更新
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    // 認証チェック
+    const authResult = await checkAuth();
+    if ("error" in authResult) {
+      return authResult.error;
+    }
+
+    const id = parseInt((await params).id);
+    if (isNaN(id)) {
+      return apiErrors.invalidId();
+    }
+
+    // リクエストボディを取得・検証
+    const body = await request.json();
+    const validationResult = brainwritingFormDataSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      return apiErrors.invalidData(validationResult.error.issues);
+    }
+
+    // ブレインライティングを更新
+    const result = await updateBrainwriting(id, authResult.userId, validationResult.data);
+
+    if (!result) {
+      return apiErrors.notFound();
+    }
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("ブレインライティング更新エラー:", error);
+    return apiErrors.serverError();
+  }
+}
+
+// 削除
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    // 認証チェック
+    const authResult = await checkAuth();
+    if ("error" in authResult) {
+      return authResult.error;
+    }
+
+    const id = parseInt((await params).id);
+    if (isNaN(id)) {
+      return apiErrors.invalidId();
+    }
+
+    // ブレインライティングを削除
+    const result = await deleteBrainwriting(id, authResult.userId);
+
+    if (!result) {
+      return apiErrors.notFound();
+    }
+
+    return NextResponse.json({ message: "削除が完了しました", id: result.id });
+  } catch (error) {
+    console.error("ブレインライティング削除エラー:", error);
+    return apiErrors.serverError();
+  }
+}

@@ -53,8 +53,6 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
         throw new Error(errorData.error || `${editingData ? "更新" : "作成"}に失敗しました`);
       }
 
-      const result = await response.json();
-
       // 成功時は一覧を更新
       router.refresh();
 
@@ -62,7 +60,9 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
       toast.success(`ブレインライティングが${editingData ? "更新" : "作成"}されました`);
     } catch (error) {
       console.error(`ブレインライティング${editingData ? "更新" : "作成"}エラー:`, error);
-      toast.error(`エラーが発生しました: ${error instanceof Error ? error.message : "不明なエラー"}`);
+      toast.error(
+        `エラーが発生しました: ${error instanceof Error ? error.message : "不明なエラー"}`
+      );
     }
   };
 
@@ -89,7 +89,9 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
       toast.success("ブレインライティングが削除されました");
     } catch (error) {
       console.error("ブレインライティング削除エラー:", error);
-      toast.error(`エラーが発生しました: ${error instanceof Error ? error.message : "不明なエラー"}`);
+      toast.error(
+        `エラーが発生しました: ${error instanceof Error ? error.message : "不明なエラー"}`
+      );
     }
   };
 

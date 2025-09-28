@@ -38,8 +38,8 @@ export const brainwritings = pgTable('brainwritings', {
   title: varchar('title').notNull(),
   theme_name: varchar('theme_name').notNull(),
   description: varchar('description'),
-  invite_url: varchar('invite_url').unique(),
-  is_invite_url_active: boolean('is_invite_url_active').notNull().default(true),
+  invite_token: varchar('invite_token').unique(),
+  is_invite_active: boolean('is_invite_active').notNull().default(true),
   created_at: timestamp('created_at').notNull().defaultNow(),
   updated_at: timestamp('updated_at').notNull().defaultNow().$onUpdate(() => new Date()),
 });

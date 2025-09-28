@@ -37,8 +37,8 @@ Table brainwritings {
   title varchar [not null, note: "タイトル"]
   theme_name varchar [not null, note: "テーマ名"]
   description varchar [note: "説明　"]
-  invite_url varchar [unique, note: "招待URL"]
-  is_invite_url_active boolean [not null, default: true, note: "招待URLが有効かどうか"]
+  invite_token varchar [unique, note: "招待トークン"]
+  is_invite_active boolean [not null, default: true, note: "招待URLが有効かどうか"]
   created_at timestamp [not null]
   updated_at timestamp [not null]
 

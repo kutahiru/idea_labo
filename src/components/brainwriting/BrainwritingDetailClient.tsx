@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { USAGE_SCOPE } from "@/utils/brainwriting";
+import { postBrainwritingToX } from "@/lib/x-post";
 import BrainwritingInfo from "./BrainwritingInfo";
 import BrainwritingSheet from "./BrainwritingSheet";
 
@@ -37,19 +38,18 @@ export default function BrainwritingDetailClient({
 }: BrainwritingDetailClientProps) {
   const [activeRowIndex, setActiveRowIndex] = useState(0);
 
-  // シートIDに対応する入力データを取得する関数
+  // シートIDに対応する入力データを取得
   const getInputsForSheet = (sheetId: number) => {
     return inputs?.filter(input => input.brainwriting_sheet_id === sheetId) || [];
   };
 
-  // 入力データを行データ形式に変換する関数
+  // 入力データを行データ形式に変換
   const convertToRowData = (sheetInputs: typeof inputs) => {
     const rowsMap = new Map<number, { name: string; ideas: string[] }>();
 
-    // 入力データがある場合は既存の処理
+    //brainwriting_inputsを元に生成
     sheetInputs?.forEach(input => {
       if (input.row_index >= 0 && input.column_index >= 0 && input.column_index < 3) {
-        // 行が存在しない場合は新規作成
         if (!rowsMap.has(input.row_index)) {
           rowsMap.set(input.row_index, {
             name: input.input_user_name || "",
@@ -58,7 +58,6 @@ export default function BrainwritingDetailClient({
         }
 
         const row = rowsMap.get(input.row_index)!;
-        // アイデアを設定
         row.ideas[input.column_index] = input.content || "";
       }
     });
@@ -77,10 +76,6 @@ export default function BrainwritingDetailClient({
     return Array.from(rowsMap.entries())
       .sort(([a], [b]) => a - b)
       .map(([_rowIndex, row]) => row);
-  };
-
-  const handleNextParticipant = () => {
-    setActiveRowIndex(prev => (prev + 1) % 6);
   };
 
   const handleDataChange = async (
@@ -107,12 +102,16 @@ export default function BrainwritingDetailClient({
         throw new Error("保存に失敗しました");
       }
 
-      // 保存成功 - リロードしない（楽観的UI更新により既にUIは更新済み）
       console.log(`保存成功: 参加者${participantIndex + 1}, アイデア${ideaIndex + 1}: ${value}`);
     } catch (error) {
       console.error("保存エラー:", error);
       alert("保存に失敗しました。再度お試しください。");
     }
+  };
+
+  // X投稿ボタンのクリックハンドラー
+  const handleXPost = () => {
+    postBrainwritingToX(brainwriting, inputs);
   };
 
   return (
@@ -122,7 +121,10 @@ export default function BrainwritingDetailClient({
       {/* X投稿ボタン */}
       {brainwriting.usageScope === USAGE_SCOPE.XPOST && (
         <div className="mb-6 flex justify-center">
-          <button className="group bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white hover:scale-105">
+          <button
+            onClick={handleXPost}
+            className="group bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white transition-transform hover:scale-105"
+          >
             Xへ投稿
           </button>
         </div>

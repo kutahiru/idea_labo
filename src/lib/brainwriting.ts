@@ -3,6 +3,7 @@ import { brainwritings, brainwriting_sheets, brainwriting_inputs, users } from "
 import { desc, eq, and } from "drizzle-orm";
 import { BrainwritingListItem, BrainwritingFormData } from "@/types/brainwriting";
 import { USAGE_SCOPE } from "@/utils/brainwriting";
+import { generateInviteData } from "@/lib/invite-url";
 
 // ブレインライティング一覧取得
 export async function getBrainwritingsByUserId(userId: string): Promise<BrainwritingListItem[]> {
@@ -22,6 +23,9 @@ export async function getBrainwritingsByUserId(userId: string): Promise<Brainwri
 
 // ブレインライティング新規作成
 export async function createBrainwriting(userId: string, data: BrainwritingFormData) {
+  // 全てのブレインライティングで招待URLを生成
+  const inviteData = generateInviteData();
+
   const result = await db
     .insert(brainwritings)
     .values({
@@ -30,6 +34,7 @@ export async function createBrainwriting(userId: string, data: BrainwritingFormD
       theme_name: data.themeName,
       description: data.description,
       usage_scope: data.usageScope,
+      invite_token: inviteData.token, // トークンをDBに保存
     })
     .returning({
       id: brainwritings.id,
@@ -37,6 +42,7 @@ export async function createBrainwriting(userId: string, data: BrainwritingFormD
       themeName: brainwritings.theme_name,
       description: brainwritings.description,
       usageScope: brainwritings.usage_scope,
+      inviteToken: brainwritings.invite_token,
       createdAt: brainwritings.created_at,
     });
 
@@ -50,7 +56,11 @@ export async function createBrainwriting(userId: string, data: BrainwritingFormD
     });
   }
 
-  return brainwriting;
+  // 招待URLを含むレスポンスを返す
+  return {
+    ...brainwriting,
+    inviteUrl: inviteData.url, // 完全なURLをレスポンスに含める
+  };
 }
 
 // ブレインライティング更新
@@ -187,6 +197,30 @@ export async function getBrainwritingInputsBySheetId(brainwritingSheetId: number
     .from(brainwriting_inputs)
     .leftJoin(users, eq(brainwriting_inputs.input_user_id, users.id))
     .where(eq(brainwriting_inputs.brainwriting_sheet_id, brainwritingSheetId));
+}
+
+// トークンを使ってブレインライティング取得
+export async function getBrainwritingByToken(token: string): Promise<BrainwritingListItem | null> {
+  const result = await db
+    .select({
+      id: brainwritings.id,
+      title: brainwritings.title,
+      themeName: brainwritings.theme_name,
+      description: brainwritings.description,
+      usageScope: brainwritings.usage_scope,
+      isInviteActive: brainwritings.is_invite_active,
+      createdAt: brainwritings.created_at,
+    })
+    .from(brainwritings)
+    .where(eq(brainwritings.invite_token, token))
+    .limit(1);
+
+  // ブレインライティングが見つからない、または招待が無効な場合
+  if (!result.length || !result[0].isInviteActive) {
+    return null;
+  }
+
+  return result[0];
 }
 
 // ブレインライティング詳細取得（シート・入力データ含む）

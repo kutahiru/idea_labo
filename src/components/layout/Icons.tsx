@@ -35,12 +35,7 @@ export function CloseIcon({ className = "h-5 w-5", size }: IconProps) {
       stroke="currentColor"
       viewBox="0 0 24 24"
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M6 18L18 6M6 6l12 12"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
   );
 }
@@ -76,14 +71,27 @@ export function ClockIcon({ className = "h-3 w-3", size }: IconProps) {
 // Xアイコン（旧Twitter）
 export function XIcon({ className = "h-5 w-5", size }: IconProps) {
   return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+export function ArrowLeftIcon({ size = 24, className = "" }: IconProps) {
+  return (
     <svg
       className={className}
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="currentColor"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      <path d="m12 19-7-7 7-7" />
+      <path d="M19 12H5" />
     </svg>
   );
 }

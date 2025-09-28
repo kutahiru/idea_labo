@@ -1,9 +1,10 @@
 import { Users } from "lucide-react";
 import { XIcon } from "@/components/layout/Icons";
+import { USAGE_SCOPE, USAGE_SCOPE_LABELS, UsageScope } from "@/utils/brainwriting";
 
 interface UsageScopeSelectorProps {
-  value: "xpost" | "team";
-  onChange: (value: "xpost" | "team") => void;
+  value: UsageScope;
+  onChange: (value: UsageScope) => void;
   errors?: string;
   disabled?: boolean;
 }
@@ -25,44 +26,44 @@ export default function UsageScopeSelector({
         <label className="flex-1 cursor-pointer">
           <input
             type="radio"
-            value="xpost"
-            checked={value === "xpost"}
-            onChange={e => onChange(e.target.value as "xpost")}
+            value={USAGE_SCOPE.XPOST}
+            checked={value === USAGE_SCOPE.XPOST}
+            onChange={e => onChange(e.target.value as UsageScope)}
             className="sr-only"
             disabled={disabled}
           />
           <div
             className={`flex w-full items-center justify-center rounded-lg border-2 px-4 py-3 transition-all duration-200 ${
-              value === "xpost"
+              value === USAGE_SCOPE.XPOST
                 ? "bg-primary border-primary text-white shadow-lg"
                 : "hover:border-primary border-gray-200 bg-white text-gray-700 hover:shadow-md"
             }`}
           >
             <div className="text-center">
               <XIcon className="mx-auto mb-1" size={20} />
-              <span className="font-noto-sans-jp text-sm font-medium">X投稿</span>
+              <span className="font-noto-sans-jp text-sm font-medium">{USAGE_SCOPE_LABELS[USAGE_SCOPE.XPOST]}</span>
             </div>
           </div>
         </label>
         <label className="flex-1 cursor-pointer">
           <input
             type="radio"
-            value="team"
-            checked={value === "team"}
-            onChange={e => onChange(e.target.value as "team")}
+            value={USAGE_SCOPE.TEAM}
+            checked={value === USAGE_SCOPE.TEAM}
+            onChange={e => onChange(e.target.value as UsageScope)}
             className="sr-only"
             disabled={disabled}
           />
           <div
             className={`flex w-full items-center justify-center rounded-lg border-2 px-4 py-3 transition-all duration-200 ${
-              value === "team"
+              value === USAGE_SCOPE.TEAM
                 ? "bg-primary border-primary text-white shadow-lg"
                 : "hover:border-primary border-gray-200 bg-white text-gray-700 hover:shadow-md"
             }`}
           >
             <div className="text-center">
               <Users size={20} className="mx-auto mb-1" />
-              <span className="font-noto-sans-jp text-sm font-medium">チーム利用</span>
+              <span className="font-noto-sans-jp text-sm font-medium">{USAGE_SCOPE_LABELS[USAGE_SCOPE.TEAM]}</span>
             </div>
           </div>
         </label>

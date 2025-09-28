@@ -2,6 +2,7 @@ import IdeaFrameworkModal from "@/components/shared/IdeaFrameworkModal";
 import UsageScopeSelector from "./UsageScopeSelector";
 import { BrainwritingFormData } from "@/types/brainwriting";
 import { brainwritingFormDataSchema } from "@/schemas/brainwriting";
+import { USAGE_SCOPE } from "@/utils/brainwriting";
 
 interface BrainwritingModalProps {
   isOpen: boolean;
@@ -23,7 +24,7 @@ export default function BrainwritingModal({
     title: "",
     themeName: "",
     description: "",
-    usageScope: "xpost",
+    usageScope: USAGE_SCOPE.XPOST,
     ...initialData,
   };
 

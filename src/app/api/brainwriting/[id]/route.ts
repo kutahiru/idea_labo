@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getBrainwritingById, updateBrainwriting, deleteBrainwriting } from "@/lib/brainwriting";
+import { getBrainwritingDetailById, updateBrainwriting, deleteBrainwriting } from "@/lib/brainwriting";
 import { brainwritingFormDataSchema } from "@/schemas/brainwriting";
 import { checkAuth, apiErrors } from "@/lib/api/utils";
 
@@ -17,14 +17,14 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       return apiErrors.invalidId();
     }
 
-    // ブレインライティングを取得
-    const brainwriting = await getBrainwritingById(id, authResult.userId);
+    // ブレインライティング詳細を取得
+    const brainwritingDetail = await getBrainwritingDetailById(id, authResult.userId);
 
-    if (!brainwriting) {
+    if (!brainwritingDetail) {
       return apiErrors.notFound();
     }
 
-    return NextResponse.json(brainwriting);
+    return NextResponse.json(brainwritingDetail);
   } catch (error) {
     console.error("ブレインライティング取得エラー:", error);
     return apiErrors.serverError();

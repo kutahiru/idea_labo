@@ -15,6 +15,7 @@
 - **Language**: TypeScript 5.x
 - **Styling**: Tailwind CSS 4.x
 - **UI Library**: React 19.1.0
+- **Icons**: Lucide React 0.544.0
 
 ### バックエンド
 - **Database**: PostgreSQL

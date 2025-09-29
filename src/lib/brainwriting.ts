@@ -215,12 +215,7 @@ export async function getBrainwritingByToken(token: string): Promise<Brainwritin
     .where(eq(brainwritings.invite_token, token))
     .limit(1);
 
-  // ブレインライティングが見つからない、または招待が無効な場合
-  if (!result.length || !result[0].isInviteActive) {
-    return null;
-  }
-
-  return result[0];
+  return result[0] || null;
 }
 
 // ブレインライティング詳細取得（シート・入力データ含む）
@@ -244,6 +239,6 @@ export async function getBrainwritingDetailById(id: number, userId: string) {
   return {
     ...brainwriting,
     sheets,
-    inputs
+    inputs,
   };
 }

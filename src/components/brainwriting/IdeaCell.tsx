@@ -6,15 +6,15 @@ import { Lock } from "lucide-react";
 interface IdeaCellProps {
   value?: string;
   isHighlighted?: boolean;
-  onChange: (value: string) => void;
   readOnly?: boolean;
+  onChange: (value: string) => void;
 }
 
 export default function IdeaCell({
   value = "",
   isHighlighted = false,
-  onChange,
   readOnly = false,
+  onChange,
 }: IdeaCellProps) {
   const [lastSavedValue, setLastSavedValue] = useState(value);
 

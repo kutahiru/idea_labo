@@ -3,7 +3,7 @@ import type { AdapterAccount } from '@auth/core/adapters';
 
 export const users = pgTable('users', {
   id: text('id').notNull().primaryKey(),
-  name: text('name'),
+  name: text('name').notNull(),
   email: text('email').notNull(),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
@@ -62,7 +62,6 @@ export const brainwriting_sheets = pgTable('brainwriting_sheets', {
     .notNull()
     .references(() => brainwritings.id, { onDelete: 'cascade' }),
   current_user_id: text('current_user_id')
-    .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   lock_expires_at: timestamp('lock_expires_at'),
   created_at: timestamp('created_at').notNull().defaultNow(),

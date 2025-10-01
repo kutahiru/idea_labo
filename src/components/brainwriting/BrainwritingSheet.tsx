@@ -7,16 +7,16 @@ interface BrainwritingRow {
 
 interface BrainwritingSheetProps {
   brainwritingRows?: BrainwritingRow[];
-  onDataChange?: (participantIndex: number, ideaIndex: number, value: string) => void;
-  readOnly?: boolean;
-  activeRowIndex?: number; // 現在編集可能な行のインデックス（指定しない場合は全行編集可能）
+  isAllReadOnly?: boolean;
+  activeRowIndex?: number;
+  onDataChange?: (rowIndex: number, ideaIndex: number, value: string) => void;
 }
 
 export default function BrainwritingSheet({
   brainwritingRows = [],
-  onDataChange,
-  readOnly = false,
+  isAllReadOnly = false,
   activeRowIndex,
+  onDataChange,
 }: BrainwritingSheetProps) {
   return (
     <div className="mt-8">
@@ -40,14 +40,14 @@ export default function BrainwritingSheet({
           </div>
 
           {/* データ行 */}
-          {brainwritingRows.map((participant, rowIndex) => (
+          {brainwritingRows.map((brainwritingUser, rowIndex) => (
             <BrainwritingRow
               key={rowIndex}
-              participantName={participant.name}
-              ideas={participant.ideas}
+              userName={brainwritingUser.name}
+              ideas={brainwritingUser.ideas}
               onIdeaChange={(ideaIndex, value) => onDataChange?.(rowIndex, ideaIndex, value)}
               isHighlighted={rowIndex == activeRowIndex}
-              readOnly={readOnly || (activeRowIndex !== undefined && rowIndex !== activeRowIndex)}
+              readOnly={isAllReadOnly || (activeRowIndex !== undefined && rowIndex !== activeRowIndex)}
             />
           ))}
         </div>

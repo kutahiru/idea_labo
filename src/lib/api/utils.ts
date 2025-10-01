@@ -19,4 +19,9 @@ export const apiErrors = {
       details ? { error: "入力データが無効です", details } : { error: "入力データが無効です" },
       { status: 400 }
     ),
+  forbidden: (message?: string) =>
+    NextResponse.json(
+      { error: message || "アクセス権限がありません" },
+      { status: 403 }
+    ),
 };

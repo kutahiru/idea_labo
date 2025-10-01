@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
-import BrainwritingInfo from "@/components/brainwriting/BrainwritingInfo";
-import { getBrainwritingByToken } from "@/lib/brainwriting";
+import { notFound, redirect } from "next/navigation";
+import { getBrainwritingByToken, checkJoinStatus } from "@/lib/brainwriting";
+import { auth } from "@/app/lib/auth";
+import BrainwritingInviteClient from "@/components/brainwriting/BrainwritingInviteClient";
 
 interface InvitePageProps {
   params: Promise<{ token: string }>;
@@ -31,23 +32,16 @@ export default async function InvitePage({ params }: InvitePageProps) {
     );
   }
 
-  return (
-    <div className="py-2">
-      <div className="mx-auto max-w-4xl">
-        <BrainwritingInfo brainwriting={brainwritingData} />
+  // ログイン状態をチェック
+  const session = await auth();
 
-        <div className="mb-8 text-center">
-          <h1 className="text-primary mb-4 text-3xl font-bold">
-            ブレインライティングに招待されました
-          </h1>
-        </div>
+  // ログイン済みの場合、参加状況をチェックして既に参加していればリダイレクト
+  if (session?.user?.id) {
+    const joinStatus = await checkJoinStatus(brainwritingData.id, session.user.id);
+    if (joinStatus.isJoined && joinStatus.sheetId) {
+      redirect(`/brainwriting/sheet/${joinStatus.sheetId}/input`);
+    }
+  }
 
-        <div className="mt-8 text-center">
-          <button className="group bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white transition-transform hover:scale-105">
-            参加する
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  return <BrainwritingInviteClient brainwriting={brainwritingData} token={token} />;
 }

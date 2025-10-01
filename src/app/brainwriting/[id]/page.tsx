@@ -16,22 +16,18 @@ export default async function BrainwritingDetailPage({ params }: BrainwritingDet
   }
 
   const { id } = await params;
-  const numericId = parseInt(id);
+  const brainwritingId = parseInt(id);
 
-  if (isNaN(numericId)) {
+  if (isNaN(brainwritingId)) {
     notFound();
   }
 
   // ブレインライティング詳細取得（シート・入力データ含む）
-  const brainwritingDetail = await getBrainwritingDetailById(numericId, session.user.id);
+  const brainwritingDetail = await getBrainwritingDetailById(brainwritingId, session.user.id);
 
   if (!brainwritingDetail) {
     notFound();
   }
 
-  return <BrainwritingDetailClient
-    brainwriting={brainwritingDetail}
-    sheets={brainwritingDetail.sheets}
-    inputs={brainwritingDetail.inputs}
-  />;
+  return <BrainwritingDetailClient brainwritingDetail={brainwritingDetail} />;
 }

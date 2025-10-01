@@ -28,7 +28,7 @@ CREATE TABLE "brainwriting_inputs" (
 CREATE TABLE "brainwriting_sheets" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"brainwriting_id" integer NOT NULL,
-	"current_user_id" text NOT NULL,
+	"current_user_id" text,
 	"lock_expires_at" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
@@ -49,11 +49,11 @@ CREATE TABLE "brainwritings" (
 	"title" varchar NOT NULL,
 	"theme_name" varchar NOT NULL,
 	"description" varchar,
-	"invite_url" varchar,
-	"is_invite_url_active" boolean DEFAULT true NOT NULL,
+	"invite_token" varchar,
+	"is_invite_active" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "brainwritings_invite_url_unique" UNIQUE("invite_url")
+	CONSTRAINT "brainwritings_invite_token_unique" UNIQUE("invite_token")
 );
 --> statement-breakpoint
 CREATE TABLE "idea_categories" (
@@ -116,7 +116,7 @@ CREATE TABLE "osborn_checklists" (
 --> statement-breakpoint
 CREATE TABLE "users" (
 	"id" text PRIMARY KEY NOT NULL,
-	"name" text,
+	"name" text NOT NULL,
 	"email" text NOT NULL,
 	"emailVerified" timestamp,
 	"image" text,

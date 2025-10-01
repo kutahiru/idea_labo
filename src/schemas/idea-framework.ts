@@ -16,6 +16,7 @@ export const baseIdeaSchema = z.object({
 export const baseIdeaListItemSchema = baseIdeaSchema.extend({
   id: z.number(),
   createdAt: z.date(),
+  isInviteActive: z.boolean().optional(),
 });
 
 // ベース型定義をZodスキーマから生成

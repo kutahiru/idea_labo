@@ -3,7 +3,7 @@ import type { AdapterAccount } from '@auth/core/adapters';
 
 export const users = pgTable('users', {
   id: text('id').notNull().primaryKey(),
-  name: text('name'),
+  name: text('name').notNull(),
   email: text('email').notNull(),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
@@ -38,8 +38,8 @@ export const brainwritings = pgTable('brainwritings', {
   title: varchar('title').notNull(),
   theme_name: varchar('theme_name').notNull(),
   description: varchar('description'),
-  invite_url: varchar('invite_url').unique(),
-  is_invite_url_active: boolean('is_invite_url_active').notNull().default(true),
+  invite_token: varchar('invite_token').unique(),
+  is_invite_active: boolean('is_invite_active').notNull().default(true),
   created_at: timestamp('created_at').notNull().defaultNow(),
   updated_at: timestamp('updated_at').notNull().defaultNow().$onUpdate(() => new Date()),
 });
@@ -62,7 +62,6 @@ export const brainwriting_sheets = pgTable('brainwriting_sheets', {
     .notNull()
     .references(() => brainwritings.id, { onDelete: 'cascade' }),
   current_user_id: text('current_user_id')
-    .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   lock_expires_at: timestamp('lock_expires_at'),
   created_at: timestamp('created_at').notNull().defaultNow(),

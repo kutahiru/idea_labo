@@ -1,5 +1,5 @@
 {
-  "id": "7639015b-178d-4053-8901-0f183f9f7de4",
+  "id": "2e702034-0d45-4354-8aed-a008e04b61da",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -234,7 +234,7 @@
           "name": "current_user_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "lock_expires_at": {
           "name": "lock_expires_at",
@@ -404,14 +404,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "invite_url": {
-          "name": "invite_url",
+        "invite_token": {
+          "name": "invite_token",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "is_invite_url_active": {
-          "name": "is_invite_url_active",
+        "is_invite_active": {
+          "name": "is_invite_active",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -450,11 +450,11 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "brainwritings_invite_url_unique": {
-          "name": "brainwritings_invite_url_unique",
+        "brainwritings_invite_token_unique": {
+          "name": "brainwritings_invite_token_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "invite_url"
+            "invite_token"
           ]
         }
       },
@@ -880,7 +880,7 @@
           "name": "name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "email": {
           "name": "email",

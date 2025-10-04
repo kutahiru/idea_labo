@@ -2,7 +2,7 @@ import { randomBytes } from 'crypto';
 
 // 招待URL用のランダムトークンを生成
 export function generateInviteToken(): string {
-  return randomBytes(32).toString('hex');
+  return randomBytes(16).toString('hex');
 }
 
 // 招待URLを生成

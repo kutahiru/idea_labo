@@ -1,7 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 import { getBrainwritingByToken, checkJoinStatus } from "@/lib/brainwriting";
 import { auth } from "@/app/lib/auth";
-import BrainwritingInviteClient from "@/components/brainwriting/BrainwritingInviteClient";
+import BrainwritingInviteClient from "@/components/brainwritings/BrainwritingInviteClient";
+import { USAGE_SCOPE } from "../../../../utils/brainwriting";
 
 interface InvitePageProps {
   params: Promise<{ token: string }>;
@@ -32,16 +33,29 @@ export default async function InvitePage({ params }: InvitePageProps) {
     );
   }
 
-  // ログイン状態をチェック
+  // 招待ページコンポーネント
+  const inviteComponent = (
+    <BrainwritingInviteClient brainwriting={brainwritingData} token={token} />
+  );
+
   const session = await auth();
 
-  // ログイン済みの場合、参加状況をチェックして既に参加していればリダイレクト
-  if (session?.user?.id) {
-    const joinStatus = await checkJoinStatus(brainwritingData.id, session.user.id);
-    if (joinStatus.isJoined && joinStatus.sheetId) {
-      redirect(`/brainwriting/sheet/${joinStatus.sheetId}/input`);
-    }
+  // 未ログインの場合は招待ページを表示(ログインへの誘導あり)
+  if (!session?.user?.id) {
+    return inviteComponent;
   }
 
-  return <BrainwritingInviteClient brainwriting={brainwritingData} token={token} />;
+  const joinStatus = await checkJoinStatus(brainwritingData.id, session.user.id);
+
+  // 未参加の場合は招待ページを表示
+  if (!joinStatus.isJoined) {
+    return inviteComponent;
+  }
+
+  // 既に参加している場合は適切なページにリダイレクト
+  if (brainwritingData.usageScope === USAGE_SCOPE.XPOST) {
+    redirect(`/brainwritings/sheet/${joinStatus.sheetId}/input`);
+  } else if (brainwritingData.usageScope === USAGE_SCOPE.TEAM) {
+    redirect(`/brainwritings/${brainwritingData.id}/team`);
+  }
 }

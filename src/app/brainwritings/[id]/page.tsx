@@ -1,7 +1,7 @@
 import { auth } from "@/app/lib/auth";
 import { getBrainwritingDetailById } from "@/lib/brainwriting";
 import { notFound } from "next/navigation";
-import BrainwritingDetailClient from "@/components/brainwriting/BrainwritingDetailClient";
+import BrainwritingDetailClient from "@/components/brainwritings/BrainwritingDetailClient";
 
 interface BrainwritingDetailPageProps {
   params: Promise<{ id: string }>;

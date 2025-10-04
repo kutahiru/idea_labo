@@ -6,7 +6,7 @@ import { USAGE_SCOPE } from "@/utils/brainwriting";
 // 一覧表示用の型定義
 export interface BrainwritingListItem extends BaseIdeaListItem {
   usageScope: typeof USAGE_SCOPE.XPOST | typeof USAGE_SCOPE.TEAM;
-  inviteToken?: string | null;
+  inviteToken: string;
   isInviteActive?: boolean;
 }
 
@@ -44,5 +44,10 @@ export interface BrainwritingUserData {
 export interface BrainwritingDetail extends BrainwritingListItem {
   sheets: BrainwritingSheetData[];
   inputs: BrainwritingInputData[];
+  users: BrainwritingUserData[];
+}
+
+export interface BrainwritingTeam extends BrainwritingListItem {
+  sheets: BrainwritingSheetData[];
   users: BrainwritingUserData[];
 }

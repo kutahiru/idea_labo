@@ -82,6 +82,11 @@ npm run db:studio    # Drizzle Studioを起動
   - 定数: UPPER_SNAKE_CASE
   - コンポーネント: PascalCase
 
+- **ファイル作成時の注意**:
+  - 新規ファイル作成時は文字化けを防ぐため、必ずBashの`cat`コマンドを使用すること
+  - WriteツールやNotebookEditツールは使用しない
+  - 例: `cat > /path/to/file.tsx << 'EOF' ... EOF`
+
 ### Git 運用
 - **ブランチ戦略**: GitHub Flow
 - **メインブランチ**: `main`

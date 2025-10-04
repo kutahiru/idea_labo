@@ -1,7 +1,7 @@
 "use client";
 
-import BrainwritingInfo from "@/components/brainwriting/BrainwritingInfo";
-import XPostButton from "@/components/brainwriting/XPostButton";
+import BrainwritingInfo from "@/components/brainwritings/BrainwritingInfo";
+import XPostButton from "@/components/brainwritings/XPostButton";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { postBrainwritingToX } from "@/lib/x-post";
 import { useRouter } from "next/navigation";

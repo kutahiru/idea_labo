@@ -1,4 +1,4 @@
-import BrainwritingPageClient from "@/components/brainwriting/BrainwritingPageClient";
+import BrainwritingPageClient from "@/components/brainwritings/BrainwritingPageClient";
 import { auth } from "@/app/lib/auth";
 import { getBrainwritingsByUserId } from "@/lib/brainwriting";
 

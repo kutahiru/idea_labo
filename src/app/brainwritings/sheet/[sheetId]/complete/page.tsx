@@ -1,7 +1,7 @@
 import { auth } from "@/app/lib/auth";
 import { getBrainwritingDetailForBrainwritingUser } from "@/lib/brainwriting";
 import { notFound } from "next/navigation";
-import BrainwritingCompleteContent from "@/components/brainwriting/BrainwritingCompleteContent";
+import BrainwritingCompleteContent from "@/components/brainwritings/BrainwritingCompleteContent";
 
 interface BrainwritingCompletePageProps {
   params: Promise<{ sheetId: string }>;

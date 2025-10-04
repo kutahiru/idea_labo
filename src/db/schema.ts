@@ -38,7 +38,7 @@ export const brainwritings = pgTable('brainwritings', {
   title: varchar('title').notNull(),
   theme_name: varchar('theme_name').notNull(),
   description: varchar('description'),
-  invite_token: varchar('invite_token').unique(),
+  invite_token: varchar('invite_token').notNull().unique(),
   is_invite_active: boolean('is_invite_active').notNull().default(true),
   created_at: timestamp('created_at').notNull().defaultNow(),
   updated_at: timestamp('updated_at').notNull().defaultNow().$onUpdate(() => new Date()),

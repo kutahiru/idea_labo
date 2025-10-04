@@ -30,7 +30,7 @@ export default function Home() {
             <div className="relative">
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
-                  href="/brainwriting"
+                  href="/brainwritings"
                   className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-normal transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   ブレインライティング

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
-import BrainwritingInfo from "@/components/brainwriting/BrainwritingInfo";
+import BrainwritingInfo from "@/components/brainwritings/BrainwritingInfo";
 import { BrainwritingListItem } from "@/types/brainwriting";
+import { USAGE_SCOPE } from "@/utils/brainwriting";
 
 interface BrainwritingInviteClientProps {
   brainwriting: BrainwritingListItem;
@@ -17,9 +18,8 @@ export default function BrainwritingInviteClient({
   const { data: session, status: sessionStatus } = useSession();
   const isLoggedIn = Boolean(session?.user);
   const [status, setStatus] = useState<{
-    isLocked: boolean;
-    lockedByUser: string | null;
-    lockExpiresAt: Date | null;
+    isLocked?: boolean;
+    lockExpiresAt?: Date | null;
     currentCount: number;
     maxCount: number;
     isFull: boolean;
@@ -30,17 +30,29 @@ export default function BrainwritingInviteClient({
     const checkLockStatus = async () => {
       if (isLoggedIn && brainwriting.id) {
         try {
-          const response = await fetch(`/api/brainwriting/${brainwriting.id}/join-status`);
+          const response = await fetch(
+            `/api/brainwritings/${brainwriting.id}/join-status?usageScope=${brainwriting.usageScope}`
+          );
           if (response.ok) {
             const data = await response.json();
-            setStatus({
-              isLocked: data.isLocked || false,
-              lockedByUser: data.lockedByUser || null,
-              lockExpiresAt: data.lockExpiresAt ? new Date(data.lockExpiresAt) : null,
-              currentCount: data.currentCount || 0,
-              maxCount: data.maxCount || 6,
-              isFull: data.isFull || false,
-            });
+
+            // X投稿版の場合はロック情報も含める
+            if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
+              setStatus({
+                isLocked: data.isLocked || false,
+                lockExpiresAt: data.lockExpiresAt ? new Date(data.lockExpiresAt) : null,
+                currentCount: data.currentCount || 0,
+                maxCount: data.maxCount || 6,
+                isFull: data.isFull || false,
+              });
+            } else {
+              // チーム版の場合はロック情報なし
+              setStatus({
+                currentCount: data.currentCount || 0,
+                maxCount: data.maxCount || 6,
+                isFull: data.isFull || false,
+              });
+            }
           }
         } catch (error) {
           console.error("ロック状態チェックエラー:", error);
@@ -49,20 +61,20 @@ export default function BrainwritingInviteClient({
     };
 
     checkLockStatus();
-  }, [isLoggedIn, brainwriting.id]);
+  }, [isLoggedIn, brainwriting.id, brainwriting.usageScope]);
 
   const handleJoinBrainwriting = async () => {
     if (!isLoggedIn) {
       // 未ログイン時はログインページへ（callbackUrlで現在のページに戻る）
       await signIn("google", {
-        callbackUrl: `/brainwriting/invite/${token}`,
+        callbackUrl: `/brainwritings/invite/${token}`,
       });
       return;
     }
 
     // ログイン済み時は参加処理
     try {
-      const response = await fetch("/api/brainwriting/join", {
+      const response = await fetch("/api/brainwritings/join", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,8 +93,13 @@ export default function BrainwritingInviteClient({
       }
 
       alert("参加しました！");
-      // 参加後はブレインライティング入力ページへ遷移
-      window.location.href = `/brainwriting/sheet/${data.sheetId}/input`;
+      if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
+        // X投稿版の場合
+        window.location.href = `/brainwritings/sheet/${data.sheetId}/input`;
+      } else if (brainwriting.usageScope === USAGE_SCOPE.TEAM) {
+        // チーム利用版の場合
+        window.location.href = `/brainwritings/${brainwriting.id}/team`;
+      }
     } catch (error) {
       console.error("参加処理エラー:", error);
       alert("参加処理中にエラーが発生しました");

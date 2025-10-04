@@ -79,7 +79,7 @@ export const handleBrainwritingDataChange = async (
   sheetId: number
 ) => {
   try {
-    const response = await fetch(`/api/brainwriting/input`, {
+    const response = await fetch(`/api/brainwritings/input`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

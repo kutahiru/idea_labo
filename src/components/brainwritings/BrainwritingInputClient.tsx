@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import BrainwritingInfo from "@/components/brainwriting/BrainwritingInfo";
-import BrainwritingSheet from "@/components/brainwriting/BrainwritingSheet";
+import BrainwritingInfo from "@/components/brainwritings/BrainwritingInfo";
+import BrainwritingSheet from "@/components/brainwritings/BrainwritingSheet";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail } from "@/types/brainwriting";
 import { convertToRowData, handleBrainwritingDataChange } from "@/utils/brainwriting";
@@ -148,7 +148,7 @@ export default function BrainwritingInputClient({
     setIsCompleting(true);
 
     try {
-      const response = await fetch(`/api/brainwriting/sheet/${sheet.id}/complete`, {
+      const response = await fetch(`/api/brainwritings/sheet/${sheet.id}/complete`, {
         method: "POST",
       });
 
@@ -161,7 +161,7 @@ export default function BrainwritingInputClient({
       sheet.current_user_id = null;
 
       // 完了画面に遷移
-      router.push(`/brainwriting/sheet/${sheet.id}/complete`);
+      router.push(`/brainwritings/sheet/${sheet.id}/complete`);
     } catch (error) {
       console.error("完了エラー:", error);
       toast.error("完了処理に失敗しました。再度お試しください。");

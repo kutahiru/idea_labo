@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatDate } from "@/utils/date";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { ClockIcon } from "@/components/layout/Icons";
+import { getUsageScopeLabel } from "@/utils/brainwriting";
 
 interface BrainwritingIndexRowProps extends BrainwritingListItem {
   onEdit?: () => void;
@@ -14,6 +15,7 @@ export default function BrainwritingIndexRow({
   title,
   themeName,
   description,
+  usageScope,
   createdAt,
   onEdit,
   onDelete,
@@ -25,9 +27,12 @@ export default function BrainwritingIndexRow({
         <div className="mb-4 flex items-start justify-between">
           <div className="min-w-0 flex-1">
             <h3 className="truncate text-lg font-semibold text-gray-900">{title}</h3>
-            <div className="mt-2">
+            <div className="mt-2 flex gap-2">
               <span className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 px-3 py-1 text-sm font-medium text-blue-800">
                 {themeName}
+              </span>
+              <span className="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800">
+                {getUsageScopeLabel(usageScope)}
               </span>
             </div>
           </div>
@@ -36,7 +41,7 @@ export default function BrainwritingIndexRow({
             {/* アクションボタン */}
             <div className="flex items-center gap-2">
               <Link
-                href={`/brainwriting/${id}`}
+                href={`/brainwritings/${id}`}
                 className="bg-primary inline-flex items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
               >
                 詳細

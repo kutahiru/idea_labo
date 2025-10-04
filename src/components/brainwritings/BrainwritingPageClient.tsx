@@ -37,7 +37,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
   // ブレインライティング作成・更新
   const handleSubmit = async (data: BrainwritingFormData) => {
     try {
-      const url = editingData ? `/api/brainwriting/${editingData.id}` : "/api/brainwriting";
+      const url = editingData ? `/api/brainwritings/${editingData.id}` : "/api/brainwriting";
       const method = editingData ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -62,7 +62,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
       if (editingData) {
         router.refresh();
       } else {
-        router.push(`/brainwriting/${result.id}`);
+        router.push(`/brainwritings/${result.id}`);
       }
     } catch (error) {
       console.error(`ブレインライティング${editingData ? "更新" : "作成"}エラー:`, error);
@@ -79,7 +79,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
     }
 
     try {
-      const response = await fetch(`/api/brainwriting/${item.id}`, {
+      const response = await fetch(`/api/brainwritings/${item.id}`, {
         method: "DELETE",
       });
 

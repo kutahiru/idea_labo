@@ -19,7 +19,7 @@ export default function BrainwritingSheet({
   onDataChange,
 }: BrainwritingSheetProps) {
   return (
-    <div className="mt-8">
+    <div className="md-8 mt-8">
       {/* グリッド */}
       <div className="mx-auto max-w-[1200px] overflow-x-auto">
         <div className="relative min-w-[1200px]">
@@ -47,7 +47,9 @@ export default function BrainwritingSheet({
               ideas={brainwritingUser.ideas}
               onIdeaChange={(ideaIndex, value) => onDataChange?.(rowIndex, ideaIndex, value)}
               isHighlighted={rowIndex == activeRowIndex}
-              readOnly={isAllReadOnly || (activeRowIndex !== undefined && rowIndex !== activeRowIndex)}
+              readOnly={
+                isAllReadOnly || (activeRowIndex !== undefined && rowIndex !== activeRowIndex)
+              }
             />
           ))}
         </div>

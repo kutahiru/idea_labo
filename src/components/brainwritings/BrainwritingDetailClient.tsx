@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import BrainwritingInfo from "./BrainwritingInfo";
 import BrainwritingSheet from "./BrainwritingSheet";
 import XPostButton from "./XPostButton";
+import InviteLinkCopy from "./InviteLinkCopy";
 import { BrainwritingDetail } from "@/types/brainwriting";
 import { USAGE_SCOPE, convertToRowData, handleBrainwritingDataChange } from "@/utils/brainwriting";
 import { postBrainwritingToX } from "@/lib/x-post";
@@ -21,6 +22,7 @@ export default function BrainwritingDetailClient({
   const { sheets, inputs, users, ...brainwriting } = brainwritingDetail;
   const [activeRowIndex, setActiveRowIndex] = useState(0);
   const [currentInputs, setCurrentInputs] = useState(inputs);
+  const [activeSheetIndex, setActiveSheetIndex] = useState(0);
 
   // シートIDに対応する入力データを取得する関数を定義
   const getInputsForSheet = (sheetId: number) => {
@@ -70,18 +72,42 @@ export default function BrainwritingDetailClient({
     <div>
       <BrainwritingInfo brainwriting={brainwriting} />
 
-      {/* X投稿ボタン */}
+      {/* X投稿ボタン（X投稿版） */}
       {brainwriting.usageScope === USAGE_SCOPE.XPOST && (
         <div className="mb-6 flex justify-center">
           <XPostButton buttonName="Xへ共有" onClick={handleXPost} />
         </div>
       )}
 
+      {/* 招待リンクコピー（チーム利用版） */}
+      {brainwriting.usageScope === USAGE_SCOPE.TEAM && (
+        <InviteLinkCopy inviteToken={brainwriting.inviteToken} />
+      )}
+
+      {/* シート切り替えタブ（複数シートがある場合のみ表示） */}
+      {sheets && sheets.length > 1 && (
+        <div className="mb-6 flex justify-center gap-2">
+          {sheets.map((sheet, index) => (
+            <button
+              key={sheet.id}
+              onClick={() => setActiveSheetIndex(index)}
+              className={`rounded-md px-4 py-2 text-sm font-medium transition-all ${
+                activeSheetIndex === index
+                  ? "bg-primary text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              シート {index + 1}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* ブレインライティングシート */}
-      {sheets?.map(sheet => {
+      {sheets && sheets[activeSheetIndex] && (() => {
+        const sheet = sheets[activeSheetIndex];
         const sheetInputs = getInputsForSheet(sheet.id);
-        const brainwritingRows = convertToRowData(sheetInputs, users); // inputsを行データ形式に変換する
-        // current_user_idが自身と一致しない場合は読み取り専用
+        const brainwritingRows = convertToRowData(sheetInputs, users);
         const isAllReadOnly = sheet.current_user_id !== currentUserId;
 
         return (
@@ -95,7 +121,7 @@ export default function BrainwritingDetailClient({
             }
           />
         );
-      })}
+      })()}
     </div>
   );
 }

@@ -34,10 +34,21 @@ export default async function BrainwritingSheetInputPage({
     notFound();
   }
 
+  // サーバー時刻で残り時間を計算（秒単位）
+  let initialSecondsLeft: number | null = null;
+  const sheet = brainwritingDetail.sheets[0];
+  if (sheet?.lock_expires_at) {
+    const now = new Date();
+    const expiresAt = new Date(sheet.lock_expires_at);
+    const timeLeftMs = expiresAt.getTime() - now.getTime();
+    initialSecondsLeft = Math.floor(timeLeftMs / 1000);
+  }
+
   return (
     <BrainwritingInputClient
       brainwritingDetail={brainwritingDetail}
       currentUserId={session.user.id}
+      initialSecondsLeft={initialSecondsLeft}
     />
   );
 }

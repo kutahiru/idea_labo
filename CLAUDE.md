@@ -16,6 +16,7 @@
 - **Styling**: Tailwind CSS 4.x
 - **UI Library**: React 19.1.0
 - **Icons**: Lucide React 0.544.0
+- **Toast Notifications**: react-hot-toast
 
 ### バックエンド
 - **Database**: PostgreSQL

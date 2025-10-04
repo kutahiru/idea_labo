@@ -29,5 +29,10 @@ export default async function BrainwritingDetailPage({ params }: BrainwritingDet
     notFound();
   }
 
-  return <BrainwritingDetailClient brainwritingDetail={brainwritingDetail} />;
+  return (
+    <BrainwritingDetailClient
+      brainwritingDetail={brainwritingDetail}
+      currentUserId={session.user.id}
+    />
+  );
 }

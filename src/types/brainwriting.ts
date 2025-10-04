@@ -1,8 +1,15 @@
 // Zodスキーマから型定義をインポート
-export type { BrainwritingListItem, BrainwritingFormData } from "@/schemas/brainwriting";
-import type { BrainwritingListItem } from "@/schemas/brainwriting";
+export type { BrainwritingFormData } from "@/schemas/brainwriting";
+import type { BaseIdeaListItem } from "@/schemas/idea-framework";
+import { USAGE_SCOPE } from "@/utils/brainwriting";
 
-// データベーステーブルの型定義
+// 一覧表示用の型定義
+export interface BrainwritingListItem extends BaseIdeaListItem {
+  usageScope: typeof USAGE_SCOPE.XPOST | typeof USAGE_SCOPE.TEAM;
+  inviteToken?: string | null;
+  isInviteActive?: boolean;
+}
+
 export interface BrainwritingSheetData {
   id: number;
   brainwriting_id: number;

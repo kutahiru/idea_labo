@@ -3,40 +3,22 @@
 export interface BrainwritingData {
   title: string;
   themeName: string;
-}
-
-export interface BrainwritingInput {
-  content: string | null;
+  inviteToken?: string | null;
 }
 
 // ブレインライティングをX投稿用にフォーマット
-export function formatBrainwritingForX(
-  brainwriting: BrainwritingData,
-  inputs?: BrainwritingInput[]
-): string {
-  let content = `🧠 ブレインライティング結果\n`;
+export function formatBrainwritingForX(brainwriting: BrainwritingData): string {
+  let content = `🧠 ブレインライティング\n`;
   content += `📝 テーマ: ${brainwriting.themeName}\n`;
   content += `💡 タイトル: ${brainwriting.title}\n\n`;
 
-  // 全てのアイデアを収集
-  const allIdeas: string[] = [];
-  inputs?.forEach(input => {
-    if (input.content && input.content.trim()) {
-      allIdeas.push(input.content.trim());
-    }
-  });
+  content += `皆さんのアイデアをお待ちしています！\n`;
+  content += `ぜひご協力ください🙏\n`;
 
-  if (allIdeas.length > 0) {
-    content += `💭 生まれたアイデア:\n`;
-    allIdeas.slice(0, 6).forEach((idea, index) => {
-      content += `${index + 1}. ${idea}\n`;
-    });
-
-    if (allIdeas.length > 6) {
-      content += `...他${allIdeas.length - 6}個のアイデア\n`;
-    }
-  } else {
-    content += `💭 アイデア募集中...\n`;
+  // 招待URLを追加
+  if (brainwriting.inviteToken) {
+    const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/brainwriting/invite/${brainwriting.inviteToken}`;
+    content += `\n🔗 参加はこちら: ${inviteUrl}\n`;
   }
 
   content += `\n#ブレインライティング #アイデア発想 #アイデア研究所`;
@@ -50,10 +32,7 @@ export function openXPost(content: string): void {
 }
 
 // ブレインライティングをXに投稿
-export function postBrainwritingToX(
-  brainwriting: BrainwritingData,
-  inputs?: BrainwritingInput[]
-): void {
-  const content = formatBrainwritingForX(brainwriting, inputs);
+export function postBrainwritingToX(brainwriting: BrainwritingData): void {
+  const content = formatBrainwritingForX(brainwriting);
   openXPost(content);
 }

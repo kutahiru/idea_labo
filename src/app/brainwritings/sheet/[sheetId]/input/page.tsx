@@ -2,6 +2,7 @@ import { auth } from "@/app/lib/auth";
 import { getBrainwritingDetailForBrainwritingUser } from "@/lib/brainwriting";
 import { notFound } from "next/navigation";
 import BrainwritingInputClient from "@/components/brainwritings/BrainwritingInputClient";
+import { USAGE_SCOPE, sortUsersByFirstRow } from "@/utils/brainwriting";
 
 interface BrainwritingSheetInputPageProps {
   params: Promise<{ sheetId: string }>;
@@ -32,6 +33,14 @@ export default async function BrainwritingSheetInputPage({
 
   if (!brainwritingDetail) {
     notFound();
+  }
+
+  if (brainwritingDetail.usageScope === USAGE_SCOPE.TEAM) {
+    // チーム利用版の場合、並び替え
+    brainwritingDetail.users = sortUsersByFirstRow(
+      brainwritingDetail.inputs,
+      brainwritingDetail.users
+    );
   }
 
   // サーバー時刻で残り時間を計算（秒単位）

@@ -7,7 +7,12 @@ import BrainwritingSheet from "./BrainwritingSheet";
 import XPostButton from "./XPostButton";
 import InviteLinkCopy from "./InviteLinkCopy";
 import { BrainwritingDetail } from "@/types/brainwriting";
-import { USAGE_SCOPE, convertToRowData, handleBrainwritingDataChange } from "@/utils/brainwriting";
+import {
+  USAGE_SCOPE,
+  convertToRowData,
+  handleBrainwritingDataChange,
+  sortUsersByFirstRow,
+} from "@/utils/brainwriting";
 import { postBrainwritingToX } from "@/lib/x-post";
 
 interface BrainwritingDetailClientProps {
@@ -20,7 +25,6 @@ export default function BrainwritingDetailClient({
   currentUserId,
 }: BrainwritingDetailClientProps) {
   const { sheets, inputs, users, ...brainwriting } = brainwritingDetail;
-  const [activeRowIndex, setActiveRowIndex] = useState(0);
   const [currentInputs, setCurrentInputs] = useState(inputs);
   const [activeSheetIndex, setActiveSheetIndex] = useState(0);
 
@@ -69,7 +73,7 @@ export default function BrainwritingDetailClient({
   };
 
   return (
-    <div>
+    <div className="mb-8">
       <BrainwritingInfo brainwriting={brainwriting} />
 
       {/* X投稿ボタン（X投稿版） */}
@@ -104,24 +108,34 @@ export default function BrainwritingDetailClient({
       )}
 
       {/* ブレインライティングシート */}
-      {sheets && sheets[activeSheetIndex] && (() => {
-        const sheet = sheets[activeSheetIndex];
-        const sheetInputs = getInputsForSheet(sheet.id);
-        const brainwritingRows = convertToRowData(sheetInputs, users);
-        const isAllReadOnly = sheet.current_user_id !== currentUserId;
+      {sheets &&
+        sheets[activeSheetIndex] &&
+        (() => {
+          const sheet = sheets[activeSheetIndex];
+          const sheetInputs = getInputsForSheet(sheet.id);
 
-        return (
-          <BrainwritingSheet
-            key={sheet.id}
-            brainwritingRows={brainwritingRows}
-            activeRowIndex={!isAllReadOnly && activeRowIndex >= 0 ? activeRowIndex : undefined}
-            isAllReadOnly={isAllReadOnly}
-            onDataChange={(rowIndex, ideaIndex, value) =>
-              handleDataChange(rowIndex, ideaIndex, value, sheet.id)
-            }
-          />
-        );
-      })()}
+          // チーム利用版の場合、シートのinputsの1行目のユーザーIDを先頭にusersの配列を変更
+          const sortedUsers =
+            brainwriting.usageScope === USAGE_SCOPE.TEAM
+              ? sortUsersByFirstRow(sheetInputs, users)
+              : users;
+
+          const brainwritingRows = convertToRowData(sheetInputs, sortedUsers);
+          const isAllReadOnly =
+            brainwriting.usageScope === USAGE_SCOPE.TEAM || sheet.current_user_id !== currentUserId;
+
+          return (
+            <BrainwritingSheet
+              key={sheet.id}
+              brainwritingRows={brainwritingRows}
+              activeRowIndex={0}
+              isAllReadOnly={isAllReadOnly}
+              onDataChange={(rowIndex, ideaIndex, value) =>
+                handleDataChange(rowIndex, ideaIndex, value, sheet.id)
+              }
+            />
+          );
+        })()}
     </div>
   );
 }

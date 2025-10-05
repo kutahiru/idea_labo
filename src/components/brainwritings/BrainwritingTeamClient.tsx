@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BrainwritingInfo from "./BrainwritingInfo";
 import BrainwritingSheetList from "./BrainwritingSheetList";
 import ConfirmModal from "@/components/shared/ConfirmModal";
@@ -15,8 +15,31 @@ export default function BrainwritingTeamClient({
   brainwritingTeam,
   currentUserId,
 }: BrainwritingTeamClientProps) {
-  const { sheets, users, ...brainwriting } = brainwritingTeam;
+  const { sheets: initialSheets, users, ...brainwriting } = brainwritingTeam;
+  const [sheets, setSheets] = useState(initialSheets);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  // 定期的にシート情報を更新（5秒ごと）
+  useEffect(() => {
+    if (sheets.length === 0) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/brainwritings/${brainwriting.id}/sheets`);
+        if (response.ok) {
+          const data = await response.json();
+          setSheets(data.sheets);
+        }
+      } catch (error) {
+        console.error("シート情報の取得エラー:", error);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [brainwriting.id, sheets.length]);
+
+  // 開始ボタンを表示するのは作成者のみ
+  const isCreator = brainwriting.userId === currentUserId;
 
   const handleStart = () => {
     //6人未満の場合は確認メッセージ
@@ -72,17 +95,25 @@ export default function BrainwritingTeamClient({
             </div>
           </div>
 
-          <div className="mx-auto max-w-4xl text-center">
-            <button
-              onClick={handleStart}
-              className="bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white transition-transform hover:scale-105"
-            >
-              開始
-            </button>
-          </div>
+          {isCreator ? (
+            <div className="mx-auto max-w-4xl text-center">
+              <button
+                onClick={handleStart}
+                className="bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white transition-transform hover:scale-105"
+              >
+                開始
+              </button>
+            </div>
+          ) : (
+            <div className="mx-auto max-w-4xl text-center">
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                <p className="text-sm text-blue-700">開始されるまでお待ちください</p>
+              </div>
+            </div>
+          )}
         </>
       ) : (
-        <BrainwritingSheetList sheets={sheets} users={users} />
+        <BrainwritingSheetList sheets={sheets} users={users} currentUserId={currentUserId} />
       )}
 
       <ConfirmModal

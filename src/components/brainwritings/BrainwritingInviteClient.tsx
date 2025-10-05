@@ -23,6 +23,7 @@ export default function BrainwritingInviteClient({
     currentCount: number;
     maxCount: number;
     isFull: boolean;
+    canJoin?: boolean;
   } | null>(null);
 
   // ログイン後にロック状態をチェック
@@ -51,6 +52,7 @@ export default function BrainwritingInviteClient({
                 currentCount: data.currentCount || 0,
                 maxCount: data.maxCount || 6,
                 isFull: data.isFull || false,
+                canJoin: data.canJoin !== false,
               });
             }
           }
@@ -130,7 +132,22 @@ export default function BrainwritingInviteClient({
         </div>
 
         <div className="mt-8 text-center">
-          {status?.isFull ? (
+          {status?.canJoin === false ? (
+            <div>
+              <div className="mb-4 text-center">
+                <p className="mb-2 font-medium text-red-600">参加できません</p>
+                <p className="text-sm text-gray-600">
+                  ブレインライティングは既に開始されています
+                </p>
+              </div>
+              <button
+                disabled
+                className="inline-flex cursor-not-allowed items-center rounded-md bg-gray-400 px-20 py-2 text-base font-medium text-white"
+              >
+                参加できません
+              </button>
+            </div>
+          ) : status?.isFull ? (
             <div>
               <div className="mb-4 text-center">
                 <p className="mb-2 font-medium text-red-600">参加人数が上限に達しています</p>

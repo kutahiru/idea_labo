@@ -37,7 +37,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
   // ブレインライティング作成・更新
   const handleSubmit = async (data: BrainwritingFormData) => {
     try {
-      const url = editingData ? `/api/brainwritings/${editingData.id}` : "/api/brainwriting";
+      const url = editingData ? `/api/brainwritings/${editingData.id}` : "/api/brainwritings";
       const method = editingData ? "PUT" : "POST";
 
       const response = await fetch(url, {

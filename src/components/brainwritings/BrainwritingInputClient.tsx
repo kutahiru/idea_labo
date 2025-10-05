@@ -7,7 +7,7 @@ import BrainwritingInfo from "@/components/brainwritings/BrainwritingInfo";
 import BrainwritingSheet from "@/components/brainwritings/BrainwritingSheet";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail } from "@/types/brainwriting";
-import { convertToRowData, handleBrainwritingDataChange } from "@/utils/brainwriting";
+import { convertToRowData, handleBrainwritingDataChange, USAGE_SCOPE } from "@/utils/brainwriting";
 
 interface BrainwritingInputClientProps {
   brainwritingDetail: BrainwritingDetail;
@@ -153,15 +153,21 @@ export default function BrainwritingInputClient({
       });
 
       if (!response.ok) {
-        throw new Error("完了処理に失敗しました");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "完了処理に失敗しました");
       }
 
       // シートのcurrent_user_idをnullに更新してから遷移
       // これをしないとブラウザバックで戻った際に編集可能なままになってしまう
       sheet.current_user_id = null;
 
-      // 完了画面に遷移
-      router.push(`/brainwritings/sheet/${sheet.id}/complete`);
+      // チーム利用版の場合はチームページへ、X投稿版の場合は完了画面へ遷移
+      if (brainwriting.usageScope === USAGE_SCOPE.TEAM) {
+        toast.success("次の人に交代しました");
+        router.push(`/brainwritings/${brainwriting.id}/team`);
+      } else {
+        router.push(`/brainwritings/sheet/${sheet.id}/complete`);
+      }
     } catch (error) {
       console.error("完了エラー:", error);
       toast.error("完了処理に失敗しました。再度お試しください。");
@@ -170,7 +176,7 @@ export default function BrainwritingInputClient({
   };
 
   return (
-    <div>
+    <div className="mb-8">
       <BrainwritingInfo brainwriting={brainwriting} />
 
       <BrainwritingSheet

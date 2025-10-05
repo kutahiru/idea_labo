@@ -32,7 +32,8 @@ export default async function BrainwritingCompletePage({
     notFound();
   }
 
-  const { sheets: _sheets, inputs: _inputs, users: _users, ...brainwriting } = brainwritingDetail;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { sheets, inputs, users, ...brainwriting } = brainwritingDetail;
 
   return (
     <BrainwritingCompleteContent

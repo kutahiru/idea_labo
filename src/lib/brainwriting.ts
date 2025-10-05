@@ -7,11 +7,24 @@ import {
   users,
 } from "@/db/schema";
 import * as schema from "@/db/schema";
-import { desc, eq, and, isNotNull, lte, isNull, type ExtractTablesWithRelations } from "drizzle-orm";
+import {
+  desc,
+  eq,
+  and,
+  isNotNull,
+  lte,
+  isNull,
+  type ExtractTablesWithRelations,
+} from "drizzle-orm";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import type { PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
-import { BrainwritingListItem, BrainwritingFormData, BrainwritingTeam } from "@/types/brainwriting";
-import { USAGE_SCOPE } from "@/utils/brainwriting";
+import {
+  BrainwritingListItem,
+  BrainwritingFormData,
+  BrainwritingTeam,
+  BrainwritingInputData,
+} from "@/types/brainwriting";
+import { USAGE_SCOPE, sortUsersByFirstRow } from "@/utils/brainwriting";
 import { generateInviteData } from "@/lib/invite-url";
 
 // 一覧取得
@@ -116,10 +129,11 @@ export async function deleteBrainwriting(id: number, userId: string) {
 }
 
 // 単一取得（内部用・権限チェックなし）
-async function getBrainwritingByIdInternal(id: number) {
+export async function getBrainwritingByIdInternal(id: number) {
   const result = await db
     .select({
       id: brainwritings.id,
+      userId: brainwritings.user_id,
       title: brainwritings.title,
       themeName: brainwritings.theme_name,
       description: brainwritings.description,
@@ -228,8 +242,28 @@ export async function getBrainwritingSheetById(sheetId: number) {
   return result[0] || null;
 }
 
+// シート単体取得（ブレインライティング情報付き）
+export async function getBrainwritingSheetWithBrainwriting(sheetId: number) {
+  const result = await db
+    .select({
+      sheet: brainwriting_sheets,
+      brainwriting: {
+        id: brainwritings.id,
+        usageScope: brainwritings.usage_scope,
+      },
+    })
+    .from(brainwriting_sheets)
+    .leftJoin(brainwritings, eq(brainwriting_sheets.brainwriting_id, brainwritings.id))
+    .where(eq(brainwriting_sheets.id, sheetId))
+    .limit(1);
+
+  return result[0] || null;
+}
+
 // 入力データ取得(シートID条件)
-export async function getBrainwritingInputsBySheetId(brainwritingSheetId: number) {
+export async function getBrainwritingInputsBySheetId(
+  brainwritingSheetId: number
+): Promise<BrainwritingInputData[]> {
   return await db
     .select({
       id: brainwriting_inputs.id,
@@ -246,6 +280,29 @@ export async function getBrainwritingInputsBySheetId(brainwritingSheetId: number
     .from(brainwriting_inputs)
     .leftJoin(users, eq(brainwriting_inputs.input_user_id, users.id))
     .where(eq(brainwriting_inputs.brainwriting_sheet_id, brainwritingSheetId))
+    .orderBy(brainwriting_inputs.id);
+}
+
+// 入力データ取得(ブレインライティングID条件)
+export async function getBrainwritingInputsByBrainwritingId(
+  brainwritingId: number
+): Promise<BrainwritingInputData[]> {
+  return await db
+    .select({
+      id: brainwriting_inputs.id,
+      brainwriting_id: brainwriting_inputs.brainwriting_id,
+      brainwriting_sheet_id: brainwriting_inputs.brainwriting_sheet_id,
+      input_user_id: brainwriting_inputs.input_user_id,
+      input_user_name: users.name,
+      row_index: brainwriting_inputs.row_index,
+      column_index: brainwriting_inputs.column_index,
+      content: brainwriting_inputs.content,
+      created_at: brainwriting_inputs.created_at,
+      updated_at: brainwriting_inputs.updated_at,
+    })
+    .from(brainwriting_inputs)
+    .leftJoin(users, eq(brainwriting_inputs.input_user_id, users.id))
+    .where(eq(brainwriting_inputs.brainwriting_id, brainwritingId))
     .orderBy(brainwriting_inputs.id);
 }
 
@@ -300,12 +357,8 @@ export async function getBrainwritingDetailById(brainwritingId: number, userId: 
   // 全シート取得
   const sheets = await getBrainwritingSheetsByBrainwritingId(brainwritingId);
 
-  // 全シートの入力データ取得
-  const inputs = [];
-  for (const sheet of sheets) {
-    const sheetInputs = await getBrainwritingInputsBySheetId(sheet.id);
-    inputs.push(...sheetInputs);
-  }
+  // 入力データ取得
+  const inputs = await getBrainwritingInputsByBrainwritingId(brainwritingId);
 
   return {
     ...brainwriting,
@@ -374,6 +427,34 @@ export async function getBrainwritingTeamByBrainwritingId(
 
 // ブレインライティングに参加
 export async function joinBrainwriting(brainwritingId: number, userId: string, usageScope: string) {
+  // 既に参加済みかチェック
+  const { isJoined } = await checkJoinStatus(brainwritingId, userId);
+  if (isJoined) {
+    throw new Error("既に参加しています");
+  }
+
+  // 参加人数が上限に達しているかチェック
+  const { isFull } = await checkUserCount(brainwritingId);
+  if (isFull) {
+    throw new Error("参加人数が上限に達しています");
+  }
+
+  // X投稿版の場合、ロック状態をチェック
+  if (usageScope === USAGE_SCOPE.XPOST) {
+    const { isLocked } = await checkSheetLockStatus(brainwritingId, userId);
+    if (isLocked) {
+      throw new Error("他の方が編集中です");
+    }
+  }
+
+  // チーム版の場合、シートが存在していて参加者に含まれていない場合は参加不可
+  if (usageScope === USAGE_SCOPE.TEAM) {
+    const teamJoinable = await checkTeamJoinable(brainwritingId, userId);
+    if (!teamJoinable.canJoin) {
+      throw new Error("参加できません");
+    }
+  }
+
   // 参加者として追加
   const result = await db
     .insert(brainwriting_users)
@@ -428,7 +509,11 @@ export async function joinBrainwriting(brainwritingId: number, userId: string, u
 }
 
 // トランザクション型定義
-type DbTransaction = PgTransaction<PostgresJsQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>;
+type DbTransaction = PgTransaction<
+  PostgresJsQueryResultHKT,
+  typeof schema,
+  ExtractTablesWithRelations<typeof schema>
+>;
 
 // ユーザー毎にシートと入力データを作成（内部用）
 async function createSheetsWithInputsInternal(tx: DbTransaction, brainwritingId: number) {
@@ -524,6 +609,34 @@ export async function checkUserCount(brainwritingId: number) {
     currentCount: users.length,
     maxCount: 6,
     isFull: users.length >= 6,
+  };
+}
+
+// チーム版の参加可否をチェック（シートが存在していて参加者に含まれていない場合は参加不可）
+export async function checkTeamJoinable(brainwritingId: number, userId: string) {
+  const sheets = await getBrainwritingSheetsByBrainwritingId(brainwritingId);
+
+  // シートが存在しない場合は参加可能
+  if (sheets.length === 0) {
+    return { canJoin: true };
+  }
+
+  // シートが存在する場合、参加者に含まれているかチェック
+  const brainwritingUsers = await db
+    .select()
+    .from(brainwriting_users)
+    .where(
+      and(
+        eq(brainwriting_users.brainwriting_id, brainwritingId),
+        eq(brainwriting_users.user_id, userId)
+      )
+    )
+    .limit(1);
+
+  const isParticipant = brainwritingUsers.length > 0;
+
+  return {
+    canJoin: isParticipant,
   };
 }
 
@@ -639,4 +752,42 @@ export async function unlockSheet(sheetId: number, userId: string) {
     .where(
       and(eq(brainwriting_sheets.id, sheetId), eq(brainwriting_sheets.current_user_id, userId))
     );
+}
+
+// チーム利用版: シートを次のユーザーに交代
+export async function rotateSheetToNextUser(sheetId: number, currentUserId: string) {
+  // シート情報を取得
+  const sheet = await getBrainwritingSheetById(sheetId);
+  if (!sheet) {
+    throw new Error("シートが見つかりません");
+  }
+
+  // inputsと参加者一覧を取得
+  const inputs = await getBrainwritingInputsBySheetId(sheetId);
+  const allUsers = await getBrainwritingUsersByBrainwritingId(sheet.brainwriting_id);
+
+  // 1行目のユーザーを先頭にした配列に組み直す
+  const sortedUsers = sortUsersByFirstRow(inputs, allUsers);
+
+  // 現在のユーザーのインデックスを取得
+  const currentIndex = sortedUsers.findIndex(user => user.user_id === currentUserId);
+  if (currentIndex === -1) {
+    throw new Error("現在のユーザーが参加者一覧に見つかりません");
+  }
+
+  // 次のユーザーを取得（最後の場合はNULL）
+  const nextIndex = currentIndex + 1;
+  const nextUserId = nextIndex < sortedUsers.length ? sortedUsers[nextIndex].user_id : null;
+
+  // シートのcurrent_user_idを次のユーザーに更新
+  await db
+    .update(brainwriting_sheets)
+    .set({
+      current_user_id: nextUserId,
+    })
+    .where(eq(brainwriting_sheets.id, sheetId));
+
+  return {
+    success: true,
+  };
 }

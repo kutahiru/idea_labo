@@ -5,6 +5,7 @@ import {
   checkSheetLockStatus,
   checkUserCount,
   clearAbandonedSessions,
+  checkTeamJoinable,
 } from "@/lib/brainwriting";
 import { USAGE_SCOPE } from "../../../../../utils/brainwriting";
 
@@ -55,9 +56,13 @@ export async function GET(request: NextRequest, { params }: JoinStatusParams) {
     }
 
     // チーム版の場合はロック状態を返さない
+    // シートが存在していて参加者に含まれていない場合は参加不可
+    const teamJoinable = await checkTeamJoinable(brainwritingId, authResult.userId);
+
     return NextResponse.json({
       ...joinStatus,
       ...brainwritingUserStatus,
+      ...teamJoinable,
     });
   } catch (error) {
     console.error("参加状況チェックエラー:", error);

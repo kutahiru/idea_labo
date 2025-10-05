@@ -5,6 +5,7 @@ import { USAGE_SCOPE } from "@/utils/brainwriting";
 
 // 一覧表示用の型定義
 export interface BrainwritingListItem extends BaseIdeaListItem {
+  userId?: string;
   usageScope: typeof USAGE_SCOPE.XPOST | typeof USAGE_SCOPE.TEAM;
   inviteToken: string;
   isInviteActive?: boolean;

@@ -29,6 +29,28 @@ export const getUsageScopeLabel = (usageScope: UsageScope): string => {
 };
 
 /**
+ * チーム利用版で、シートの1行目のユーザーを先頭にしたユーザー配列を返す
+ */
+export const sortUsersByFirstRow = (
+  sheetInputs: BrainwritingInputData[],
+  users: BrainwritingUserData[]
+): BrainwritingUserData[] => {
+  const sortedUsers = [...users];
+  const firstRowInput = sheetInputs.find(input => input.row_index === 0);
+  const firstRowUserId = firstRowInput?.input_user_id;
+
+  if (firstRowUserId) {
+    sortedUsers.sort((a, b) => {
+      if (a.user_id === firstRowUserId) return -1;
+      if (b.user_id === firstRowUserId) return 1;
+      return 0;
+    });
+  }
+
+  return sortedUsers;
+};
+
+/**
  * 入力データを行データ形式に変換する
  */
 export const convertToRowData = (
@@ -39,17 +61,15 @@ export const convertToRowData = (
 
   //brainwriting_inputsを元に生成
   sheetInputs?.forEach(input => {
-    if (input.row_index >= 0 && input.column_index >= 0 && input.column_index < 3) {
-      if (!rowsMap.has(input.row_index)) {
-        rowsMap.set(input.row_index, {
-          name: input.input_user_name || "",
-          ideas: ["", "", ""],
-        });
-      }
-
-      const row = rowsMap.get(input.row_index)!;
-      row.ideas[input.column_index] = input.content || "";
+    if (!rowsMap.has(input.row_index)) {
+      rowsMap.set(input.row_index, {
+        name: input.input_user_name || "",
+        ideas: ["", "", ""],
+      });
     }
+
+    const row = rowsMap.get(input.row_index)!;
+    row.ideas[input.column_index] = input.content || "";
   });
 
   // 6行全体を常に表示するため、不足している行を追加
@@ -79,7 +99,7 @@ export const handleBrainwritingDataChange = async (
   sheetId: number
 ) => {
   try {
-    const response = await fetch(`/api/brainwriting/input`, {
+    const response = await fetch(`/api/brainwritings/input`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,9 +1,10 @@
 // X(Twitter)投稿関連のユーティリティ
+import { generateInviteUrl } from "@/lib/invite-url";
 
 export interface BrainwritingData {
   title: string;
   themeName: string;
-  inviteToken?: string | null;
+  inviteToken: string;
 }
 
 // ブレインライティングをX投稿用にフォーマット
@@ -16,10 +17,8 @@ export function formatBrainwritingForX(brainwriting: BrainwritingData): string {
   content += `ぜひご協力ください🙏\n`;
 
   // 招待URLを追加
-  if (brainwriting.inviteToken) {
-    const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/brainwriting/invite/${brainwriting.inviteToken}`;
-    content += `\n🔗 参加はこちら: ${inviteUrl}\n`;
-  }
+  const inviteUrl = generateInviteUrl(brainwriting.inviteToken);
+  content += `\n🔗 参加はこちら: ${inviteUrl}\n`;
 
   content += `\n#ブレインライティング #アイデア発想 #アイデア研究所`;
   return content;

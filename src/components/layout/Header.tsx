@@ -15,7 +15,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
     <div className="space-y-1 text-right md:text-left md:space-y-0 md:flex md:items-center md:space-x-4">
       <Link
         href="/guide"
-        className="text-primary block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors hover:bg-gray-100"
+        className="header-link text-primary block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors"
         onClick={closeMenu}
       >
         使い方
@@ -25,13 +25,13 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
         <>
           <Link
             href="/mypage"
-            className="text-gray-700 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors hover:bg-gray-100"
+            className="header-link text-primary block px-3 py-2 rounded-md text-base font-medium md:text-sm md:transition-colors"
             onClick={closeMenu}
           >
             マイページ
           </Link>
           <button
-            className="text-gray-700 hover:text-gray-900 block w-full text-left px-3 py-2 rounded-md text-base font-medium md:w-auto md:text-sm md:transition-colors cursor-pointer hover:bg-gray-100"
+            className="header-link text-primary block w-full text-left px-3 py-2 rounded-md text-base font-medium md:w-auto md:text-sm md:transition-colors cursor-pointer"
             onClick={() => {
               signOut({ callbackUrl: '/' });
               closeMenu?.();
@@ -65,7 +65,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* 左側：タイトル */}
           <div className="flex-shrink-0">
-            <Link href="/" className="text-xl font-bold text-primary transition-colors hover:bg-gray-100 px-2 py-1 rounded-md">
+            <Link href="/" className="header-link text-xl font-bold text-primary transition-colors px-2 py-1 rounded-md">
               アイデア研究所
             </Link>
           </div>

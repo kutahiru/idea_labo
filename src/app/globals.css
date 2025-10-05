@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: rgba(13, 10, 138, 0.02);
+  --background: rgb(255, 255, 255);
   --foreground: #171717;
-  --primary: #0d0a8a;
-  --primary-hover: #090773;
+  --primary: #0e60b2;
+  --primary-hover: #094480;
   --accent: #fff100;
   --alert: #d03838;
 }
@@ -90,6 +90,42 @@ body {
 .menu-link:hover {
   transform: translateX(4px);
   box-shadow: 0 4px 12px rgba(250, 170, 32, 0.3);
+}
+
+.header-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.header-link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 241, 0, 0.4),
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  transition: left 0.7s ease-out;
+  z-index: 1;
+}
+
+.header-link:hover::before {
+  left: 100%;
+}
+
+.header-link > * {
+  position: relative;
+  z-index: 2;
+}
+
+.header-link:hover {
+  transform: translateX(4px);
 }
 
 .border-dashed-thin {

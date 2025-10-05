@@ -7,6 +7,7 @@ interface BrainwritingRowProps {
   isHighlighted?: boolean; // 行全体をハイライトするか
   readOnly?: boolean; // 読み取り専用モード
   onIdeaChange?: (ideaIndex: number, value: string) => void; // アイデア変更時のコールバック
+  rowIndex?: number; // 行のインデックス（アニメーション用）
 }
 
 export default function BrainwritingRow({
@@ -15,10 +16,11 @@ export default function BrainwritingRow({
   isHighlighted = false,
   readOnly = false,
   onIdeaChange,
+  rowIndex = 0,
 }: BrainwritingRowProps) {
   return (
     <div className="mb-0 flex">
-      <BrainwritingUserCell userName={userName} />
+      <BrainwritingUserCell userName={userName} rowIndex={rowIndex} />
 
       {Array.from({ length: 3 }, (_, colIndex) => (
         <IdeaCell
@@ -27,6 +29,8 @@ export default function BrainwritingRow({
           isHighlighted={isHighlighted}
           onChange={value => onIdeaChange?.(colIndex, value)}
           readOnly={readOnly}
+          rowIndex={rowIndex}
+          colIndex={colIndex}
         />
       ))}
     </div>

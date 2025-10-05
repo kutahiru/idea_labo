@@ -107,7 +107,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
       <div className="flex justify-center">
         <button
           onClick={handleOpenCreateModal}
-          className="group bg-primary inline-flex items-center rounded-md px-25 py-2 text-base font-medium text-white hover:scale-105"
+          className="menu-link group bg-primary inline-flex items-center rounded-md px-25 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
         >
           <svg
             className="mr-2 h-4 w-4 transition-transform group-hover:rotate-90"

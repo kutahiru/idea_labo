@@ -54,12 +54,13 @@ export default function BrainwritingIndex({ initialData, onEdit, onDelete }: Bra
       ) : (
         // 0件以外の場合
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {filteredBrainwritings.map(brainwriting => (
+          {filteredBrainwritings.map((brainwriting, index) => (
             <BrainwritingIndexRow
               key={brainwriting.id}
               {...brainwriting}
               onEdit={onEdit ? () => onEdit(brainwriting) : undefined}
               onDelete={onDelete ? () => onDelete(brainwriting) : undefined}
+              index={index}
             />
           ))}
 

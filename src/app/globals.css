@@ -16,9 +16,10 @@
   --color-primary-hover: var(--primary-hover);
   --color-accent: var(--accent);
   --color-alert: var(--alert);
-  --font-sans: var(--font-noto-sans-jp), var(--font-geist-sans);
+  --font-sans: var(--font-zen-kaku-gothic-new), var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-noto-sans-jp: var(--font-noto-sans-jp);
+  --font-lora: var(--font-lora);
+  --font-zen-kaku-gothic-new: var(--font-zen-kaku-gothic-new);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -31,7 +32,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-noto-sans-jp), Arial, Helvetica, sans-serif;
+  font-family: var(--font-zen-kaku-gothic-new), Arial, Helvetica, sans-serif;
 }
 
 .border-dashed-wide {
@@ -125,7 +126,6 @@ body {
 }
 
 .header-link:hover {
-  transform: translateX(4px);
 }
 
 .border-dashed-thin {

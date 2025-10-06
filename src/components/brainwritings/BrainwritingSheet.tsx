@@ -35,21 +35,31 @@ export default function BrainwritingSheet({
   return (
     <div className="md-8 mt-8">
       {/* グリッド */}
-      <div className={`mx-auto max-w-[1200px] ${showScroll ? 'overflow-x-auto' : 'overflow-hidden'}`}>
+      <div
+        className={`mx-auto max-w-[1200px] ${showScroll ? "overflow-x-auto" : "overflow-hidden"}`}
+      >
         <div className="relative min-w-[1200px]">
           {/* ヘッダー行 */}
           <div className="mb-4 flex">
             <div className="w-60 text-center">
-              <span className="text-3xl font-semibold text-primary underline decoration-accent decoration-4 underline-offset-[-4px]">参加者</span>
+              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
+                参加者
+              </span>
             </div>
             <div className="w-80 text-center">
-              <span className="text-3xl font-semibold text-primary underline decoration-accent decoration-4 underline-offset-[-4px]">アイデア1</span>
+              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
+                アイデア1
+              </span>
             </div>
             <div className="w-80 text-center">
-              <span className="text-3xl font-semibold text-primary underline decoration-accent decoration-4 underline-offset-[-4px]">アイデア2</span>
+              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
+                アイデア2
+              </span>
             </div>
             <div className="w-80 text-center">
-              <span className="text-3xl font-semibold text-primary underline decoration-accent decoration-4 underline-offset-[-4px]">アイデア3</span>
+              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
+                アイデア3
+              </span>
             </div>
           </div>
 

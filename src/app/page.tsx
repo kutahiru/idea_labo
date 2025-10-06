@@ -68,12 +68,12 @@ export default function Home() {
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
                   href="/brainwritings"
-                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-normal transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
+                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   ブレインライティング
                   <ChevronRight className="h-3 w-3 xl:h-6 xl:w-6" />
                 </Link>
-                <div className="text-primary/30 pointer-events-none absolute top-5 left-36 text-xl lg:top-6 lg:left-44 lg:text-2xl xl:text-3xl">
+                <div className="font-lora text-primary/30 pointer-events-none absolute top-5 left-36 text-xl lg:top-6 lg:left-44 lg:text-2xl xl:text-3xl">
                   Brainwriting
                 </div>
               </div>
@@ -84,13 +84,13 @@ export default function Home() {
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
                   href="/mandala"
-                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-normal transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
+                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   マンダラート
                   <ChevronRight className="h-3 w-3 xl:h-6 xl:w-6" />
                 </Link>
               </div>
-              <div className="text-primary/30 pointer-events-none absolute top-5 left-12 text-xl lg:top-6 lg:left-14 lg:text-2xl xl:text-3xl">
+              <div className="font-lora text-primary/30 pointer-events-none absolute top-5 left-12 text-xl lg:top-6 lg:left-14 lg:text-2xl xl:text-3xl">
                 MandalaArt
               </div>
             </motion.div>
@@ -100,13 +100,13 @@ export default function Home() {
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
                   href="/osborn"
-                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-normal transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
+                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   オズボーンのチェックリスト
                   <ChevronRight className="h-3 w-3 xl:h-6 xl:w-6" />
                 </Link>
               </div>
-              <div className="text-primary/30 pointer-events-none absolute top-5 left-40 text-xl lg:top-6 lg:left-50 lg:text-2xl xl:text-3xl">
+              <div className="font-lora text-primary/30 pointer-events-none absolute top-5 left-40 text-xl lg:top-6 lg:left-50 lg:text-2xl xl:text-3xl">
                 OsbornChecklist
               </div>
             </motion.div>
@@ -116,13 +116,13 @@ export default function Home() {
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
                   href="/ideas"
-                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-normal transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
+                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   アイデア一覧
                   <ChevronRight className="h-3 w-3 xl:h-6 xl:w-6" />
                 </Link>
               </div>
-              <div className="text-primary/30 pointer-events-none absolute top-5 left-24 text-xl lg:top-6 lg:left-26 lg:text-2xl xl:text-3xl">
+              <div className="font-lora text-primary/30 pointer-events-none absolute top-5 left-24 text-xl lg:top-6 lg:left-26 lg:text-2xl xl:text-3xl">
                 IdeaList
               </div>
             </motion.div>

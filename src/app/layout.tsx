@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans_JP } from "next/font/google";
+import { Geist, Geist_Mono, Zen_Kaku_Gothic_New, Lora } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import { SessionProvider } from "next-auth/react";
@@ -16,8 +16,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const notoSansJP = Noto_Sans_JP({
-  variable: "--font-noto-sans-jp",
+const zenKakuGothicNew = Zen_Kaku_Gothic_New({
+  variable: "--font-zen-kaku-gothic-new",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
 });
@@ -35,7 +41,7 @@ export default async function RootLayout({
   const session = await auth();
 
   // フォント変数を優先順位順に結合
-  const fontVariables = `${notoSansJP.variable} ${geistSans.variable} ${geistMono.variable}`;
+  const fontVariables = `${lora.variable} ${zenKakuGothicNew.variable} ${geistSans.variable} ${geistMono.variable}`;
 
   return (
     <html lang="ja">

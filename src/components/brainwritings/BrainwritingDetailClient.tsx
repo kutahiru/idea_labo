@@ -79,7 +79,7 @@ export default function BrainwritingDetailClient({
       {/* X投稿ボタン（X投稿版） */}
       {brainwriting.usageScope === USAGE_SCOPE.XPOST && (
         <div className="mb-6 flex justify-center">
-          <XPostButton buttonName="Xへ共有" onClick={handleXPost} />
+          <XPostButton buttonName="共有" onClick={handleXPost} />
         </div>
       )}
 

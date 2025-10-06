@@ -3,6 +3,7 @@
 import { useState, ReactNode } from "react";
 import { z } from "zod";
 import { BaseIdeaFormData } from "@/schemas/idea-framework";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface IdeaFrameworkModalChildrenProps<T> {
   formData: T;
@@ -87,15 +88,28 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
   const labelClasses = "block text-gray-700 text-sm font-semibold font-noto-sans-jp mb-2";
   const errorClasses = "mt-1 text-sm text-red-500";
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* オーバーレイ */}
-      <div className="absolute inset-0 backdrop-blur-sm" onClick={onClose} />
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* オーバーレイ */}
+          <motion.div
+            className="absolute inset-0 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={onClose}
+          />
 
-      {/* モーダル本体 */}
-      <div className="relative max-h-[90vh] w-[600px] overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-2xl">
+          {/* モーダル本体 */}
+          <motion.div
+            className="relative max-h-[90vh] w-[600px] overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-2xl"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
         {/* ヘッダー */}
         <div className="from-primary to-primary-hover w-full rounded-t-2xl bg-gradient-to-r px-8 py-6">
           <div className="flex items-center justify-center">
@@ -191,7 +205,9 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

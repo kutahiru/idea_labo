@@ -1,14 +1,29 @@
 // ブレインライティング一覧行コンポーネント
+"use client";
+
 import Link from "next/link";
 import { formatDate } from "@/utils/date";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { ClockIcon } from "@/components/layout/Icons";
 import { getUsageScopeLabel } from "@/utils/brainwriting";
+import { motion } from "framer-motion";
 
 interface BrainwritingIndexRowProps extends BrainwritingListItem {
   onEdit?: () => void;
   onDelete?: () => void;
+  index?: number;
 }
+
+const cardVariants = {
+  hidden: { opacity: 0 },
+  visible: (index: number) => ({
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      delay: index * 0.05,
+    },
+  }),
+};
 
 export default function BrainwritingIndexRow({
   id,
@@ -19,48 +34,56 @@ export default function BrainwritingIndexRow({
   createdAt,
   onEdit,
   onDelete,
+  index = 0,
 }: BrainwritingIndexRowProps) {
   return (
-    <div className="group relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:ring-blue-300/50">
+    <motion.div
+      className="group relative rounded-xl bg-white p-6 shadow-lg ring-1 ring-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:ring-primary/30"
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      custom={index}
+    >
       <div className="relative">
         {/* ヘッダー部分 */}
-        <div className="mb-4 flex items-start justify-between">
-          <div className="min-w-0 flex-1">
-            <h3 className="truncate text-lg font-semibold text-gray-900">{title}</h3>
-            <div className="mt-2 flex gap-2">
-              <span className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 px-3 py-1 text-sm font-medium text-blue-800">
-                {themeName}
-              </span>
-              <span className="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800">
-                {getUsageScopeLabel(usageScope)}
-              </span>
+        <div className="mb-4">
+          <div className="flex items-start justify-between">
+            <div className="min-w-0 flex-1">
+              <h3 className="truncate text-lg font-semibold text-primary underline decoration-accent decoration-4 underline-offset-[-2px]">{title}</h3>
+              <div className="mt-2">
+                <span className="text-lg font-semibold text-primary underline decoration-accent decoration-4 underline-offset-[-2px]">{themeName}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-end gap-2">
+              {/* アクションボタン */}
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`/brainwritings/${id}`}
+                  className="bg-primary inline-flex items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+                >
+                  詳細
+                </Link>
+                <button
+                  onClick={onEdit}
+                  className="inline-flex items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+                >
+                  編集
+                </button>
+                <button
+                  className="bg-alert inline-flex cursor-pointer items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+                  onClick={onDelete}
+                >
+                  削除
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col items-end gap-2">
-            {/* アクションボタン */}
-            <div className="flex items-center gap-2">
-              <Link
-                href={`/brainwritings/${id}`}
-                className="bg-primary inline-flex items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
-              >
-                詳細
-              </Link>
-              <button
-                onClick={onEdit}
-                className="inline-flex items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
-              >
-                編集
-              </button>
-              <button
-                className="bg-alert inline-flex cursor-pointer items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
-                onClick={onDelete}
-              >
-                削除
-              </button>
-            </div>
-
-            {/* 時刻を右端に表示 */}
+          <div className="mt-2 flex items-center justify-between">
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary ring-1 ring-primary/20">
+              {getUsageScopeLabel(usageScope)}
+            </span>
             <time className="flex items-center text-sm text-gray-500">
               <ClockIcon className="mr-1.5 h-3 w-3" />
               {formatDate(createdAt)}
@@ -77,6 +100,6 @@ export default function BrainwritingIndexRow({
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

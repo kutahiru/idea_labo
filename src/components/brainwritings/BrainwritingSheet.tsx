@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import BrainwritingRow from "./BrainwritingRow";
 
 interface BrainwritingRow {
@@ -18,24 +21,45 @@ export default function BrainwritingSheet({
   activeRowIndex,
   onDataChange,
 }: BrainwritingSheetProps) {
+  const [showScroll, setShowScroll] = useState(false);
+
+  useEffect(() => {
+    // アニメーション完了を待つ（最大遅延時間 + アニメーション時間）
+    const timer = setTimeout(() => {
+      setShowScroll(true);
+    }, 2000); // 2秒後にスクロール有効化
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="md-8 mt-8">
       {/* グリッド */}
-      <div className="mx-auto max-w-[1200px] overflow-x-auto">
+      <div
+        className={`mx-auto max-w-[1200px] ${showScroll ? "overflow-x-auto" : "overflow-hidden"}`}
+      >
         <div className="relative min-w-[1200px]">
           {/* ヘッダー行 */}
-          <div className="mb-2 flex">
+          <div className="mb-4 flex">
             <div className="w-60 text-center">
-              <span className="text-3xl font-medium text-gray-400">参加者</span>
+              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
+                参加者
+              </span>
             </div>
             <div className="w-80 text-center">
-              <span className="text-3xl font-medium text-gray-400">アイデア1</span>
+              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
+                アイデア1
+              </span>
             </div>
             <div className="w-80 text-center">
-              <span className="text-3xl font-medium text-gray-400">アイデア2</span>
+              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
+                アイデア2
+              </span>
             </div>
             <div className="w-80 text-center">
-              <span className="text-3xl font-medium text-gray-400">アイデア3</span>
+              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
+                アイデア3
+              </span>
             </div>
           </div>
 
@@ -50,6 +74,7 @@ export default function BrainwritingSheet({
               readOnly={
                 isAllReadOnly || (activeRowIndex !== undefined && rowIndex !== activeRowIndex)
               }
+              rowIndex={rowIndex}
             />
           ))}
         </div>

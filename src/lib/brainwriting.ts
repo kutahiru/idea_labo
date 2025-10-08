@@ -27,7 +27,7 @@ import {
 import { USAGE_SCOPE, sortUsersByFirstRow } from "@/utils/brainwriting";
 import { generateInviteData } from "@/lib/invite-url";
 
-// 一覧取得
+/** 一覧取得 */
 export async function getBrainwritingsByUserId(userId: string): Promise<BrainwritingListItem[]> {
   return await db
     .select({
@@ -41,10 +41,10 @@ export async function getBrainwritingsByUserId(userId: string): Promise<Brainwri
     })
     .from(brainwritings)
     .where(eq(brainwritings.user_id, userId))
-    .orderBy(desc(brainwritings.created_at));
+    .orderBy(desc(brainwritings.id));
 }
 
-// 新規作成
+/** 新規作成 */
 export async function createBrainwriting(userId: string, data: BrainwritingFormData) {
   // URLを生成
   const inviteData = generateInviteData();
@@ -91,7 +91,7 @@ export async function createBrainwriting(userId: string, data: BrainwritingFormD
   });
 }
 
-// 更新
+/** 更新 */
 export async function updateBrainwriting(
   id: number,
   userId: string,
@@ -118,7 +118,7 @@ export async function updateBrainwriting(
   return result[0];
 }
 
-// 削除
+/** 削除 */
 export async function deleteBrainwriting(id: number, userId: string) {
   const result = await db
     .delete(brainwritings)
@@ -128,7 +128,7 @@ export async function deleteBrainwriting(id: number, userId: string) {
   return result[0];
 }
 
-// 単一取得（内部用・権限チェックなし）
+/** 単一取得（内部用・権限チェックなし） */
 export async function getBrainwritingByIdInternal(id: number) {
   const result = await db
     .select({
@@ -148,7 +148,7 @@ export async function getBrainwritingByIdInternal(id: number) {
   return result[0];
 }
 
-// 単一取得（ユーザー権限チェック付き）
+/** 単一取得（ユーザー権限チェック付き） */
 export async function getBrainwritingById(id: number, userId: string) {
   const result = await db
     .select({
@@ -167,7 +167,7 @@ export async function getBrainwritingById(id: number, userId: string) {
   return result[0];
 }
 
-// 入力データ作成・更新
+/** 入力データ作成・更新 */
 export async function upsertBrainwritingInput(
   brainwritingId: number,
   brainwritingSheetId: number,
@@ -222,7 +222,7 @@ export async function upsertBrainwritingInput(
   }
 }
 
-// シート全件取得
+/** シート全件取得 */
 export async function getBrainwritingSheetsByBrainwritingId(brainwritingId: number) {
   return await db
     .select()
@@ -231,7 +231,7 @@ export async function getBrainwritingSheetsByBrainwritingId(brainwritingId: numb
     .orderBy(brainwriting_sheets.id);
 }
 
-// シート単体取得
+/** シート単体取得 */
 export async function getBrainwritingSheetById(sheetId: number) {
   const result = await db
     .select()
@@ -242,7 +242,7 @@ export async function getBrainwritingSheetById(sheetId: number) {
   return result[0] || null;
 }
 
-// シート単体取得（ブレインライティング情報付き）
+/** シート単体取得（ブレインライティング情報付き） */
 export async function getBrainwritingSheetWithBrainwriting(sheetId: number) {
   const result = await db
     .select({
@@ -260,7 +260,7 @@ export async function getBrainwritingSheetWithBrainwriting(sheetId: number) {
   return result[0] || null;
 }
 
-// 入力データ取得(シートID条件)
+/** 入力データ取得(シートID条件) */
 export async function getBrainwritingInputsBySheetId(
   brainwritingSheetId: number
 ): Promise<BrainwritingInputData[]> {
@@ -283,7 +283,7 @@ export async function getBrainwritingInputsBySheetId(
     .orderBy(brainwriting_inputs.id);
 }
 
-// 入力データ取得(ブレインライティングID条件)
+/** 入力データ取得(ブレインライティングID条件) */
 export async function getBrainwritingInputsByBrainwritingId(
   brainwritingId: number
 ): Promise<BrainwritingInputData[]> {
@@ -306,7 +306,7 @@ export async function getBrainwritingInputsByBrainwritingId(
     .orderBy(brainwriting_inputs.id);
 }
 
-// 単一取得(トークン条件)
+/** 単一取得(トークン条件) */
 export async function getBrainwritingByToken(token: string): Promise<BrainwritingListItem | null> {
   const result = await db
     .select({
@@ -326,7 +326,7 @@ export async function getBrainwritingByToken(token: string): Promise<Brainwritin
   return result[0] || null;
 }
 
-// 参加者取得(参加順でソート)
+/** 参加者取得(参加順でソート) */
 export async function getBrainwritingUsersByBrainwritingId(brainwritingId: number) {
   return await db
     .select({
@@ -343,7 +343,7 @@ export async function getBrainwritingUsersByBrainwritingId(brainwritingId: numbe
     .orderBy(brainwriting_users.id);
 }
 
-// 詳細取得(全シート、ユーザー、入力データ含む)
+/** 詳細取得(全シート、ユーザー、入力データ含む) */
 export async function getBrainwritingDetailById(brainwritingId: number, userId: string) {
   // 基本情報取得
   const brainwriting = await getBrainwritingById(brainwritingId, userId);
@@ -368,7 +368,7 @@ export async function getBrainwritingDetailById(brainwritingId: number, userId: 
   };
 }
 
-// 詳細取得(単一シート、ユーザー、入力データ含む)
+/** 詳細取得(単一シート、ユーザー、入力データ含む) */
 export async function getBrainwritingDetailForBrainwritingUser(sheetId: number, userId: string) {
   // シート取得
   const sheet = await getBrainwritingSheetById(sheetId);
@@ -402,7 +402,7 @@ export async function getBrainwritingDetailForBrainwritingUser(sheetId: number, 
   };
 }
 
-// チーム用のシート一覧、参加者取得
+/** チーム用のシート一覧、参加者取得 */
 export async function getBrainwritingTeamByBrainwritingId(
   brainwritingId: number
 ): Promise<BrainwritingTeam | null> {
@@ -425,7 +425,7 @@ export async function getBrainwritingTeamByBrainwritingId(
   };
 }
 
-// ブレインライティングに参加
+/** ブレインライティングに参加 */
 export async function joinBrainwriting(brainwritingId: number, userId: string, usageScope: string) {
   // 既に参加済みかチェック
   const { isJoined } = await checkJoinStatus(brainwritingId, userId);
@@ -560,14 +560,14 @@ async function createSheetsWithInputsInternal(tx: DbTransaction, brainwritingId:
   return { success: true };
 }
 
-// ユーザー毎にシートと入力データを作成（チーム版開始時用）
+/** ユーザー毎にシートと入力データを作成（チーム版開始時用） */
 export async function createSheetsForTeam(brainwritingId: number) {
   return await db.transaction(async tx => {
     return await createSheetsWithInputsInternal(tx, brainwritingId);
   });
 }
 
-// ユーザーがブレインライティングに参加しているかチェック
+/** ユーザーがブレインライティングに参加しているかチェック */
 export async function checkJoinStatus(brainwritingId: number, userId: string) {
   const brainwritingUsers = await db
     .select()
@@ -598,7 +598,7 @@ export async function checkJoinStatus(brainwritingId: number, userId: string) {
   };
 }
 
-// ユーザー数をチェック
+/** ユーザー数をチェック */
 export async function checkUserCount(brainwritingId: number) {
   const users = await db
     .select()
@@ -612,7 +612,7 @@ export async function checkUserCount(brainwritingId: number) {
   };
 }
 
-// チーム版の参加可否をチェック（シートが存在していて参加者に含まれていない場合は参加不可）
+/** チーム版の参加可否をチェック（シートが存在していて参加者に含まれていない場合は参加不可） */
 export async function checkTeamJoinable(brainwritingId: number, userId: string) {
   const sheets = await getBrainwritingSheetsByBrainwritingId(brainwritingId);
 
@@ -640,7 +640,7 @@ export async function checkTeamJoinable(brainwritingId: number, userId: string) 
   };
 }
 
-// 放置されている状態をクリアする
+/** 放置されている状態をクリアする */
 export async function clearAbandonedSessions(brainwritingId: number) {
   const now = new Date();
 
@@ -704,7 +704,7 @@ export async function clearAbandonedSessions(brainwritingId: number) {
   }
 }
 
-// X投稿版のシートロック状態をチェック
+/** X投稿版のシートロック状態をチェック */
 export async function checkSheetLockStatus(brainwritingId: number, userId: string) {
   const sheet = await db
     .select()
@@ -741,7 +741,7 @@ export async function checkSheetLockStatus(brainwritingId: number, userId: strin
   };
 }
 
-// シートのロックを解除
+/** シートのロックを解除 */
 export async function unlockSheet(sheetId: number, userId: string) {
   await db
     .update(brainwriting_sheets)
@@ -754,7 +754,7 @@ export async function unlockSheet(sheetId: number, userId: string) {
     );
 }
 
-// チーム利用版: シートを次のユーザーに交代
+/** チーム利用版: シートを次のユーザーに交代 */
 export async function rotateSheetToNextUser(sheetId: number, currentUserId: string) {
   // シート情報を取得
   const sheet = await getBrainwritingSheetById(sheetId);

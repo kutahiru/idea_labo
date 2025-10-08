@@ -2,6 +2,7 @@ import { auth } from "@/app/lib/auth";
 import { getBrainwritingDetailById } from "@/lib/brainwriting";
 import { notFound } from "next/navigation";
 import BrainwritingDetailClient from "@/components/brainwritings/BrainwritingDetailClient";
+import { LoginRequiredMessage } from "@/components/shared/Message";
 
 interface BrainwritingDetailPageProps {
   params: Promise<{ id: string }>;
@@ -12,7 +13,7 @@ export default async function BrainwritingDetailPage({ params }: BrainwritingDet
 
   // 認証チェック
   if (!session?.user?.id) {
-    return <div className="py-8 text-center">ログインが必要です</div>;
+    return <LoginRequiredMessage />;
   }
 
   const { id } = await params;

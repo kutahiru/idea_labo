@@ -3,6 +3,7 @@ import { getBrainwritingDetailForBrainwritingUser } from "@/lib/brainwriting";
 import { notFound } from "next/navigation";
 import BrainwritingInputClient from "@/components/brainwritings/BrainwritingInputClient";
 import { USAGE_SCOPE, sortUsersByFirstRow } from "@/utils/brainwriting";
+import { LoginRequiredMessage } from "@/components/shared/Message";
 
 interface BrainwritingSheetInputPageProps {
   params: Promise<{ sheetId: string }>;
@@ -15,7 +16,7 @@ export default async function BrainwritingSheetInputPage({
 
   // 認証チェック
   if (!session?.user?.id) {
-    return <div className="py-8 text-center">ログインが必要です</div>;
+    return <LoginRequiredMessage />;
   }
 
   const { sheetId } = await params;

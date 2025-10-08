@@ -66,9 +66,9 @@ export default function Header() {
           <div className="flex-shrink-0">
             <Link
               href="/"
-              className="header-link text-primary rounded-md px-2 py-1 text-xl font-bold transition-colors"
+              className="text-primary inline-block rounded-md px-2 py-1 text-xl font-bold transition-colors"
             >
-              アイデア研究所
+              <span className="header-link inline-block">アイデア研究所</span>
             </Link>
           </div>
 

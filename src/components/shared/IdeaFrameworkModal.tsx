@@ -3,7 +3,7 @@
 import { useState, ReactNode } from "react";
 import { z } from "zod";
 import { BaseIdeaFormData } from "@/schemas/idea-framework";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface IdeaFrameworkModalChildrenProps<T> {
   formData: T;
@@ -13,7 +13,6 @@ interface IdeaFrameworkModalChildrenProps<T> {
 }
 
 interface IdeaFrameworkModalProps<T extends BaseIdeaFormData> {
-  isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: T) => Promise<void>;
   initialData?: T;
@@ -23,7 +22,6 @@ interface IdeaFrameworkModalProps<T extends BaseIdeaFormData> {
 }
 
 export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
-  isOpen,
   onClose,
   onSubmit,
   initialData,
@@ -89,18 +87,15 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
   const errorClasses = "mt-1 text-sm text-red-500";
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* オーバーレイ */}
-          <motion.div
-            className="absolute inset-0 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={onClose}
-          />
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      {/* オーバーレイ */}
+      <div className="absolute inset-0 backdrop-blur-sm" onClick={onClose} />
 
           {/* モーダル本体 */}
           <motion.div
@@ -111,7 +106,7 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
         {/* ヘッダー */}
-        <div className="from-primary to-primary-hover w-full rounded-t-2xl bg-gradient-to-r px-8 py-6">
+        <div className="bg-primary w-full rounded-t-2xl px-8 py-6">
           <div className="flex items-center justify-center">
             <h1 className="font-noto-sans-jp text-3xl font-semibold text-white">
               {mode === "create" ? "新規作成" : "編集"}
@@ -189,7 +184,7 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
             </button>
             <button
               type="submit"
-              className="from-primary to-primary-hover font-noto-sans-jp transform rounded-lg bg-gradient-to-r px-8 py-3 font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 font-noto-sans-jp transform rounded-lg px-8 py-3 font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
@@ -205,9 +200,7 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
             </button>
           </div>
         </form>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+      </motion.div>
+    </motion.div>
   );
 }

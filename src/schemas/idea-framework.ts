@@ -15,6 +15,7 @@ export const baseIdeaSchema = z.object({
 // 一覧表示用のベーススキーマ（idとcreatedAtが必須）
 export const baseIdeaListItemSchema = baseIdeaSchema.extend({
   id: z.number(),
+  userId: z.string(),
   createdAt: z.date(),
 });
 

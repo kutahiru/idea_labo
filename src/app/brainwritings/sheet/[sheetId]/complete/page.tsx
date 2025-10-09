@@ -2,6 +2,7 @@ import { auth } from "@/app/lib/auth";
 import { getBrainwritingDetailForBrainwritingUser } from "@/lib/brainwriting";
 import { notFound } from "next/navigation";
 import BrainwritingCompleteContent from "@/components/brainwritings/BrainwritingCompleteContent";
+import { LoginRequiredMessage } from "@/components/shared/Message";
 
 interface BrainwritingCompletePageProps {
   params: Promise<{ sheetId: string }>;
@@ -13,7 +14,7 @@ export default async function BrainwritingCompletePage({
   const session = await auth();
 
   if (!session?.user?.id) {
-    return <div className="py-8 text-center">ログインが必要です</div>;
+    return <LoginRequiredMessage />;
   }
 
   const { sheetId } = await params;

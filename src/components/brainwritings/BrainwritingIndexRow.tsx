@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 interface BrainwritingIndexRowProps extends BrainwritingListItem {
   onEdit?: () => void;
   onDelete?: () => void;
-  index?: number;
+  index?: number; //アニメーション用
 }
 
 const cardVariants = {
@@ -38,7 +38,7 @@ export default function BrainwritingIndexRow({
 }: BrainwritingIndexRowProps) {
   return (
     <motion.div
-      className="group relative rounded-xl bg-white p-6 shadow-lg ring-1 ring-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:ring-primary/30"
+      className="group hover:ring-primary/30 relative rounded-xl bg-white p-6 shadow-lg ring-1 ring-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       variants={cardVariants}
       initial="hidden"
       animate="visible"
@@ -49,9 +49,13 @@ export default function BrainwritingIndexRow({
         <div className="mb-4">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <h3 className="truncate text-lg font-semibold text-primary underline decoration-accent decoration-4 underline-offset-[-2px]">{title}</h3>
+              <h3 className="text-primary decoration-accent truncate text-lg font-semibold underline decoration-4 underline-offset-[-2px]">
+                {title}
+              </h3>
               <div className="mt-2">
-                <span className="text-lg font-semibold text-primary underline decoration-accent decoration-4 underline-offset-[-2px]">{themeName}</span>
+                <span className="text-primary decoration-accent text-lg font-semibold underline decoration-4 underline-offset-[-2px]">
+                  {themeName}
+                </span>
               </div>
             </div>
 
@@ -81,7 +85,7 @@ export default function BrainwritingIndexRow({
           </div>
 
           <div className="mt-2 flex items-center justify-between">
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary ring-1 ring-primary/20">
+            <span className="bg-primary/10 text-primary ring-primary/20 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ring-1">
               {getUsageScopeLabel(usageScope)}
             </span>
             <time className="flex items-center text-sm text-gray-500">

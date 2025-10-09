@@ -1,11 +1,9 @@
 import IdeaFrameworkModal from "@/components/shared/IdeaFrameworkModal";
 import UsageScopeSelector from "./UsageScopeSelector";
-import { BrainwritingFormData } from "@/types/brainwriting";
-import { brainwritingFormDataSchema } from "@/schemas/brainwriting";
+import { BrainwritingFormData, brainwritingFormDataSchema } from "@/schemas/brainwriting";
 import { USAGE_SCOPE } from "@/utils/brainwriting";
 
 interface BrainwritingModalProps {
-  isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: BrainwritingFormData) => Promise<void>;
   initialData?: BrainwritingFormData;
@@ -13,7 +11,6 @@ interface BrainwritingModalProps {
 }
 
 export default function BrainwritingModal({
-  isOpen,
   onClose,
   onSubmit,
   initialData,
@@ -30,7 +27,6 @@ export default function BrainwritingModal({
 
   return (
     <IdeaFrameworkModal
-      isOpen={isOpen}
       onClose={onClose}
       onSubmit={onSubmit}
       initialData={defaultData}

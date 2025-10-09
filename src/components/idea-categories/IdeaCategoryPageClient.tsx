@@ -1,22 +1,23 @@
 "use client";
+// アイデアカテゴリ一覧のクライアントコンポーネント
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import BrainwritingIndex from "./BrainwritingIndex";
-import BrainwritingModal from "./BrainwritingModal";
-import { BrainwritingListItem } from "@/types/brainwriting";
-import { BrainwritingFormData } from "@/schemas/brainwriting";
+import IdeaCategoryIndex from "./IdeaCategoryIndex";
+import IdeaCategoryModal from "./IdeaCategoryModal";
+import { IdeaCategoryListItem } from "@/types/idea-category";
+import { IdeaCategoryFormData } from "@/schemas/idea-category";
 import { AnimatePresence } from "framer-motion";
 import { CreateButton } from "@/components/shared/Button";
 import { useResourceSubmit, useResourceDelete } from "@/hooks/useResourceSubmit";
 
-interface BrainwritingPageClientProps {
-  initialData: BrainwritingListItem[];
+interface IdeaCategoryPageClientProps {
+  initialData: IdeaCategoryListItem[];
 }
 
-export default function BrainwritingPageClient({ initialData }: BrainwritingPageClientProps) {
+export default function IdeaCategoryPageClient({ initialData }: IdeaCategoryPageClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingData, setEditingData] = useState<BrainwritingListItem | null>(null);
+  const [editingData, setEditingData] = useState<IdeaCategoryListItem | null>(null);
   const router = useRouter();
 
   // 新規作成モーダルを開く
@@ -26,7 +27,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
   };
 
   // 編集モーダルを開く
-  const handleOpenEditModal = (item: BrainwritingListItem) => {
+  const handleOpenEditModal = (item: IdeaCategoryListItem) => {
     setEditingData(item);
     setIsModalOpen(true);
   };
@@ -37,25 +38,21 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
     setEditingData(null);
   };
 
-  // ブレインライティング作成・更新
-  const handleSubmit = useResourceSubmit<BrainwritingFormData>({
-    apiPath: "/api/brainwritings",
-    resourceName: "ブレインライティング",
+  // アイデアカテゴリ作成・更新
+  const handleSubmit = useResourceSubmit<IdeaCategoryFormData>({
+    apiPath: "/api/idea-categories",
+    resourceName: "アイデアカテゴリ",
     editingData,
-    onSuccess: (isEdit, result) => {
-      if (isEdit) {
-        router.refresh();
-        handleCloseModal();
-      } else {
-        router.push(`/brainwritings/${(result as { id: number }).id}`);
-      }
+    onSuccess: () => {
+      router.refresh();
+      handleCloseModal();
     },
   });
 
-  // ブレインライティング削除
+  // アイデアカテゴリ削除
   const handleDelete = useResourceDelete({
-    apiPath: "/api/brainwritings",
-    resourceName: "ブレインライティング",
+    apiPath: "/api/idea-categories",
+    resourceName: "アイデアカテゴリ",
   });
 
   return (
@@ -67,7 +64,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
 
       {/* 一覧表示 */}
       <div className="mt-4">
-        <BrainwritingIndex
+        <IdeaCategoryIndex
           initialData={initialData}
           onEdit={handleOpenEditModal}
           onDelete={handleDelete}
@@ -77,7 +74,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
       {/* モーダル */}
       <AnimatePresence>
         {isModalOpen && (
-          <BrainwritingModal
+          <IdeaCategoryModal
             onClose={handleCloseModal}
             onSubmit={handleSubmit}
             initialData={editingData || undefined}

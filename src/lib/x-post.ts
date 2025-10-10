@@ -11,16 +11,15 @@ export interface BrainwritingData {
 export function formatBrainwritingForX(brainwriting: BrainwritingData): string {
   let content = `🧠 ブレインライティング\n`;
   content += `📝 テーマ: ${brainwriting.themeName}\n`;
-  content += `💡 タイトル: ${brainwriting.title}\n\n`;
 
   content += `皆さんのアイデアをお待ちしています！\n`;
-  content += `ぜひご協力ください🙏\n`;
+  content += `ご協力お願いします🙏\n`;
 
   // 招待URLを追加
   const inviteUrl = generateInviteUrl(brainwriting.inviteToken);
   content += `\n🔗 参加はこちら: ${inviteUrl}\n`;
 
-  content += `\n#ブレインライティング #アイデア発想 #アイデア研究所`;
+  content += `\n#アイデア研究所`;
   return content;
 }
 

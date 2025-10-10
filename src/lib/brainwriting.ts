@@ -20,10 +20,10 @@ import type { PgTransaction } from "drizzle-orm/pg-core";
 import type { PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
 import {
   BrainwritingListItem,
-  BrainwritingFormData,
   BrainwritingTeam,
   BrainwritingInputData,
 } from "@/types/brainwriting";
+import { BrainwritingFormData } from "@/schemas/brainwriting";
 import { USAGE_SCOPE, sortUsersByFirstRow } from "@/utils/brainwriting";
 import { generateInviteData } from "@/lib/invite-url";
 
@@ -32,6 +32,7 @@ export async function getBrainwritingsByUserId(userId: string): Promise<Brainwri
   return await db
     .select({
       id: brainwritings.id,
+      userId: brainwritings.user_id,
       title: brainwritings.title,
       themeName: brainwritings.theme_name,
       description: brainwritings.description,
@@ -153,6 +154,7 @@ export async function getBrainwritingById(id: number, userId: string) {
   const result = await db
     .select({
       id: brainwritings.id,
+      userId: brainwritings.user_id,
       title: brainwritings.title,
       themeName: brainwritings.theme_name,
       description: brainwritings.description,
@@ -311,6 +313,7 @@ export async function getBrainwritingByToken(token: string): Promise<Brainwritin
   const result = await db
     .select({
       id: brainwritings.id,
+      userId: brainwritings.user_id,
       title: brainwritings.title,
       themeName: brainwritings.theme_name,
       description: brainwritings.description,

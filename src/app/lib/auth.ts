@@ -13,6 +13,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     accountsTable: accounts,
   }),
   session: { strategy: "jwt" },
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,

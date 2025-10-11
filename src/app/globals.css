@@ -20,6 +20,7 @@
   --font-mono: var(--font-geist-mono);
   --font-lora: var(--font-lora);
   --font-zen-kaku-gothic-new: var(--font-zen-kaku-gothic-new);
+  --font-wdxl-lubrifont: var(--font-wdxl-lubrifont);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -123,9 +124,6 @@ body {
 .header-link > * {
   position: relative;
   z-index: 2;
-}
-
-.header-link:hover {
 }
 
 .border-dashed-thin {

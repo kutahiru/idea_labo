@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Zen_Kaku_Gothic_New, Lora } from "next/font/google";
+import { Geist, Geist_Mono, Zen_Kaku_Gothic_New, Lora, WDXL_Lubrifont_JP_N } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import { SessionProvider } from "next-auth/react";
@@ -28,9 +28,38 @@ const lora = Lora({
   weight: ["400", "500", "700"],
 });
 
+const wdxlLubrifontJpN = WDXL_Lubrifont_JP_N({
+  variable: "--font-wdxl-lubrifont",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
   title: "アイデア研究所",
   description: "アイデア発想・管理アプリケーション",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: "アイデア研究所",
+    description: "発想を抽出しアイデアを結晶化する - ブレインライティング、マンダラート、オズボーンのチェックリストでアイデアを創出",
+    images: [
+      {
+        url: "/top-ogp.png",
+        width: 1200,
+        height: 630,
+        alt: "アイデア研究所",
+      },
+    ],
+    type: "website",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "アイデア研究所",
+    description: "発想を抽出しアイデアを結晶化する",
+    images: ["/top-ogp.png"],
+  },
 };
 
 export default async function RootLayout({
@@ -40,8 +69,8 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
 
-  // フォント変数を優先順位順に結合
-  const fontVariables = `${lora.variable} ${zenKakuGothicNew.variable} ${geistSans.variable} ${geistMono.variable}`;
+  // フォント変数を結合（loraとwdxlは明示的に指定する箇所でのみ使用）
+  const fontVariables = `${zenKakuGothicNew.variable} ${geistSans.variable} ${geistMono.variable} ${lora.variable} ${wdxlLubrifontJpN.variable}`;
 
   return (
     <html lang="ja">

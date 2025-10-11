@@ -3,9 +3,49 @@ import { getBrainwritingByToken, checkJoinStatus } from "@/lib/brainwriting";
 import { auth } from "@/app/lib/auth";
 import BrainwritingInviteClient from "@/components/brainwritings/BrainwritingInviteClient";
 import { USAGE_SCOPE } from "../../../../utils/brainwriting";
+import type { Metadata } from "next";
 
 interface InvitePageProps {
   params: Promise<{ token: string }>;
+}
+
+// 動的メタデータを生成
+export async function generateMetadata({ params }: InvitePageProps): Promise<Metadata> {
+  const { token } = await params;
+  const brainwritingData = await getBrainwritingByToken(token);
+
+  if (!brainwritingData) {
+    return {
+      title: "招待が見つかりません",
+    };
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const ogImageUrl = `${siteUrl}/brainwriting-ogp.png`;
+
+  return {
+    title: `ブレインライティングに招待されました - ${brainwritingData.themeName}`,
+    description: `テーマ「${brainwritingData.themeName}」のブレインライティングに参加しませんか？`,
+    openGraph: {
+      title: `ブレインライティングに招待されました`,
+      description: `テーマ: ${brainwritingData.themeName}`,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: "ブレインライティング",
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `ブレインライティングに招待されました`,
+      description: `テーマ: ${brainwritingData.themeName}`,
+      images: [ogImageUrl],
+    },
+  };
 }
 
 export default async function InvitePage({ params }: InvitePageProps) {

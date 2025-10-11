@@ -34,7 +34,7 @@ export default function Home() {
     <div className="container mx-auto min-h-screen overflow-hidden">
       <motion.div className="pt-8 text-center" initial="hidden" animate="show" variants={container}>
         <motion.h1
-          className="text-primary decoration-accent mb-4 flex items-center justify-center gap-4 text-5xl font-bold underline decoration-[12px] underline-offset-[-4px] md:gap-6 md:text-6xl md:decoration-[20px] md:underline-offset-[-6px] lg:text-7xl xl:text-8xl xl:decoration-[28px] xl:underline-offset-[-8px]"
+          className="font-wdxl-lubrifont text-primary decoration-accent mb-4 flex items-center justify-center gap-4 text-5xl tracking-widest underline decoration-[12px] underline-offset-[-4px] md:gap-6 md:text-6xl md:decoration-[20px] md:underline-offset-[-6px] lg:text-7xl xl:text-8xl xl:decoration-[28px] xl:underline-offset-[-8px]"
           variants={item}
         >
           <Image
@@ -43,7 +43,7 @@ export default function Home() {
             width={120}
             height={120}
             priority
-            className="h-16 w-auto translate-x-4 translate-y-1 md:h-20 md:translate-x-5 md:translate-y-3 lg:h-24 xl:h-28"
+            className="h-16 w-auto translate-x-4 md:h-20 md:translate-x-5 lg:h-24 xl:h-32"
           />
           アイデア研究所
         </motion.h1>

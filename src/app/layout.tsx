@@ -34,9 +34,32 @@ const wdxlLubrifontJpN = WDXL_Lubrifont_JP_N({
   weight: ["400"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
   title: "アイデア研究所",
   description: "アイデア発想・管理アプリケーション",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: "アイデア研究所",
+    description: "発想を抽出しアイデアを結晶化する - ブレインライティング、マンダラート、オズボーンのチェックリストでアイデアを創出",
+    images: [
+      {
+        url: "/top-ogp.png",
+        width: 1200,
+        height: 630,
+        alt: "アイデア研究所",
+      },
+    ],
+    type: "website",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "アイデア研究所",
+    description: "発想を抽出しアイデアを結晶化する",
+    images: ["/top-ogp.png"],
+  },
 };
 
 export default async function RootLayout({

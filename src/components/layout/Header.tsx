@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 interface NavigationProps {
@@ -62,13 +63,20 @@ export default function Header() {
     <header className="border-primary/20 border-b bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* 左側：タイトル */}
+          {/* 左側：ロゴ */}
           <div className="flex-shrink-0">
             <Link
               href="/"
-              className="text-primary inline-block rounded-md px-2 py-1 text-xl font-bold transition-colors"
+              className="inline-block rounded-md px-2 py-1 transition-opacity hover:opacity-80"
             >
-              <span className="header-link inline-block">アイデア研究所</span>
+              <Image
+                src="/logo.png"
+                alt="アイデア研究所"
+                width={180}
+                height={40}
+                priority
+                className="h-10 w-auto"
+              />
             </Link>
           </div>
 

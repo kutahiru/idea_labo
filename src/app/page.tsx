@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -30,12 +31,20 @@ const item = {
 
 export default function Home() {
   return (
-    <div className="container mx-auto min-h-screen overflow-hidden 2xl:origin-top-left 2xl:scale-125">
+    <div className="container mx-auto min-h-screen overflow-hidden">
       <motion.div className="pt-8 text-center" initial="hidden" animate="show" variants={container}>
         <motion.h1
-          className="text-primary decoration-accent mb-4 text-5xl font-bold underline decoration-[12px] underline-offset-[-4px] md:text-6xl md:decoration-[20px] md:underline-offset-[-6px] lg:text-7xl xl:text-8xl xl:decoration-[28px] xl:underline-offset-[-8px]"
+          className="text-primary decoration-accent mb-4 flex items-center justify-center gap-4 text-5xl font-bold underline decoration-[12px] underline-offset-[-4px] md:gap-6 md:text-6xl md:decoration-[20px] md:underline-offset-[-6px] lg:text-7xl xl:text-8xl xl:decoration-[28px] xl:underline-offset-[-8px]"
           variants={item}
         >
+          <Image
+            src="/logo.png"
+            alt="ロゴ"
+            width={120}
+            height={120}
+            priority
+            className="h-16 w-auto translate-x-4 translate-y-1 md:h-20 md:translate-x-5 md:translate-y-3 lg:h-24 xl:h-28"
+          />
           アイデア研究所
         </motion.h1>
       </motion.div>

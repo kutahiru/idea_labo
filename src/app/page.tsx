@@ -54,7 +54,7 @@ export default function Home() {
           className="top-8 px-10 md:absolute md:left-80 md:px-0 lg:left-116 xl:left-150"
           variants={item}
         >
-          <h2 className="text-primary rounded-lg px-2 py-1 text-2xl font-medium whitespace-nowrap md:[writing-mode:vertical-rl] lg:text-3xl xl:text-4xl">
+          <h2 className="text-primary rounded-lg px-2 py-1 text-2xl font-medium md:whitespace-nowrap md:[writing-mode:vertical-rl] lg:text-3xl xl:text-4xl">
             発想を抽出しアイデアを結晶化する
           </h2>
         </motion.div>

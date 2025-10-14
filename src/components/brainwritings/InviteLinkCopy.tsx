@@ -2,33 +2,76 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CopyIcon, CheckIcon } from "@/components/layout/Icons";
+import { CopyIcon } from "@/components/layout/Icons";
 import toast from "react-hot-toast";
 import { generateInviteUrl } from "@/lib/invite-url";
+import ToggleSwitch from "./ToggleSwitch";
 
 interface InviteLinkCopyProps {
   inviteToken: string;
+  brainwritingId: number;
+  isInviteActive: boolean;
 }
 
-export default function InviteLinkCopy({ inviteToken }: InviteLinkCopyProps) {
-  const [copied, setCopied] = useState(false);
+export default function InviteLinkCopy({
+  inviteToken,
+  brainwritingId,
+  isInviteActive: initialIsInviteActive,
+}: InviteLinkCopyProps) {
   const inviteUrl = generateInviteUrl(inviteToken);
+  const [isInviteActive, setIsInviteActive] = useState(initialIsInviteActive);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(inviteUrl);
-      setCopied(true);
       toast.success("招待リンクをコピーしました");
-      setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       console.error("コピーエラー:", error);
       toast.error("コピーに失敗しました");
     }
   };
 
+  const handleUpdateIsInviteActive = async (newValue: boolean) => {
+    if (isUpdating) return;
+
+    setIsUpdating(true);
+    try {
+      const response = await fetch(`/api/brainwritings/${brainwritingId}/invite-active`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isInviteActive: newValue }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        toast.error(error.error || "共有URLの状態更新に失敗しました");
+        return;
+      }
+
+      setIsInviteActive(newValue);
+      toast.success(newValue ? "共有URLを有効にしました" : "共有URLを無効にしました");
+    } catch (error) {
+      console.error("共有URLの状態更新エラー:", error);
+      toast.error("共有URLの状態更新に失敗しました");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
     <div className="mx-auto mb-6 max-w-4xl rounded-lg border border-gray-200 bg-gray-50 p-4">
-      <label className="mb-2 block text-sm font-medium text-gray-700">招待リンク</label>
+      <div className="mb-4 flex items-center justify-between">
+        <label className="text-sm font-medium text-gray-700">招待リンク</label>
+        <ToggleSwitch
+          label="共有URL"
+          checked={isInviteActive}
+          onChange={handleUpdateIsInviteActive}
+          disabled={isUpdating}
+        />
+      </div>
       <div className="flex gap-2">
         <input
           type="text"
@@ -38,23 +81,23 @@ export default function InviteLinkCopy({ inviteToken }: InviteLinkCopyProps) {
         />
         <button
           onClick={handleCopy}
-          className="bg-primary flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform hover:scale-105"
+          disabled={!isInviteActive}
+          className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform ${
+            !isInviteActive
+              ? "cursor-not-allowed bg-gray-400"
+              : "bg-primary hover:scale-105"
+          }`}
         >
-          {copied ? (
-            <>
-              <CheckIcon className="h-4 w-4" />
-              コピー済み
-            </>
-          ) : (
-            <>
-              <CopyIcon className="h-4 w-4" />
-              コピー
-            </>
-          )}
+          <CopyIcon className="h-4 w-4" />
+          コピー
         </button>
         <Link
           href={inviteUrl}
-          className="bg-primary flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform hover:scale-105"
+          className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform ${
+            !isInviteActive
+              ? "pointer-events-none cursor-not-allowed bg-gray-400"
+              : "bg-primary hover:scale-105"
+          }`}
         >
           <svg
             className="h-4 w-4"

@@ -6,6 +6,7 @@ import BrainwritingInfo from "./BrainwritingInfo";
 import BrainwritingSheet from "./BrainwritingSheet";
 import XPostButton from "./XPostButton";
 import InviteLinkCopy from "./InviteLinkCopy";
+import ToggleSwitch from "./ToggleSwitch";
 import { BrainwritingDetail } from "@/types/brainwriting";
 import {
   USAGE_SCOPE,
@@ -27,6 +28,8 @@ export default function BrainwritingDetailClient({
   const { sheets, inputs, users, ...brainwriting } = brainwritingDetail;
   const [currentInputs, setCurrentInputs] = useState(inputs);
   const [activeSheetIndex, setActiveSheetIndex] = useState(0);
+  const [isInviteActive, setIsInviteActive] = useState(brainwriting.isInviteActive ?? true);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // シートIDに対応する入力データを取得する関数を定義
   const getInputsForSheet = (sheetId: number) => {
@@ -58,8 +61,9 @@ export default function BrainwritingDetailClient({
 
   // X投稿ボタンのクリックハンドラー
   const handleXPost = () => {
-    // アイデアが未入力かチェック（contentがnullまたは空文字列）
-    const hasEmptyInput = currentInputs.some(
+    // 1行目のデータのみをチェック（row_index === 0）
+    const firstRowInputs = currentInputs.filter(input => input.row_index === 0);
+    const hasEmptyInput = firstRowInputs.some(
       input => input.content === null || input.content.trim() === ""
     );
 
@@ -72,20 +76,61 @@ export default function BrainwritingDetailClient({
     postBrainwritingToX(brainwriting);
   };
 
+  /** URLの有効無効更新 */
+  const handleUpdateIsInviteActive = async (newValue: boolean) => {
+    // 更新中は処理をスキップ（連打対策）
+    if (isUpdating) return;
+
+    setIsUpdating(true);
+    try {
+      const response = await fetch(`/api/brainwritings/${brainwriting.id}/invite-active`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isInviteActive: newValue }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        toast.error(error.error || "共有URLの状態更新に失敗しました");
+        return;
+      }
+
+      setIsInviteActive(newValue);
+      toast.success(newValue ? "共有URLを有効にしました" : "共有URLを無効にしました");
+    } catch (error) {
+      console.error("共有URLの状態更新エラー:", error);
+      toast.error("共有URLの状態更新に失敗しました");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
     <div className="mb-8">
       <BrainwritingInfo brainwriting={brainwriting} />
 
       {/* X投稿ボタン（X投稿版） */}
       {brainwriting.usageScope === USAGE_SCOPE.XPOST && (
-        <div className="mb-6 flex justify-center">
-          <XPostButton buttonName="共有" onClick={handleXPost} />
+        <div className="mb-6 flex items-center justify-center gap-6">
+          <XPostButton buttonName="共有" onClick={handleXPost} disabled={!isInviteActive} />
+          <ToggleSwitch
+            label="共有URL"
+            checked={isInviteActive}
+            onChange={handleUpdateIsInviteActive}
+            disabled={isUpdating}
+          />
         </div>
       )}
 
       {/* 招待リンクコピー（チーム利用版） */}
       {brainwriting.usageScope === USAGE_SCOPE.TEAM && (
-        <InviteLinkCopy inviteToken={brainwriting.inviteToken} />
+        <InviteLinkCopy
+          inviteToken={brainwriting.inviteToken}
+          brainwritingId={brainwriting.id}
+          isInviteActive={isInviteActive}
+        />
       )}
 
       {/* シート切り替えタブ（複数シートがある場合のみ表示） */}

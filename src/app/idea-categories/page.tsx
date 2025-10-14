@@ -2,7 +2,6 @@ import IdeaCategoryPageClient from "@/components/idea-categories/IdeaCategoryPag
 import { auth } from "@/app/lib/auth";
 import { getIdeaCategoriesByUserId } from "@/lib/idea-category";
 import { LoginRequiredMessage } from "@/components/shared/Message";
-import { IdeaCategoryListItem } from "@/types/idea-category";
 
 export default async function IdeaCategoryPage() {
   const session = await auth();

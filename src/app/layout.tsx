@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Zen_Kaku_Gothic_New, Lora, WDXL_Lubrifont_JP_N } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/app/lib/auth";
 import ToastProvider from "@/components/shared/ToastProvider";
@@ -78,6 +79,7 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           <Header />
           <main>{children}</main>
+          <Footer />
           <ToastProvider />
         </SessionProvider>
       </body>

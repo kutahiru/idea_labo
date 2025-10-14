@@ -31,7 +31,7 @@ const item = {
 
 export default function Home() {
   return (
-    <div className="container mx-auto min-h-screen overflow-hidden">
+    <div className="container mx-auto overflow-hidden">
       <motion.div className="pt-8 text-center" initial="hidden" animate="show" variants={container}>
         <motion.h1
           className="font-wdxl-lubrifont text-primary decoration-accent mb-4 flex items-center justify-center gap-4 text-5xl tracking-widest underline decoration-[12px] underline-offset-[-4px] md:gap-6 md:text-6xl md:decoration-[20px] md:underline-offset-[-6px] lg:text-7xl xl:text-8xl xl:decoration-[28px] xl:underline-offset-[-8px]"
@@ -49,7 +49,7 @@ export default function Home() {
         </motion.h1>
       </motion.div>
 
-      <motion.div className="relative" initial="hidden" animate="show" variants={container}>
+      <motion.div className="relative min-h-[600px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px]" initial="hidden" animate="show" variants={container}>
         <motion.div
           className="top-8 px-10 md:absolute md:left-80 md:px-0 lg:left-116 xl:left-150"
           variants={item}

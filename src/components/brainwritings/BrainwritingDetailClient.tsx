@@ -6,7 +6,7 @@ import BrainwritingInfo from "./BrainwritingInfo";
 import BrainwritingSheet from "./BrainwritingSheet";
 import XPostButton from "./XPostButton";
 import InviteLinkCopy from "./InviteLinkCopy";
-import ToggleSwitch from "./ToggleSwitch";
+import ToggleSwitch from "@/components/shared/ToggleSwitch";
 import { BrainwritingDetail } from "@/types/brainwriting";
 import {
   USAGE_SCOPE,

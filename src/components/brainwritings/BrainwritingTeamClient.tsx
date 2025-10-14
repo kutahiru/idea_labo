@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import BrainwritingInfo from "./BrainwritingInfo";
 import BrainwritingSheetList from "./BrainwritingSheetList";
 import ConfirmModal from "@/components/shared/ConfirmModal";
@@ -59,15 +60,16 @@ export default function BrainwritingTeamClient({
 
       if (!response.ok) {
         const data = await response.json();
-        alert(data.error || "開始に失敗しました");
+        toast.error(data.error || "開始に失敗しました");
         return;
       }
 
       // 成功したらページをリロードして最新の状態を表示
+      toast.success("ブレインライティングを開始しました");
       window.location.reload();
     } catch (error) {
       console.error("開始処理エラー:", error);
-      alert("開始処理中にエラーが発生しました");
+      toast.error("開始処理中にエラーが発生しました");
     }
   };
 

@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { formatDate } from "@/utils/date";
 import { BrainwritingListItem } from "@/types/brainwriting";
-import { ClockIcon } from "@/components/layout/Icons";
+import { Clock } from "lucide-react";
 import { getUsageScopeLabel } from "@/utils/brainwriting";
 import { motion } from "framer-motion";
 
@@ -89,7 +89,7 @@ export default function BrainwritingIndexRow({
               {getUsageScopeLabel(usageScope)}
             </span>
             <time className="flex items-center text-sm text-gray-500">
-              <ClockIcon className="mr-1.5 h-3 w-3" />
+              <Clock className="mr-1.5 h-3 w-3" />
               {formatDate(createdAt)}
             </time>
           </div>

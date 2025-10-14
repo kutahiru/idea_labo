@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CopyIcon } from "@/components/layout/Icons";
+import { Copy, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateInviteUrl } from "@/lib/invite-url";
-import ToggleSwitch from "./ToggleSwitch";
+import ToggleSwitch from "@/components/shared/ToggleSwitch";
 
 interface InviteLinkCopyProps {
   inviteToken: string;
@@ -88,7 +88,7 @@ export default function InviteLinkCopy({
               : "bg-primary hover:scale-105"
           }`}
         >
-          <CopyIcon className="h-4 w-4" />
+          <Copy className="h-4 w-4" />
           コピー
         </button>
         <Link
@@ -99,19 +99,7 @@ export default function InviteLinkCopy({
               : "bg-primary hover:scale-105"
           }`}
         >
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-            />
-          </svg>
+          <ExternalLink className="h-4 w-4" />
           開く
         </Link>
       </div>

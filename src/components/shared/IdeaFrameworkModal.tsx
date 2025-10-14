@@ -128,6 +128,7 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
               onChange={e => handleInputChange("title" as keyof T, e.target.value)}
               className={inputClasses}
               placeholder="タイトルを入力"
+              maxLength={100}
               disabled={isSubmitting}
             />
             {errors.title && <p className={errorClasses}>{errors.title}</p>}
@@ -145,6 +146,7 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
               onChange={e => handleInputChange("themeName" as keyof T, e.target.value)}
               className={inputClasses}
               placeholder="テーマを入力"
+              maxLength={50}
               disabled={isSubmitting}
             />
             {errors.themeName && <p className={errorClasses}>{errors.themeName}</p>}
@@ -162,6 +164,7 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
               rows={4}
               className="font-noto-sans-jp focus:border-primary focus:ring-primary/10 w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 outline-none focus:bg-white focus:ring-2"
               placeholder="説明（任意）"
+              maxLength={500}
               disabled={isSubmitting}
             />
             {errors.description && <p className={errorClasses}>{errors.description}</p>}

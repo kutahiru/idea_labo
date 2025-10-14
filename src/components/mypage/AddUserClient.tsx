@@ -106,6 +106,7 @@ export default function AddUserClient({
           onChange={(e) => handleInputChange(e.target.value)}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 bg-gray-50 outline-none focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/10 transition-all duration-200"
           placeholder="ユーザー名を入力"
+          maxLength={50}
           disabled={isSubmitting}
         />
         {errors.name && (

@@ -12,11 +12,7 @@ interface UserEditModalProps {
   initialData: UserFormData;
 }
 
-export default function UserEditModal({
-  onClose,
-  onSubmit,
-  initialData,
-}: UserEditModalProps) {
+export default function UserEditModal({ onClose, onSubmit, initialData }: UserEditModalProps) {
   const [formData, setFormData] = useState<UserFormData>({
     name: initialData.name || "",
   });
@@ -96,9 +92,7 @@ export default function UserEditModal({
         {/* ヘッダー */}
         <div className="bg-primary w-full rounded-t-2xl px-8 py-6">
           <div className="flex items-center justify-center">
-            <h1 className="font-noto-sans-jp text-3xl font-semibold text-white">
-              ユーザー名編集
-            </h1>
+            <h1 className="font-noto-sans-jp text-3xl font-semibold text-white">ユーザー名編集</h1>
           </div>
         </div>
 
@@ -116,6 +110,7 @@ export default function UserEditModal({
               onChange={e => handleInputChange("name", e.target.value)}
               className={inputClasses}
               placeholder="名前を入力"
+              maxLength={50}
               disabled={isSubmitting}
             />
             {errors.name && <p className={errorClasses}>{errors.name}</p>}

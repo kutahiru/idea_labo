@@ -1,10 +1,20 @@
+/**
+ * ユーザー機能のデータアクセス層
+ * ユーザー情報の取得・更新などを提供します。
+ */
+
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { UserProfile } from "@/types/user";
 import { UserFormData } from "@/schemas/user";
 
-/** ユーザー情報取得 */
+//#region ユーザー情報取得
+/**
+ * ユーザー情報取得
+ * @param userId - ユーザーID
+ * @returns ユーザー情報
+ */
 export async function getUserById(userId: string): Promise<UserProfile | null> {
   const result = await db
     .select({
@@ -20,8 +30,15 @@ export async function getUserById(userId: string): Promise<UserProfile | null> {
 
   return result[0] || null;
 }
+//#endregion
 
-/** ユーザー情報更新 */
+//#region ユーザー情報更新
+/**
+ * ユーザー情報更新
+ * @param userId - ユーザーID
+ * @param data - ユーザーのフォームデータ
+ * @returns 更新されたユーザー情報
+ */
 export async function updateUser(userId: string, data: UserFormData) {
   const result = await db
     .update(users)
@@ -39,3 +56,4 @@ export async function updateUser(userId: string, data: UserFormData) {
 
   return result[0];
 }
+//#endregion

@@ -1,4 +1,6 @@
-// X(Twitter)投稿関連のユーティリティ
+/**
+ * X(Twitter)投稿関連
+ */
 import { generateInviteUrl } from "@/lib/invite-url";
 
 export interface BrainwritingData {

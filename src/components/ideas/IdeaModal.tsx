@@ -115,6 +115,7 @@ export default function IdeaModal({ onClose, onSubmit, initialData, mode }: Idea
               onChange={e => handleInputChange("name", e.target.value)}
               className={inputClasses}
               placeholder="アイデア名を入力"
+              maxLength={100}
               disabled={isSubmitting}
             />
             {errors.name && <p className={errorClasses}>{errors.name}</p>}
@@ -151,6 +152,7 @@ export default function IdeaModal({ onClose, onSubmit, initialData, mode }: Idea
               rows={6}
               className="font-noto-sans-jp focus:border-primary focus:ring-primary/10 w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 outline-none focus:bg-white focus:ring-2"
               placeholder="説明（任意）"
+              maxLength={500}
               disabled={isSubmitting}
             />
             {errors.description && <p className={errorClasses}>{errors.description}</p>}

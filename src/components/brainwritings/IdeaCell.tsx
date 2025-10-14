@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Lock } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -22,37 +22,57 @@ export default function IdeaCell({
   colIndex = 0,
 }: IdeaCellProps) {
   const [lastSavedValue, setLastSavedValue] = useState(value);
+  const [localValue, setLocalValue] = useState(value);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // フォーカスアウトイベント
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  // 初期値の同期
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  // テキストエリアの高さを自動調整
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${Math.min(scrollHeight, 64)}px`; // 最大64px
+    }
+  }, [localValue]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setLocalValue(e.target.value);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     if (newValue !== lastSavedValue) {
       onChange(newValue);
-      setLastSavedValue(newValue); // 保存した値を記録
+      setLastSavedValue(newValue);
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       e.currentTarget.blur(); // 保存のためにフォーカスを外す
 
       // 次の入力フィールドにフォーカス移動
-      const inputs = document.querySelectorAll('input[type="text"]:not([readonly])');
-      const currentIndex = Array.from(inputs).indexOf(e.currentTarget);
-      const nextInput = inputs[currentIndex + 1];
+      const textareas = document.querySelectorAll("textarea:not([readonly])");
+      const currentIndex = Array.from(textareas).indexOf(e.currentTarget);
+      const nextTextarea = textareas[currentIndex + 1];
 
-      if (nextInput) {
-        (nextInput as HTMLInputElement).focus();
+      if (nextTextarea) {
+        (nextTextarea as HTMLTextAreaElement).focus();
       }
     }
   };
 
   // 四方向からランダムに飛んでくるアニメーション
   const directions = [
-    { x: -1000, y: 0 },   // 左から
-    { x: 1000, y: 0 },    // 右から
-    { x: 0, y: -1000 },   // 上から
-    { x: 0, y: 1000 },    // 下から
+    { x: -1000, y: 0 }, // 左から
+    { x: 1000, y: 0 }, // 右から
+    { x: 0, y: -1000 }, // 上から
+    { x: 0, y: 1000 }, // 下から
   ];
 
   const direction = directions[(rowIndex + colIndex) % 4];
@@ -71,10 +91,10 @@ export default function IdeaCell({
       }}
     >
       <div
-        className={`relative flex h-16 items-center justify-center rounded-lg transition-all duration-300 ${
+        className={`relative flex h-[72px] items-center justify-center rounded-lg transition-all duration-300 ${
           isHighlighted
-            ? "border-4 border-accent bg-accent/10 shadow-xl shadow-accent/20"
-            : "border-2 border-primary/50 bg-white shadow-md hover:shadow-lg"
+            ? "border-accent bg-accent/10 shadow-accent/20 border-4 shadow-xl"
+            : "border-primary/50 border-2 bg-white shadow-md hover:shadow-lg"
         }`}
       >
         {readOnly && (
@@ -83,16 +103,22 @@ export default function IdeaCell({
           </div>
         )}
 
-        <input
-          type="text"
-          defaultValue={value}
+        <textarea
+          ref={textareaRef}
+          value={localValue}
+          onChange={handleChange}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           readOnly={readOnly}
           placeholder={readOnly ? "" : "アイデアを入力"}
-          className={`h-full w-full border-none bg-transparent px-3 text-center text-sm outline-none text-primary font-medium ${
+          rows={1}
+          maxLength={50}
+          className={`text-primary w-full resize-none overflow-y-auto border-none bg-transparent px-3 py-1 text-center text-sm leading-tight font-medium outline-none ${
             readOnly ? "cursor-default" : "cursor-text"
           }`}
+          style={{
+            maxHeight: "64px",
+          }}
         />
       </div>
     </motion.div>

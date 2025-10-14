@@ -16,12 +16,14 @@ export default function UsageScopeSelector({
   errors,
   disabled = false,
 }: UsageScopeSelectorProps) {
-  const labelClasses = "block text-gray-700 text-sm font-semibold font-noto-sans-jp mb-2";
   const errorClasses = "mt-1 text-sm text-red-500";
 
   return (
     <div>
-      <label className={labelClasses}>利用方法</label>
+      <div className="mb-2 flex items-center gap-2">
+        <label className="block text-sm font-semibold font-noto-sans-jp text-gray-700">利用方法</label>
+        {disabled && <span className="text-xs text-gray-500">（編集時は変更できません）</span>}
+      </div>
       <div className="flex space-x-4">
         <label className="flex-1 cursor-pointer">
           <input

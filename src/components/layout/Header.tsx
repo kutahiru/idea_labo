@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Menu, X } from "lucide-react";
 
 interface NavigationProps {
   isLoggedIn: boolean;
@@ -31,7 +32,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
             MYPAGE
           </Link>
           <button
-            className="font-lora header-link text-primary block w-full cursor-pointer rounded-md px-3 py-2 text-left text-base font-medium md:w-auto md:text-sm md:transition-colors"
+            className="font-lora header-link text-primary block w-full cursor-pointer rounded-md px-3 py-2 text-right text-base font-medium md:w-auto md:text-sm md:transition-colors"
             onClick={() => {
               signOut({ callbackUrl: "/" });
               closeMenu?.();
@@ -92,34 +93,8 @@ export default function Header() {
             aria-expanded={isMobileMenuOpen}
           >
             <span className="sr-only">メニューを開く</span>
-            <svg
-              className={`${isMobileMenuOpen ? "hidden" : "block"} h-6 w-6`}
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-            <svg
-              className={`${isMobileMenuOpen ? "block" : "hidden"} h-6 w-6`}
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <Menu className={`${isMobileMenuOpen ? "hidden" : "block"} h-6 w-6`} />
+            <X className={`${isMobileMenuOpen ? "block" : "hidden"} h-6 w-6`} />
           </button>
         </div>
       </div>

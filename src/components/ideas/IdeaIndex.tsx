@@ -1,7 +1,7 @@
 "use client";
 
 import { IdeaListItem } from "@/types/idea";
-import { SearchIcon, LoadingSpinner } from "@/components/layout/Icons";
+import { Search, Loader2 } from "lucide-react";
 import SearchBar from "@/components/layout/SearchBar";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useSearch } from "@/hooks/useSearch";
@@ -87,7 +87,7 @@ export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexPr
         // 0件の場合
         <div className="py-12 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-            <SearchIcon className="h-6 w-6 text-gray-400" />
+            <Search className="h-6 w-6 text-gray-400" />
           </div>
           <h3 className="mt-4 text-sm font-medium text-gray-900">検索結果が見つかりません</h3>
           <p className="mt-2 text-sm text-gray-500">{searchTerm}に一致するアイデアがありません</p>
@@ -148,7 +148,7 @@ export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexPr
             <div ref={observerRef} className="min-h-[50px] py-4 text-center">
               {loading ? (
                 <div className="flex items-center justify-center">
-                  <LoadingSpinner />
+                  <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
                   <span className="ml-2 text-sm text-gray-500">読み込み中...</span>
                 </div>
               ) : (

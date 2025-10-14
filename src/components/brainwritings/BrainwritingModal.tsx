@@ -40,7 +40,7 @@ export default function BrainwritingModal({
             setFormData(prev => ({ ...prev, usageScope: value }));
           }}
           errors={errors.usageScope}
-          disabled={isSubmitting}
+          disabled={isSubmitting || mode === "edit"}
         />
       )}
     </IdeaFrameworkModal>

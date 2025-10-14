@@ -22,7 +22,7 @@ export default function BrainwritingUserCell({ userName, rowIndex = 0 }: Brainwr
         delay,
       }}
     >
-      <div className="flex h-16 items-center justify-center rounded-lg border-2 border-primary/50 bg-white shadow-md transition-all duration-300 hover:shadow-lg">
+      <div className="flex h-[72px] items-center justify-center rounded-lg border-2 border-primary/50 bg-white shadow-md transition-all duration-300 hover:shadow-lg">
         <span className="text-primary font-medium">{userName}</span>
       </div>
     </motion.div>

@@ -1,4 +1,4 @@
-import { SearchIcon, CloseIcon } from "@/components/layout/Icons";
+import { Search, X } from "lucide-react";
 
 interface SearchBarProps {
   searchTerm: string;
@@ -17,7 +17,7 @@ export default function SearchBar({
     <div className="mb-6">
       <div className="relative">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <SearchIcon className="h-5 w-5 text-gray-400" />
+          <Search className="h-5 w-5 text-gray-400" />
         </div>
         <input
           type="text"
@@ -31,7 +31,7 @@ export default function SearchBar({
             onClick={() => onSearchChange("")}
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
           >
-            <CloseIcon className="h-5 w-5" />
+            <X className="h-5 w-5" />
           </button>
         )}
       </div>

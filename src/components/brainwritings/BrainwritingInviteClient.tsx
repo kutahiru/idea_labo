@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
+import toast from "react-hot-toast";
 import BrainwritingInfo from "@/components/brainwritings/BrainwritingInfo";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { USAGE_SCOPE } from "@/utils/brainwriting";
@@ -15,6 +17,7 @@ export default function BrainwritingInviteClient({
   brainwriting,
   token,
 }: BrainwritingInviteClientProps) {
+  const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
   const isLoggedIn = Boolean(session?.user);
   const [status, setStatus] = useState<{
@@ -26,7 +29,7 @@ export default function BrainwritingInviteClient({
     canJoin?: boolean;
   } | null>(null);
 
-  // ログイン後にロック状態をチェック
+  // ログイン後にロック状態をチェック（定期的に更新）
   useEffect(() => {
     const checkLockStatus = async () => {
       if (isLoggedIn && brainwriting.id) {
@@ -62,14 +65,21 @@ export default function BrainwritingInviteClient({
       }
     };
 
-    checkLockStatus();
+    checkLockStatus(); // 初回実行
+
+    // 10秒ごとに定期的にチェック
+    const interval = setInterval(checkLockStatus, 10000);
+
+    // クリーンアップ関数
+    return () => clearInterval(interval);
   }, [isLoggedIn, brainwriting.id, brainwriting.usageScope]);
 
   const handleJoinBrainwriting = async () => {
     if (!isLoggedIn) {
-      // 未ログイン時はログインページへ（callbackUrlで現在のページに戻る）
+      // 未ログイン時はログインページへ（中間ページ経由で現在のページに戻る）
+      const redirectUrl = encodeURIComponent(`/brainwritings/invite/${token}`);
       await signIn("google", {
-        callbackUrl: `/brainwritings/invite/${token}`,
+        callbackUrl: `/auth/callback?redirect=${redirectUrl}`,
       });
       return;
     }
@@ -90,21 +100,28 @@ export default function BrainwritingInviteClient({
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.error || "参加に失敗しました");
+        toast.error(data.error || "参加に失敗しました");
         return;
       }
 
-      alert("参加しました！");
       if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
         // X投稿版の場合
-        window.location.href = `/brainwritings/sheet/${data.sheetId}/input`;
+        const lockDurationMinutes =
+          Number(process.env.NEXT_PUBLIC_BRAINWRITING_LOCK_DURATION_MINUTES) || 10;
+        toast.success(`参加しました\n回答時間は${lockDurationMinutes}分です`, {
+          duration: 5000,
+        });
+        router.push(`/brainwritings/sheet/${data.sheetId}/input`);
       } else if (brainwriting.usageScope === USAGE_SCOPE.TEAM) {
         // チーム利用版の場合
-        window.location.href = `/brainwritings/${brainwriting.id}/team`;
+        toast.success("参加しました", {
+          duration: 5000,
+        });
+        router.push(`/brainwritings/${brainwriting.id}/team`);
       }
     } catch (error) {
       console.error("参加処理エラー:", error);
-      alert("参加処理中にエラーが発生しました");
+      toast.error("参加処理中にエラーが発生しました");
     }
   };
 
@@ -114,6 +131,25 @@ export default function BrainwritingInviteClient({
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 text-center">
             <div className="text-gray-600">読み込み中...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ログイン済みでステータス読み込み中
+  if (isLoggedIn && status === null) {
+    return (
+      <div className="py-2">
+        <div className="mx-auto max-w-4xl">
+          <BrainwritingInfo brainwriting={brainwriting} />
+          <div className="mb-8 text-center">
+            <h1 className="text-primary mb-4 text-3xl font-bold">
+              ブレインライティングに招待されました
+            </h1>
+          </div>
+          <div className="mt-8 text-center">
+            <div className="text-gray-600">参加状況を確認中...</div>
           </div>
         </div>
       </div>
@@ -135,10 +171,8 @@ export default function BrainwritingInviteClient({
           {status?.canJoin === false ? (
             <div>
               <div className="mb-4 text-center">
-                <p className="mb-2 font-medium text-red-600">参加できません</p>
-                <p className="text-sm text-gray-600">
-                  ブレインライティングは既に開始されています
-                </p>
+                <p className="text-alert mb-2 font-medium">参加できません</p>
+                <p className="text-sm text-gray-600">ブレインライティングは既に開始されています</p>
               </div>
               <button
                 disabled
@@ -150,7 +184,7 @@ export default function BrainwritingInviteClient({
           ) : status?.isFull ? (
             <div>
               <div className="mb-4 text-center">
-                <p className="mb-2 font-medium text-red-600">参加人数が上限に達しています</p>
+                <p className="text-alert mb-2 font-medium">参加人数が上限に達しています</p>
                 <p className="text-sm text-gray-600">
                   現在 {status.currentCount}/{status.maxCount} 人が参加中です
                 </p>
@@ -165,10 +199,26 @@ export default function BrainwritingInviteClient({
           ) : status?.isLocked ? (
             <div>
               <div className="mb-4 text-center">
-                <p className="mb-2 font-medium text-red-600">他の方が編集中です</p>
-                <p className="text-sm text-gray-600">
+                <p className="text-alert mb-2 text-lg font-medium">他の方が編集中です</p>
+                <p className="text-lg text-gray-600">
                   {status.lockExpiresAt &&
-                    `最長で${status.lockExpiresAt.toLocaleString()}まで編集がロックされています`}
+                    (() => {
+                      const date = new Date(status.lockExpiresAt);
+                      // 秒を0にして1分加算
+                      date.setSeconds(0, 0);
+                      date.setMinutes(date.getMinutes() + 1);
+                      return `最長で${date
+                        .toLocaleString("ja-JP", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        })
+                        .replace(/\//g, "/")
+                        .replace(",", "")}まで編集がロックされています`;
+                    })()}
                 </p>
               </div>
               <button

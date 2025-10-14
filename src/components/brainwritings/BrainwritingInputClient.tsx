@@ -51,7 +51,7 @@ export default function BrainwritingInputClient({
       // 残り1分になったらアラート表示
       const alertTimeout = setTimeout(() => {
         console.log("残り1分アラート表示");
-        toast.error("回答時間が残り1分です！", {
+        toast.error("回答時間が残り1分です", {
           duration: 10000, // 10秒表示
           style: {
             fontSize: "18px",

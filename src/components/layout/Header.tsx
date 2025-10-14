@@ -43,7 +43,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
       ) : (
         <button
           className="font-lora bg-primary inline-block cursor-pointer rounded-md px-4 py-2 text-center text-base font-medium text-white transition-colors hover:scale-105 md:text-sm"
-          onClick={() => signIn("google", { callbackUrl: "/" })}
+          onClick={() => signIn("google", { callbackUrl: "/auth/callback" })}
         >
           Google LOGIN
         </button>

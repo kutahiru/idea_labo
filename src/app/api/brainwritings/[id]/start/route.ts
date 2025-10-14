@@ -2,10 +2,7 @@ import { auth } from "@/app/lib/auth";
 import { createSheetsForTeam, checkJoinStatus } from "@/lib/brainwriting";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
   if (!session?.user?.id) {

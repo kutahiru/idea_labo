@@ -42,7 +42,7 @@ export default function ConfirmModal({
           )}
           <button
             onClick={onConfirm}
-            className="from-primary to-primary-hover transform rounded-lg bg-gradient-to-r px-8 py-3 font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+            className="bg-primary transform rounded-lg px-8 py-3 font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
           >
             {confirmText}
           </button>

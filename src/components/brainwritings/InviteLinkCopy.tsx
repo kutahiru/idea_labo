@@ -47,15 +47,15 @@ export default function InviteLinkCopy({
 
       if (!response.ok) {
         const error = await response.json();
-        toast.error(error.error || "共有URLの状態更新に失敗しました");
+        toast.error(error.error || "招待リンクの状態更新に失敗しました");
         return;
       }
 
       setIsInviteActive(newValue);
-      toast.success(newValue ? "共有URLを有効にしました" : "共有URLを無効にしました");
+      toast.success(newValue ? "招待リンクを有効にしました" : "招待リンクを無効にしました");
     } catch (error) {
-      console.error("共有URLの状態更新エラー:", error);
-      toast.error("共有URLの状態更新に失敗しました");
+      console.error("招待リンクの状態更新エラー:", error);
+      toast.error("招待リンクの状態更新に失敗しました");
     } finally {
       setIsUpdating(false);
     }
@@ -66,7 +66,7 @@ export default function InviteLinkCopy({
       <div className="mb-4 flex items-center justify-between">
         <label className="text-sm font-medium text-gray-700">招待リンク</label>
         <ToggleSwitch
-          label="共有URL"
+          label="招待リンク"
           checked={isInviteActive}
           onChange={handleUpdateIsInviteActive}
           disabled={isUpdating}
@@ -83,9 +83,7 @@ export default function InviteLinkCopy({
           onClick={handleCopy}
           disabled={!isInviteActive}
           className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform ${
-            !isInviteActive
-              ? "cursor-not-allowed bg-gray-400"
-              : "bg-primary hover:scale-105"
+            !isInviteActive ? "cursor-not-allowed bg-gray-400" : "bg-primary hover:scale-105"
           }`}
         >
           <Copy className="h-4 w-4" />

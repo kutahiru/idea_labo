@@ -6,6 +6,8 @@ import {
   getBrainwritingSheetWithBrainwriting,
 } from "@/lib/brainwriting";
 import { USAGE_SCOPE } from "@/utils/brainwriting";
+import { publishBrainwritingEvent } from "@/lib/appsync-events/brainwriting-events";
+import { BRAINWRITING_EVENT_TYPES } from "@/lib/appsync-events/event-types";
 
 interface CompleteParams {
   params: Promise<{ sheetId: string }>;
@@ -34,6 +36,9 @@ export async function POST(request: NextRequest, { params }: CompleteParams) {
     // チーム利用版の場合は次のユーザーに交代、X投稿版の場合はロック解除
     if (data.brainwriting.usageScope === USAGE_SCOPE.TEAM) {
       await rotateSheetToNextUser(brainwritingSheetId, authResult.userId);
+
+      // AppSync Eventsにシートローテーションイベントを発行
+      await publishBrainwritingEvent(data.brainwriting.id, BRAINWRITING_EVENT_TYPES.SHEET_ROTATED);
     } else {
       await unlockSheet(brainwritingSheetId, authResult.userId);
     }

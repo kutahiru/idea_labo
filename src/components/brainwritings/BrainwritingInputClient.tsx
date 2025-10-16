@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import BrainwritingInfo from "@/components/brainwritings/BrainwritingInfo";
 import BrainwritingSheet from "@/components/brainwritings/BrainwritingSheet";
 import ConfirmModal from "@/components/shared/ConfirmModal";
-import { BrainwritingDetail } from "@/types/brainwriting";
+import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";
 import { convertToRowData, handleBrainwritingDataChange, USAGE_SCOPE } from "@/utils/brainwriting";
 
 interface BrainwritingInputClientProps {
@@ -124,9 +124,26 @@ export default function BrainwritingInputClient({
   };
 
   // 回答完了ボタンクリック時の関数を定義
-  const handleCompleteClick = () => {
+  const handleCompleteClick = async () => {
+    // アクティブな要素からフォーカスを外す
+    // IdeaCellのonBlurが発火し、未保存の入力データを確実に保存する
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
+    // onBlur → handleDataChange（非同期API呼び出し）の完了を待つ
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    // APIから最新のinputsを取得して検証
+    const response = await fetch(`/api/brainwritings/sheet/${sheet.id}/inputs`);
+    if (!response.ok) {
+      toast.error("データの取得に失敗しました");
+      return;
+    }
+    const latestInputs: BrainwritingInputData[] = await response.json();
+
     // 現在のユーザーの入力データのみチェック
-    const myInputs = currentInputs.filter(input => input.row_index === activeRowIndex);
+    const myInputs = latestInputs.filter(input => input.row_index === activeRowIndex);
 
     // アイデアが未入力かチェック（contentがnullまたは空文字列）
     const hasEmptyInput = myInputs.some(

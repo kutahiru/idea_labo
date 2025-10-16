@@ -1,6 +1,8 @@
 import { auth } from "@/app/lib/auth";
 import { createSheetsForTeam, checkJoinStatus } from "@/lib/brainwriting";
 import { NextRequest, NextResponse } from "next/server";
+import { publishBrainwritingEvent } from "@/lib/appsync-events/brainwriting-events";
+import { BRAINWRITING_EVENT_TYPES } from "@/lib/appsync-events/event-types";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -24,6 +26,10 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   try {
     const result = await createSheetsForTeam(brainwritingId);
+
+    // AppSync Eventsにイベントを発行
+    await publishBrainwritingEvent(brainwritingId, BRAINWRITING_EVENT_TYPES.BRAINWRITING_STARTED);
+
     return NextResponse.json(result);
   } catch (error) {
     console.error("シート作成エラー:", error);

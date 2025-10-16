@@ -32,6 +32,6 @@ services:
     depends_on:
       db:
         condition: service_healthy  # DBの起動完了を待つ
-    command: bash -c "npm install && npm run dev -- --hostname 0.0.0.0" # docker compose upで実行される
+    command: tail -f /dev/null  # コンテナを起動状態に保つ（アプリは手動起動）
 volumes:
   postgresql_data:

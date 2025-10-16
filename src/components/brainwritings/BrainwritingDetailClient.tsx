@@ -7,7 +7,7 @@ import BrainwritingSheet from "./BrainwritingSheet";
 import XPostButton from "./XPostButton";
 import InviteLinkCopy from "./InviteLinkCopy";
 import ToggleSwitch from "@/components/shared/ToggleSwitch";
-import { BrainwritingDetail } from "@/types/brainwriting";
+import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";
 import {
   USAGE_SCOPE,
   convertToRowData,
@@ -60,9 +60,27 @@ export default function BrainwritingDetailClient({
   };
 
   // X投稿ボタンのクリックハンドラー
-  const handleXPost = () => {
+  const handleXPost = async () => {
+    // アクティブな要素からフォーカスを外す
+    // IdeaCellのonBlurが発火し、未保存の入力データを確実に保存する
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
+    // onBlur → handleDataChange（非同期API呼び出し + state更新）の完了を待つ
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // APIから最新のinputsを取得して検証
+    const currentSheet = sheets[activeSheetIndex];
+    const response = await fetch(`/api/brainwritings/sheet/${currentSheet.id}/inputs`);
+    if (!response.ok) {
+      toast.error("データの取得に失敗しました");
+      return;
+    }
+    const latestInputs: BrainwritingInputData[] = await response.json();
+
     // 1行目のデータのみをチェック（row_index === 0）
-    const firstRowInputs = currentInputs.filter(input => input.row_index === 0);
+    const firstRowInputs = latestInputs.filter(input => input.row_index === 0);
     const hasEmptyInput = firstRowInputs.some(
       input => input.content === null || input.content.trim() === ""
     );
@@ -93,15 +111,15 @@ export default function BrainwritingDetailClient({
 
       if (!response.ok) {
         const error = await response.json();
-        toast.error(error.error || "共有URLの状態更新に失敗しました");
+        toast.error(error.error || "の状態更新に失敗しました");
         return;
       }
 
       setIsInviteActive(newValue);
-      toast.success(newValue ? "共有URLを有効にしました" : "共有URLを無効にしました");
+      toast.success(newValue ? "共有リンクを有効にしました" : "共有リンクを無効にしました");
     } catch (error) {
-      console.error("共有URLの状態更新エラー:", error);
-      toast.error("共有URLの状態更新に失敗しました");
+      console.error("共有リンクの状態更新エラー:", error);
+      toast.error("共有リンクの状態更新に失敗しました");
     } finally {
       setIsUpdating(false);
     }
@@ -113,10 +131,10 @@ export default function BrainwritingDetailClient({
 
       {/* X投稿ボタン（X投稿版） */}
       {brainwriting.usageScope === USAGE_SCOPE.XPOST && (
-        <div className="mb-6 flex items-center justify-center gap-6">
+        <div className="mt-8 mb-6 flex items-center justify-center gap-6">
           <XPostButton buttonName="共有" onClick={handleXPost} disabled={!isInviteActive} />
           <ToggleSwitch
-            label="共有URL"
+            label="共有リンク"
             checked={isInviteActive}
             onChange={handleUpdateIsInviteActive}
             disabled={isUpdating}

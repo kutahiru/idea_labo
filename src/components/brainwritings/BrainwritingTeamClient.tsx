@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import BrainwritingInfo from "./BrainwritingInfo";
 import BrainwritingSheetList from "./BrainwritingSheetList";
 import ConfirmModal from "@/components/shared/ConfirmModal";
-import { BrainwritingTeam } from "@/types/brainwriting";
+import { BrainwritingDetail } from "@/types/brainwriting";
+import { useBrainwritingRealtime } from "@/hooks/useBrainwritingRealtime";
 
 interface BrainwritingTeamClientProps {
-  brainwritingTeam: BrainwritingTeam;
+  brainwritingTeam: BrainwritingDetail;
   currentUserId: string;
 }
 
@@ -16,28 +17,15 @@ export default function BrainwritingTeamClient({
   brainwritingTeam,
   currentUserId,
 }: BrainwritingTeamClientProps) {
-  const { sheets: initialSheets, users, ...brainwriting } = brainwritingTeam;
-  const [sheets, setSheets] = useState(initialSheets);
+  const { sheets: initialSheets, inputs, users: initialUsers, ...brainwriting } = brainwritingTeam;
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  // 定期的にシート情報を更新（5秒ごと）
-  useEffect(() => {
-    if (sheets.length === 0) return;
-
-    const interval = setInterval(async () => {
-      try {
-        const response = await fetch(`/api/brainwritings/${brainwriting.id}/sheets`);
-        if (response.ok) {
-          const data = await response.json();
-          setSheets(data.sheets);
-        }
-      } catch (error) {
-        console.error("シート情報の取得エラー:", error);
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [brainwriting.id, sheets.length]);
+  // AppSync Eventsでリアルタイム更新（参加者とシート両方）
+  const { users, sheets } = useBrainwritingRealtime({
+    brainwritingId: brainwriting.id,
+    initialUsers,
+    initialSheets,
+  });
 
   // 開始ボタンを表示するのは作成者のみ
   const isCreator = brainwriting.userId === currentUserId;
@@ -80,7 +68,9 @@ export default function BrainwritingTeamClient({
       {sheets.length === 0 ? (
         <>
           <div className="mx-auto mb-8 max-w-4xl">
-            <h2 className="mb-4 text-xl font-bold text-gray-900">参加者一覧</h2>
+            <div className="mb-4">
+              <h2 className="text-primary text-xl font-bold">参加者一覧</h2>
+            </div>
             <div className="rounded-lg border border-gray-200 bg-white p-4">
               <ul className="divide-y divide-gray-200">
                 {users.map((user, index) => (
@@ -108,14 +98,31 @@ export default function BrainwritingTeamClient({
             </div>
           ) : (
             <div className="mx-auto max-w-4xl text-center">
-              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                <p className="text-sm text-blue-700">開始されるまでお待ちください</p>
+              <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-primary h-2 w-2 animate-pulse rounded-full"></div>
+                    <div className="bg-primary animation-delay-200 h-2 w-2 animate-pulse rounded-full"></div>
+                    <div className="bg-primary animation-delay-400 h-2 w-2 animate-pulse rounded-full"></div>
+                  </div>
+                  <p className="text-primary text-lg font-medium">
+                    作成者が開始するまでお待ちください
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    参加者が揃い次第、ブレインライティングが開始されます
+                  </p>
+                </div>
               </div>
             </div>
           )}
         </>
       ) : (
-        <BrainwritingSheetList sheets={sheets} users={users} currentUserId={currentUserId} />
+        <BrainwritingSheetList
+          sheets={sheets}
+          inputs={inputs}
+          users={users}
+          currentUserId={currentUserId}
+        />
       )}
 
       <ConfirmModal

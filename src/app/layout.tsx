@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/app/lib/auth";
 import ToastProvider from "@/components/shared/ToastProvider";
+import AmplifyProvider from "@/components/providers/AmplifyProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ const wdxlLubrifontJpN = WDXL_Lubrifont_JP_N({
   variable: "--font-wdxl-lubrifont",
   subsets: ["latin"],
   weight: ["400"],
+  adjustFontFallback: false, // フォールバック生成の警告を抑制
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -74,14 +76,16 @@ export default async function RootLayout({
   const fontVariables = `${zenKakuGothicNew.variable} ${geistSans.variable} ${geistMono.variable} ${lora.variable} ${wdxlLubrifontJpN.variable}`;
 
   return (
-    <html lang="ja">
-      <body className={`${fontVariables} antialiased`}>
-        <SessionProvider session={session}>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <ToastProvider />
-        </SessionProvider>
+    <html lang="ja" className="h-full">
+      <body className={`${fontVariables} flex min-h-full flex-col antialiased`}>
+        <AmplifyProvider>
+          <SessionProvider session={session}>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <ToastProvider />
+          </SessionProvider>
+        </AmplifyProvider>
       </body>
     </html>
   );

@@ -47,8 +47,3 @@ export interface BrainwritingDetail extends BrainwritingListItem {
   inputs: BrainwritingInputData[];
   users: BrainwritingUserData[];
 }
-
-export interface BrainwritingTeam extends BrainwritingListItem {
-  sheets: BrainwritingSheetData[];
-  users: BrainwritingUserData[];
-}

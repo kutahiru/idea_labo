@@ -25,7 +25,7 @@ import type { PgTransaction } from "drizzle-orm/pg-core";
 import type { PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
 import {
   BrainwritingListItem,
-  BrainwritingTeam,
+  BrainwritingDetail,
   BrainwritingInputData,
 } from "@/types/brainwriting";
 import { BrainwritingFormData } from "@/schemas/brainwriting";
@@ -534,7 +534,7 @@ export async function getBrainwritingDetailForBrainwritingUser(sheetId: number, 
  */
 export async function getBrainwritingTeamByBrainwritingId(
   brainwritingId: number
-): Promise<BrainwritingTeam | null> {
+): Promise<BrainwritingDetail | null> {
   // 基本情報取得
   const brainwriting = await getBrainwritingByIdInternal(brainwritingId);
   if (!brainwriting) {
@@ -547,9 +547,13 @@ export async function getBrainwritingTeamByBrainwritingId(
   // 全シート取得
   const sheets = await getBrainwritingSheetsByBrainwritingId(brainwritingId);
 
+  // 入力データ取得
+  const inputs = await getBrainwritingInputsByBrainwritingId(brainwritingId);
+
   return {
     ...brainwriting,
     sheets,
+    inputs,
     users,
   };
 }
@@ -650,19 +654,21 @@ export async function joinBrainwriting(brainwritingId: number, userId: string, u
 /**
  * ユーザー毎にシートと入力データを作成（内部用）
  * トランザクション内で使用され、各参加者に対してシートと空の入力データを生成する
+ * 各シートには全参加者分の行データを、シート所有者を先頭にローテーションした順序で生成する
  * @param tx - データベーストランザクション
  * @param brainwritingId - ブレインライティングID
  * @returns 作成結果
  */
 async function createSheetsWithInputsInternal(tx: DbTransaction, brainwritingId: number) {
-  // 参加者情報を取得
+  // 参加者情報を取得（参加順でソート）
   const users = await tx
     .select({
       id: brainwriting_users.id,
       user_id: brainwriting_users.user_id,
     })
     .from(brainwriting_users)
-    .where(eq(brainwriting_users.brainwriting_id, brainwritingId));
+    .where(eq(brainwriting_users.brainwriting_id, brainwritingId))
+    .orderBy(brainwriting_users.id);
 
   // 各ユーザーに対してシートと入力データを作成
   for (let i = 0; i < users.length; i++) {
@@ -679,17 +685,24 @@ async function createSheetsWithInputsInternal(tx: DbTransaction, brainwritingId:
 
     const sheetId = sheetResult[0].id;
 
-    // 空の入力データを作成（rowIndex: 0, columnIndex: 0-2）
+    // このシート専用のユーザー順を作成（シート所有者を先頭にローテーション）
+    // 例: 参加者[A,B,C,D]で、Bのシートなら[B,C,D,A]の順になる
+    const rotatedUsers = [...users.slice(i), ...users.slice(0, i)];
+
+    // ローテーションしたユーザー順で全行×全列の入力データを作成
     const inputValues = [];
-    for (let columnIndex = 0; columnIndex < 3; columnIndex++) {
-      inputValues.push({
-        brainwriting_id: brainwritingId,
-        brainwriting_sheet_id: sheetId,
-        input_user_id: user.user_id,
-        row_index: 0,
-        column_index: columnIndex,
-        content: null,
-      });
+    for (let rowIndex = 0; rowIndex < rotatedUsers.length; rowIndex++) {
+      const rowUser = rotatedUsers[rowIndex];
+      for (let columnIndex = 0; columnIndex < 3; columnIndex++) {
+        inputValues.push({
+          brainwriting_id: brainwritingId,
+          brainwriting_sheet_id: sheetId,
+          input_user_id: rowUser.user_id,
+          row_index: rowIndex,
+          column_index: columnIndex,
+          content: null,
+        });
+      }
     }
 
     await tx.insert(brainwriting_inputs).values(inputValues);
@@ -957,6 +970,7 @@ export async function rotateSheetToNextUser(sheetId: number, currentUserId: stri
 
   // 1行目のユーザーを先頭にした配列に組み直す
   const sortedUsers = sortUsersByFirstRow(inputs, allUsers);
+  console.log("sortedUsers:", JSON.stringify(sortedUsers, null, 2));
 
   // 現在のユーザーのインデックスを取得
   const currentIndex = sortedUsers.findIndex(user => user.user_id === currentUserId);

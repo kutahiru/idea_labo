@@ -35,19 +35,21 @@ export const sortUsersByFirstRow = (
   sheetInputs: BrainwritingInputData[],
   users: BrainwritingUserData[]
 ): BrainwritingUserData[] => {
-  const sortedUsers = [...users];
   const firstRowInput = sheetInputs.find(input => input.row_index === 0);
   const firstRowUserId = firstRowInput?.input_user_id;
 
-  if (firstRowUserId) {
-    sortedUsers.sort((a, b) => {
-      if (a.user_id === firstRowUserId) return -1;
-      if (b.user_id === firstRowUserId) return 1;
-      return 0;
-    });
+  if (!firstRowUserId) {
+    return [...users];
   }
 
-  return sortedUsers;
+  // 1行目のユーザーのインデックスを見つける
+  const firstUserIndex = users.findIndex(user => user.user_id === firstRowUserId);
+  if (firstUserIndex === -1) {
+    return [...users];
+  }
+
+  // そのユーザーを先頭にローテーション
+  return [...users.slice(firstUserIndex), ...users.slice(0, firstUserIndex)];
 };
 
 /**

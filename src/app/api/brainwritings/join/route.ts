@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAuth, apiErrors } from "@/lib/api/utils";
 import { joinBrainwriting } from "@/lib/brainwriting";
+import { publishBrainwritingEvent } from "@/lib/appsync-events/brainwriting-events";
+import { BRAINWRITING_EVENT_TYPES } from "@/lib/appsync-events/event-types";
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,6 +24,9 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await joinBrainwriting(brainwritingId, authResult.userId, usageScope);
+
+    // AppSync Eventsにイベントを発行
+    await publishBrainwritingEvent(brainwritingId, BRAINWRITING_EVENT_TYPES.USER_JOINED);
 
     return NextResponse.json({
       message: "参加しました",

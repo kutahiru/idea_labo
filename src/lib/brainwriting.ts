@@ -970,6 +970,7 @@ export async function rotateSheetToNextUser(sheetId: number, currentUserId: stri
 
   // 1行目のユーザーを先頭にした配列に組み直す
   const sortedUsers = sortUsersByFirstRow(inputs, allUsers);
+  console.log("sortedUsers:", JSON.stringify(sortedUsers, null, 2));
 
   // 現在のユーザーのインデックスを取得
   const currentIndex = sortedUsers.findIndex(user => user.user_id === currentUserId);

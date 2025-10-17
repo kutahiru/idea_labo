@@ -17,20 +17,26 @@ export default function BrainwritingTeamClient({
   brainwritingTeam,
   currentUserId,
 }: BrainwritingTeamClientProps) {
-  const { sheets: initialSheets, inputs, users: initialUsers, ...brainwriting } = brainwritingTeam;
+  const { sheets: initialSheets, inputs: initialInputs, users: initialUsers, ...brainwriting } = brainwritingTeam;
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  // AppSync Eventsでリアルタイム更新（参加者とシート両方）
-  const { users, sheets } = useBrainwritingRealtime({
+  // AppSync Eventsでリアルタイム更新（参加者、シート、入力データ）
+  const { users, sheets, inputs } = useBrainwritingRealtime({
     brainwritingId: brainwriting.id,
     initialUsers,
     initialSheets,
+    initialInputs,
   });
 
   // 開始ボタンを表示するのは作成者のみ
   const isCreator = brainwriting.userId === currentUserId;
 
   const handleStart = () => {
+    if (users.length < 2) {
+      toast.error("最低でも参加者が2人必要です。");
+      return;
+    }
+
     //6人未満の場合は確認メッセージ
     if (users.length < 6) {
       setShowConfirmModal(true);

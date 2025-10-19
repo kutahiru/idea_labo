@@ -29,7 +29,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const result = await updateIdeaCategory(id, authResult.userId, validationResult.data);
 
     if (!result) {
-      return apiErrors.notFound();
+      return apiErrors.notFound("アイデアカテゴリ");
     }
 
     return NextResponse.json(result);
@@ -60,7 +60,7 @@ export async function DELETE(
     const result = await deleteIdeaCategory(id, authResult.userId);
 
     if (!result) {
-      return apiErrors.notFound();
+      return apiErrors.notFound("アイデアカテゴリ");
     }
 
     return NextResponse.json({ message: "削除が完了しました", id: result.id });

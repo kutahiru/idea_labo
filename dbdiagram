@@ -1,6 +1,6 @@
 Table users {
-  id text [pk]
-  name text
+  id text [pk, not null]
+  name text [not null]
   email text [not null]
   emailVerified timestamp
   image text
@@ -57,7 +57,7 @@ Table brainwriting_users {
 Table brainwriting_sheets {
   id integer [pk, increment, not null]
   brainwriting_id integer [not null, ref: > brainwritings.id, note: "ブレインライティングID"]
-  current_user_id text [not null, ref: > users.id, note: "現在のユーザーID"]
+  current_user_id text [ref: > users.id, note: "現在のユーザーID"]
   lock_expires_at timestamp [note: "ロック期限(X投稿版のみ)"]
   created_at timestamp [not null]
   updated_at timestamp [not null]
@@ -79,7 +79,7 @@ Table brainwriting_inputs {
   Note: 'ブレインライティング入力データ'
 }
 
-Table mandala_arts {
+Table mandalarts {
   id integer [pk, increment, not null]
   user_id text [not null, ref: > users.id, note: "ユーザーID"]
   title varchar [not null, note: "タイトル"]
@@ -91,9 +91,9 @@ Table mandala_arts {
   Note: 'マンダラート'
 }
 
-Table mandala_art_inputs {
+Table mandalart_inputs {
   id integer [pk, increment, not null]
-  mandala_art_id integer [not null, ref: > mandala_arts.id, note: "マンダラートID"]
+  mandala_art_id integer [not null, ref: > mandalarts.id, note: "マンダラートID"]
   row_index integer [not null, note: "行インデックス"]
   column_index integer [not null, note: "列インデックス"]
   content text [note: "入力内容"]

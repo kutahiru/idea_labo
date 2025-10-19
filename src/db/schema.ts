@@ -111,7 +111,7 @@ export const brainwriting_inputs = pgTable("brainwriting_inputs", {
     .$onUpdate(() => new Date()),
 });
 
-export const mandala_arts = pgTable("mandala_arts", {
+export const mandalarts = pgTable("mandalarts", {
   id: serial("id").primaryKey(),
   user_id: text("user_id")
     .notNull()
@@ -126,11 +126,11 @@ export const mandala_arts = pgTable("mandala_arts", {
     .$onUpdate(() => new Date()),
 });
 
-export const mandala_art_inputs = pgTable("mandala_art_inputs", {
+export const mandalart_inputs = pgTable("mandalart_inputs", {
   id: serial("id").primaryKey(),
-  mandala_art_id: integer("mandala_art_id")
+  mandalart_id: integer("mandalart_id")
     .notNull()
-    .references(() => mandala_arts.id, { onDelete: "cascade" }),
+    .references(() => mandalarts.id, { onDelete: "cascade" }),
   row_index: integer("row_index").notNull(),
   column_index: integer("column_index").notNull(),
   content: varchar("content", { length: 100 }),

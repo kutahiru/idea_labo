@@ -2,60 +2,57 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import BrainwritingIndex from "./BrainwritingIndex";
-import BrainwritingModal from "./BrainwritingModal";
-import { BrainwritingListItem } from "@/types/brainwriting";
-import { BrainwritingFormData } from "@/schemas/brainwriting";
-import { AnimatePresence } from "framer-motion";
+import { MandalartListItem } from "@/types/mandalart";
+import { MandalartFormData } from "@/schemas/mandalart";
 import { CreateButton } from "@/components/shared/Button";
-import { useResourceSubmit, useResourceDelete } from "@/hooks/useResourceSubmit";
+import { useResourceDelete, useResourceSubmit } from "@/hooks/useResourceSubmit";
+import MandalartIndex from "./MandalartIndex";
+import MandalartModal from "./MandalartModal";
+import { AnimatePresence } from "framer-motion";
 
-interface BrainwritingPageClientProps {
-  initialData: BrainwritingListItem[];
+interface MandalartPageClientProps {
+  initialData: MandalartListItem[];
 }
 
-export default function BrainwritingPageClient({ initialData }: BrainwritingPageClientProps) {
+export default function MandalartPageClient({ initialData }: MandalartPageClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingData, setEditingData] = useState<BrainwritingListItem | null>(null);
+  const [editingData, setEditingData] = useState<MandalartListItem | null>(null);
   const router = useRouter();
 
-  // 新規作成モーダルを開く
   const handleOpenCreateModal = () => {
     setEditingData(null);
     setIsModalOpen(true);
   };
 
-  // 編集モーダルを開く
-  const handleOpenEditModal = (item: BrainwritingListItem) => {
+  const handleOpenEditModal = (item: MandalartListItem) => {
     setEditingData(item);
     setIsModalOpen(true);
   };
 
-  // モーダルを閉じる
   const handleCloseModal = () => {
     setEditingData(null);
     setIsModalOpen(false);
   };
 
-  // ブレインライティング作成・更新
-  const handleSubmit = useResourceSubmit<BrainwritingFormData>({
-    apiPath: "/api/brainwritings",
-    resourceName: "ブレインライティング",
+  /** マンダラート作成・更新 */
+  const handleSubmit = useResourceSubmit<MandalartFormData>({
+    apiPath: "api/mandalarts",
+    resourceName: "マンダラート",
     editingData,
     onSuccess: (isEdit, result) => {
       if (isEdit) {
         router.refresh();
         handleCloseModal();
       } else {
-        router.push(`/brainwritings/${(result as { id: number }).id}`);
+        router.push(`/mandalarts/${(result as { id: number }).id}`);
       }
     },
   });
 
-  // ブレインライティング削除
+  /** マンダラート削除 */
   const handleDelete = useResourceDelete({
-    apiPath: "/api/brainwritings",
-    resourceName: "ブレインライティング",
+    apiPath: "/api/mandalarts",
+    resourceName: "マンダラート",
   });
 
   return (
@@ -67,7 +64,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
 
       {/* 一覧表示 */}
       <div className="mt-4">
-        <BrainwritingIndex
+        <MandalartIndex
           initialData={initialData}
           onEdit={handleOpenEditModal}
           onDelete={handleDelete}
@@ -77,7 +74,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
       {/* モーダル */}
       <AnimatePresence>
         {isModalOpen && (
-          <BrainwritingModal
+          <MandalartModal
             onClose={handleCloseModal}
             onSubmit={handleSubmit}
             initialData={editingData || undefined}

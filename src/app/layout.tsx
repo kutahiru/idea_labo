@@ -32,9 +32,9 @@ const lora = Lora({
 
 const wdxlLubrifontJpN = WDXL_Lubrifont_JP_N({
   variable: "--font-wdxl-lubrifont",
-  subsets: ["latin"],
   weight: ["400"],
-  adjustFontFallback: false, // フォールバック生成の警告を抑制
+  display: "swap",
+  adjustFontFallback: false, // フォールバック生成を無効化
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";

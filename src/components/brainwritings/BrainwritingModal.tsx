@@ -20,7 +20,7 @@ export default function BrainwritingModal({
   const defaultData: BrainwritingFormData = {
     title: "",
     themeName: "",
-    description: "",
+    description: null,
     usageScope: USAGE_SCOPE.XPOST,
     ...initialData,
   };

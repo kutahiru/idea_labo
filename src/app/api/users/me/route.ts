@@ -16,7 +16,7 @@ export async function GET() {
     const user = await getUserById(authResult.userId);
 
     if (!user) {
-      return apiErrors.notFound();
+      return apiErrors.notFound("ユーザー");
     }
 
     return NextResponse.json(user);
@@ -47,7 +47,7 @@ export async function PUT(request: NextRequest) {
     const result = await updateUser(authResult.userId, validationResult.data);
 
     if (!result) {
-      return apiErrors.notFound();
+      return apiErrors.notFound("ユーザー");
     }
 
     return NextResponse.json(result);

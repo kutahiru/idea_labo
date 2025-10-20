@@ -13,6 +13,7 @@ interface MandalartSectionProps {
     columnIndex: number,
     value: string
   ) => void;
+  mandalartTheme: string;
   readOnly?: boolean;
 }
 
@@ -21,9 +22,29 @@ export default function MandalartSection({
   sectionColumnIndex,
   inputs,
   onCellChange,
+  mandalartTheme,
   readOnly = false,
 }: MandalartSectionProps) {
+  const isCenterCell = (rowIndex: number, columnIndex: number): boolean => {
+    return rowIndex === 1 && columnIndex === 1;
+  };
+
+  const isSectionCenter = (rowIndex: number, columnIndex: number): boolean => {
+    return sectionRowIndex === 1 && sectionColumnIndex === 1 && rowIndex === 1 && columnIndex === 1;
+  };
+
   const getCellValue = (rowIndex: number, columnIndex: number): string => {
+    // 中央セクションの中央セルの場合はテーマを返す
+    if (isSectionCenter(rowIndex, columnIndex)) {
+      return mandalartTheme;
+    }
+
+    // 各セクションの中央セルの場合は、中央セクションの対応する位置の値を返す
+    if (isCenterCell(rowIndex, columnIndex)) {
+      const centerKey = `1-1-${sectionRowIndex}-${sectionColumnIndex}`;
+      return inputs.get(centerKey) || "";
+    }
+
     const key = `${sectionRowIndex}-${sectionColumnIndex}-${rowIndex}-${columnIndex}`;
     return inputs.get(key) || "";
   };
@@ -32,8 +53,8 @@ export default function MandalartSection({
     onCellChange(sectionRowIndex, sectionColumnIndex, rowIndex, columnIndex, value);
   };
 
-  const isCenterCell = (rowIndex: number, columnIndex: number): boolean => {
-    return rowIndex === 1 && columnIndex === 1;
+  const isReadOnly = (rowIndex: number, columnIndex: number): boolean => {
+    return readOnly || isCenterCell(rowIndex, columnIndex);
   };
 
   return (
@@ -44,8 +65,10 @@ export default function MandalartSection({
             key={`${rowIndex}-${columnIndex}`}
             value={getCellValue(rowIndex, columnIndex)}
             isCenter={isCenterCell(rowIndex, columnIndex)}
-            readOnly={readOnly}
+            readOnly={isReadOnly(rowIndex, columnIndex)}
             onChange={value => handleCellChange(rowIndex, columnIndex, value)}
+            rowIndex={sectionRowIndex * 3 + rowIndex}
+            colIndex={sectionColumnIndex * 3 + columnIndex}
           />
         ))
       )}

@@ -32,7 +32,12 @@ const item = {
 export default function Home() {
   return (
     <div className="container mx-auto px-4">
-      <motion.div className="pt-8 text-center" initial="hidden" animate="show" variants={container}>
+      <motion.div
+        className="mt-8 text-center md:mb-8"
+        initial="hidden"
+        animate="show"
+        variants={container}
+      >
         <motion.h1
           className="font-wdxl-lubrifont text-primary decoration-accent mb-4 flex items-center justify-center gap-4 text-5xl tracking-widest underline decoration-[12px] underline-offset-[-4px] md:gap-6 md:text-6xl md:decoration-[20px] md:underline-offset-[-6px] lg:text-7xl xl:text-8xl xl:decoration-[28px] xl:underline-offset-[-8px]"
           variants={item}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAuth, apiErrors } from "@/lib/api/utils";
 import { upsertMandalartInput } from "@/lib/mandalart";
+import { mandalartInputSchema } from "@/schemas/mandalart";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,28 +11,19 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const {
-      mandalartId,
-      sectionRowIndex,
-      sectionColumnIndex,
-      rowIndex,
-      columnIndex,
-      content,
-    } = body;
 
-    if (
-      typeof mandalartId !== "number" ||
-      typeof sectionRowIndex !== "number" ||
-      typeof sectionColumnIndex !== "number" ||
-      typeof rowIndex !== "number" ||
-      typeof columnIndex !== "number" ||
-      typeof content !== "string"
-    ) {
-      return apiErrors.invalidData();
+    // Zodスキーマでバリデーション
+    const validationResult = mandalartInputSchema.safeParse(body);
+    if (!validationResult.success) {
+      return apiErrors.invalidData(validationResult.error.issues[0].message);
     }
+
+    const { mandalartId, sectionRowIndex, sectionColumnIndex, rowIndex, columnIndex, content } =
+      validationResult.data;
 
     const result = await upsertMandalartInput(
       mandalartId,
+      authResult.userId,
       sectionRowIndex,
       sectionColumnIndex,
       rowIndex,
@@ -42,6 +34,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result);
   } catch (error) {
     console.error("マンダラート入力保存エラー:", error);
+
+    // アクセス拒否エラーのハンドリング
+    if (error instanceof Error && error.message.includes("Unauthorized")) {
+      return apiErrors.forbidden();
+    }
+
     return apiErrors.serverError();
   }
 }

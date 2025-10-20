@@ -6,6 +6,7 @@ import { MandalartInputData } from "@/types/mandalart";
 
 interface MandalartGridProps {
   mandalartId: number;
+  themeName: string;
   inputs: MandalartInputData[];
   onInputChange: (
     sectionRowIndex: number,
@@ -19,6 +20,7 @@ interface MandalartGridProps {
 
 export default function MandalartGrid({
   mandalartId,
+  themeName,
   inputs,
   onInputChange,
   readOnly = false,
@@ -69,6 +71,7 @@ export default function MandalartGrid({
               sectionColumnIndex={sectionColumnIndex}
               inputs={inputsMap}
               onCellChange={handleCellChange}
+              mandalartTheme={themeName}
               readOnly={readOnly}
             />
           ))

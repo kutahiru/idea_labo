@@ -208,12 +208,19 @@ export async function getMandalartInputsByMandalartId(
  */
 export async function upsertMandalartInput(
   mandalartId: number,
+  userId: string,
   sectionRowIndex: number,
   sectionColumnIndex: number,
   rowIndex: number,
   columnIndex: number,
   content: string
 ) {
+  // マンダラートの所有者チェック
+  const mandalart = await getMandalartById(mandalartId, userId);
+  if (!mandalart) {
+    throw new Error("Unauthorized: Mandalart not found or access denied");
+  }
+
   // 既存データを検索
   const existingInput = await db
     .select()

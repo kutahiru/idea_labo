@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     // カテゴリの所有者確認
     const isOwner = await checkCategoryOwnership(parseInt(categoryId), authResult.userId);
     if (!isOwner) {
-      return apiErrors.notFound();
+      return apiErrors.notFound("アイデア");
     }
 
     const validationResult = ideaFormDataSchema.safeParse(formData);

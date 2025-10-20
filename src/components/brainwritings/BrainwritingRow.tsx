@@ -1,5 +1,5 @@
 import BrainwritingUserCell from "./BrainwritingUserCell";
-import IdeaCell from "./IdeaCell";
+import BrainwritingCell from "./BrainwritingCell";
 
 interface BrainwritingRowProps {
   userName: string; // 参加者名
@@ -23,7 +23,7 @@ export default function BrainwritingRow({
       <BrainwritingUserCell userName={userName} rowIndex={rowIndex} />
 
       {Array.from({ length: 3 }, (_, colIndex) => (
-        <IdeaCell
+        <BrainwritingCell
           key={colIndex}
           value={ideas[colIndex]}
           isHighlighted={isHighlighted}

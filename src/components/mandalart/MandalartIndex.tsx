@@ -1,23 +1,19 @@
 "use client";
 
-import BrainwritingIndexRow from "./BrainwritingIndexRow";
-import { BrainwritingListItem } from "@/types/brainwriting";
-import { Search, Loader2 } from "lucide-react";
-import SearchBar from "@/components/layout/SearchBar";
+import { Loader2, Search } from "lucide-react";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { MandalartListItem } from "@/types/mandalart";
+import SearchBar from "@/components/layout/SearchBar";
 import { useSearch } from "@/hooks/useSearch";
+import MandalartIndexRow from "./MandalartIndexRow";
 
-interface BrainwritingIndexProps {
-  initialData: BrainwritingListItem[];
-  onEdit?: (item: BrainwritingListItem) => void;
-  onDelete?: (item: BrainwritingListItem) => void;
+interface MandalartIndexProps {
+  initialData: MandalartListItem[];
+  onEdit?: (item: MandalartListItem) => void;
+  onDelete?: (item: MandalartListItem) => void;
 }
 
-export default function BrainwritingIndex({
-  initialData,
-  onEdit,
-  onDelete,
-}: BrainwritingIndexProps) {
+export default function MandalartIndex({ initialData, onEdit, onDelete }: MandalartIndexProps) {
   // 無限スクロール機能
   const { displayedData, loading, observerRef, hasMore } = useInfiniteScroll({
     allData: initialData,
@@ -25,7 +21,6 @@ export default function BrainwritingIndex({
     loadingDelay: 300,
   });
 
-  // 検索機能（全データから検索、通常時は表示データのみ）
   const {
     searchTerm,
     setSearchTerm,
@@ -35,8 +30,8 @@ export default function BrainwritingIndex({
     searchFields: ["title", "themeName"],
   });
 
-  // 検索時は検索結果、通常時は表示データを使用
-  const filteredBrainwritings = searchTerm ? searchResults : displayedData;
+  // 検索機能
+  const filterMandalarts = searchTerm ? searchResults : displayedData;
 
   return (
     <div>
@@ -44,11 +39,11 @@ export default function BrainwritingIndex({
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         placeholder="タイトルまたはテーマで検索..."
-        resultCount={searchTerm ? filteredBrainwritings.length : undefined}
+        resultCount={searchTerm ? filterMandalarts.length : undefined}
       />
 
       {/* 検索結果 */}
-      {filteredBrainwritings.length === 0 && searchTerm ? (
+      {filterMandalarts.length === 0 && searchTerm ? (
         // 0件の場合
         <div className="py-12 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
@@ -62,12 +57,12 @@ export default function BrainwritingIndex({
       ) : (
         // 0件以外の場合
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {filteredBrainwritings.map((brainwriting, index) => (
-            <BrainwritingIndexRow
-              key={brainwriting.id}
-              {...brainwriting}
-              onEdit={onEdit ? () => onEdit(brainwriting) : undefined}
-              onDelete={onDelete ? () => onDelete(brainwriting) : undefined}
+          {filterMandalarts.map((mandalart, index) => (
+            <MandalartIndexRow
+              key={mandalart.id}
+              {...mandalart}
+              onEdit={onEdit ? () => onEdit(mandalart) : undefined}
+              onDelete={onDelete ? () => onDelete(mandalart) : undefined}
               index={index}
             />
           ))}

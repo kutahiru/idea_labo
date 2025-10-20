@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import BrainwritingInfo from "@/components/brainwritings/BrainwritingInfo";
+import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import BrainwritingSheet from "@/components/brainwritings/BrainwritingSheet";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";
@@ -126,7 +126,7 @@ export default function BrainwritingInputClient({
   // 回答完了ボタンクリック時の関数を定義
   const handleCompleteClick = async () => {
     // アクティブな要素からフォーカスを外す
-    // IdeaCellのonBlurが発火し、未保存の入力データを確実に保存する
+    // BrainwritingCellのonBlurが発火し、未保存の入力データを確実に保存する
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
@@ -194,7 +194,7 @@ export default function BrainwritingInputClient({
 
   return (
     <div className="mb-8">
-      <BrainwritingInfo brainwriting={brainwriting} />
+      <IdeaFrameworkInfo ideaFramework={brainwriting} />
 
       <BrainwritingSheet
         brainwritingRows={brainwritingRows}

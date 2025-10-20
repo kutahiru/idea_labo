@@ -1,6 +1,6 @@
 "use client";
 
-import BrainwritingInfo from "@/components/brainwritings/BrainwritingInfo";
+import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import XPostButton from "@/components/brainwritings/XPostButton";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { postBrainwritingToX } from "@/lib/x-post";
@@ -25,7 +25,7 @@ export default function BrainwritingCompleteContent({
 
   return (
     <div>
-      <BrainwritingInfo brainwriting={brainwriting} />
+      <IdeaFrameworkInfo ideaFramework={brainwriting} />
 
       <div className="mt-8 text-center">
         <div className="mb-6">

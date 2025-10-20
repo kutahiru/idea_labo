@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getBrainwritingDetailById,
-  updateBrainwriting,
-  deleteBrainwriting,
-} from "@/lib/brainwriting";
-import { brainwritingFormDataSchema } from "@/schemas/brainwriting";
-import { checkAuth, apiErrors } from "@/lib/api/utils";
+import { apiErrors, checkAuth } from "@/lib/api/utils";
+import { deleteMandalart, getMandalartDetailById, updateMandalart } from "@/lib/mandalart";
+import { mandalartFormDataSchema } from "@/schemas/mandalart";
 
 // 個別取得
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -18,24 +14,22 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 
     const id = parseInt((await params).id);
     if (isNaN(id)) {
-      return apiErrors.invalidId();
+      return apiErrors.invalidData();
     }
 
-    // ブレインライティング詳細を取得
-    const brainwritingDetail = await getBrainwritingDetailById(id, authResult.userId);
+    const mandalartDetail = await getMandalartDetailById(id, authResult.userId);
 
-    if (!brainwritingDetail) {
-      return apiErrors.notFound("ブレインライティング");
+    if (!mandalartDetail) {
+      return apiErrors.notFound("マンダラート");
     }
 
-    return NextResponse.json(brainwritingDetail);
+    return NextResponse.json(mandalartDetail);
   } catch (error) {
-    console.error("ブレインライティング取得エラー:", error);
+    console.log("マンダラート取得エラー", error);
     return apiErrors.serverError();
   }
 }
 
-// 更新
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // 認証チェック
@@ -49,29 +43,28 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return apiErrors.invalidId();
     }
 
-    // リクエストボディを取得・検証
+    //リクエストボディを取得・検証
     const body = await request.json();
-    const validationResult = brainwritingFormDataSchema.safeParse(body);
+    const validationResult = mandalartFormDataSchema.safeParse(body);
 
     if (!validationResult.success) {
       return apiErrors.invalidData(validationResult.error.issues);
     }
 
-    // ブレインライティングを更新
-    const result = await updateBrainwriting(id, authResult.userId, validationResult.data);
+    // マンダラートを更新
+    const result = await updateMandalart(id, authResult.userId, validationResult.data);
 
     if (!result) {
-      return apiErrors.notFound("ブレインライティング");
+      return apiErrors.notFound("マンダラート");
     }
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error("ブレインライティング更新エラー:", error);
+    console.error("マンダラート更新エラー:", error);
     return apiErrors.serverError();
   }
 }
 
-// 削除
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -88,16 +81,15 @@ export async function DELETE(
       return apiErrors.invalidId();
     }
 
-    // ブレインライティングを削除
-    const result = await deleteBrainwriting(id, authResult.userId);
+    const result = await deleteMandalart(id, authResult.userId);
 
     if (!result) {
-      return apiErrors.notFound("ブレインライティング");
+      return apiErrors.notFound("マンダラート");
     }
 
     return NextResponse.json({ message: "削除が完了しました", id: result.id });
   } catch (error) {
-    console.error("ブレインライティング削除エラー:", error);
+    console.error("マンダラート削除エラー:", error);
     return apiErrors.serverError();
   }
 }

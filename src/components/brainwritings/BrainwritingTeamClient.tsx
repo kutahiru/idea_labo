@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import BrainwritingInfo from "./BrainwritingInfo";
+import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import BrainwritingSheetList from "./BrainwritingSheetList";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail } from "@/types/brainwriting";
@@ -69,7 +69,7 @@ export default function BrainwritingTeamClient({
 
   return (
     <div className="">
-      <BrainwritingInfo brainwriting={brainwriting} />
+      <IdeaFrameworkInfo ideaFramework={brainwriting} />
 
       {sheets.length === 0 ? (
         <>

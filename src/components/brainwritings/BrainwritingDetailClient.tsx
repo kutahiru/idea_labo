@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import BrainwritingInfo from "./BrainwritingInfo";
+import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import BrainwritingSheet from "./BrainwritingSheet";
 import XPostButton from "./XPostButton";
 import InviteLinkCopy from "./InviteLinkCopy";
@@ -62,7 +62,7 @@ export default function BrainwritingDetailClient({
   // X投稿ボタンのクリックハンドラー
   const handleXPost = async () => {
     // アクティブな要素からフォーカスを外す
-    // IdeaCellのonBlurが発火し、未保存の入力データを確実に保存する
+    // BrainwritingCellのonBlurが発火し、未保存の入力データを確実に保存する
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
@@ -127,7 +127,7 @@ export default function BrainwritingDetailClient({
 
   return (
     <div className="mb-8">
-      <BrainwritingInfo brainwriting={brainwriting} />
+      <IdeaFrameworkInfo ideaFramework={brainwriting} />
 
       {/* X投稿ボタン（X投稿版） */}
       {brainwriting.usageScope === USAGE_SCOPE.XPOST && (

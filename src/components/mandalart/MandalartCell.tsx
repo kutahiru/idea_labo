@@ -1,0 +1,131 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+
+interface MandalartCellProps {
+  value?: string;
+  isCenter?: boolean;
+  readOnly?: boolean;
+  onChange: (value: string) => void;
+  rowIndex?: number;
+  colIndex?: number;
+}
+
+export default function MandalartCell({
+  value = "",
+  isCenter = false,
+  readOnly = false,
+  onChange,
+  rowIndex = 0,
+  colIndex = 0,
+}: MandalartCellProps) {
+  const [lastSavedValue, setLastSavedValue] = useState(value);
+  const [localValue, setLocalValue] = useState(value);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // 初期値の同期
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  // フォントサイズを動的に計算
+  const getFontSize = () => {
+    const length = localValue.length;
+    if (length > 40) return "text-[8.5px]";
+    if (length > 24) return "text-[10px]";
+    if (length > 18) return "text-xs";
+    return "text-sm";
+  };
+
+  // テキストエリアの高さを自動調整
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "0px";
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${Math.min(scrollHeight, 56)}px`;
+    }
+  }, [localValue]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setLocalValue(e.target.value);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    if (newValue !== lastSavedValue) {
+      onChange(newValue);
+      setLastSavedValue(newValue);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.blur();
+
+      // 次の入力フィールドにフォーカス移動
+      const textarea = document.querySelectorAll("textarea:not([readonly])");
+      const currentIndex = Array.from(textarea).indexOf(e.currentTarget);
+      const nextTextarea = textarea[currentIndex + 1];
+
+      if (nextTextarea) {
+        (nextTextarea as HTMLTextAreaElement).focus();
+      }
+    }
+  };
+
+  // 四方向からランダムに飛んでくるアニメーション
+  const directions = [
+    { x: -1000, y: 0 }, // 左から
+    { x: 1000, y: 0 }, // 右から
+    { x: 0, y: -1000 }, // 上から
+    { x: 0, y: 1000 }, // 下から
+  ];
+
+  const direction = directions[(rowIndex + colIndex) % 4];
+  const delay = (rowIndex * 3 + colIndex) * 0.05;
+
+  return (
+    <motion.div
+      initial={{ x: direction.x, y: direction.y, opacity: 0 }}
+      animate={{ x: 0, y: 0, opacity: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 80,
+        damping: 15,
+        delay,
+      }}
+    >
+      <div
+        className={
+          "relative flex h-[72px] items-center justify-center rounded-lg border-2 transition-all duration-300 " +
+          (isCenter
+            ? "border-accent bg-accent/10 shadow-accent/20 shadow-xl"
+            : "border-primary/50 bg-white shadow-md hover:shadow-lg")
+        }
+      >
+        <textarea
+          ref={textareaRef}
+          value={localValue}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          readOnly={readOnly}
+          placeholder={readOnly ? "" : "入力"}
+          rows={1}
+          maxLength={30}
+          className={
+            "text-primary w-full resize-none overflow-hidden border-none bg-transparent px-1 py-1 text-center leading-tight font-medium outline-none " +
+            getFontSize() +
+            " " +
+            (readOnly ? "cursor-default" : "cursor-text")
+          }
+          style={{
+            maxHeight: "64px",
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+}

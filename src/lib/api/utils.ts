@@ -10,8 +10,8 @@ export async function checkAuth() {
 }
 
 export const apiErrors = {
-  notFound: () =>
-    NextResponse.json({ error: "ブレインライティングが見つかりません" }, { status: 404 }),
+  notFound: (frameworkName: string) =>
+    NextResponse.json({ error: `${frameworkName}が見つかりません` }, { status: 404 }),
   serverError: () => NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 }),
   invalidId: () => NextResponse.json({ error: "無効なIDです" }, { status: 400 }),
   invalidData: (details?: unknown) =>
@@ -20,8 +20,5 @@ export const apiErrors = {
       { status: 400 }
     ),
   forbidden: (message?: string) =>
-    NextResponse.json(
-      { error: message || "アクセス権限がありません" },
-      { status: 403 }
-    ),
+    NextResponse.json({ error: message || "アクセス権限がありません" }, { status: 403 }),
 };

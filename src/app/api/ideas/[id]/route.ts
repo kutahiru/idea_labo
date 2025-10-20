@@ -34,14 +34,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     // 所有者チェック
     const isOwner = await checkIdeaOwnership(id, authResult.userId);
     if (!isOwner) {
-      return apiErrors.notFound();
+      return apiErrors.notFound("アイデア");
     }
 
     // アイデアを更新
     const result = await updateIdea(id, parseInt(categoryId), validationResult.data);
 
     if (!result) {
-      return apiErrors.notFound();
+      return apiErrors.notFound("アイデア");
     }
 
     return NextResponse.json(result);
@@ -71,14 +71,14 @@ export async function DELETE(
     // 所有者チェック
     const isOwner = await checkIdeaOwnership(id, authResult.userId);
     if (!isOwner) {
-      return apiErrors.notFound();
+      return apiErrors.notFound("アイデア");
     }
 
     // アイデアを削除
     const result = await deleteIdea(id);
 
     if (!result) {
-      return apiErrors.notFound();
+      return apiErrors.notFound("アイデア");
     }
 
     return NextResponse.json({ message: "削除が完了しました", id: result.id });

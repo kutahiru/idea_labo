@@ -60,7 +60,7 @@ export default function MandalartIndexRow({
               {/* アクションボタン */}
               <div className="flex items-center gap-2">
                 <Link
-                  href={`/brainwritings/${id}`}
+                  href={`/mandalarts/${id}`}
                   className="bg-primary inline-flex items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
                 >
                   詳細

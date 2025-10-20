@@ -181,6 +181,8 @@ export async function getMandalartInputsByMandalartId(
     .select({
       id: mandalart_inputs.id,
       mandalart_id: mandalart_inputs.mandalart_id,
+      section_row_index: mandalart_inputs.section_row_index,
+      section_column_index: mandalart_inputs.section_column_index,
       row_index: mandalart_inputs.row_index,
       column_index: mandalart_inputs.column_index,
       content: mandalart_inputs.content,
@@ -190,5 +192,70 @@ export async function getMandalartInputsByMandalartId(
     .from(mandalart_inputs)
     .where(eq(mandalart_inputs.mandalart_id, mandalartId))
     .orderBy(mandalart_inputs.id);
+}
+//#endregion
+
+//#region マンダラート入力データの保存・更新
+/**
+ * マンダラート入力データの保存・更新
+ * @param mandalartId - マンダラートID
+ * @param sectionRowIndex - セクション行インデックス
+ * @param sectionColumnIndex - セクション列インデックス
+ * @param rowIndex - セル行インデックス
+ * @param columnIndex - セル列インデックス
+ * @param content - 入力内容
+ * @returns 保存・更新された入力データ
+ */
+export async function upsertMandalartInput(
+  mandalartId: number,
+  sectionRowIndex: number,
+  sectionColumnIndex: number,
+  rowIndex: number,
+  columnIndex: number,
+  content: string
+) {
+  // 既存データを検索
+  const existingInput = await db
+    .select()
+    .from(mandalart_inputs)
+    .where(
+      and(
+        eq(mandalart_inputs.mandalart_id, mandalartId),
+        eq(mandalart_inputs.section_row_index, sectionRowIndex),
+        eq(mandalart_inputs.section_column_index, sectionColumnIndex),
+        eq(mandalart_inputs.row_index, rowIndex),
+        eq(mandalart_inputs.column_index, columnIndex)
+      )
+    )
+    .limit(1);
+
+  if (existingInput.length > 0) {
+    // 更新
+    const result = await db
+      .update(mandalart_inputs)
+      .set({
+        content: content || null,
+        updated_at: new Date(),
+      })
+      .where(eq(mandalart_inputs.id, existingInput[0].id))
+      .returning();
+
+    return result[0];
+  } else {
+    // 新規作成
+    const result = await db
+      .insert(mandalart_inputs)
+      .values({
+        mandalart_id: mandalartId,
+        section_row_index: sectionRowIndex,
+        section_column_index: sectionColumnIndex,
+        row_index: rowIndex,
+        column_index: columnIndex,
+        content: content || null,
+      })
+      .returning();
+
+    return result[0];
+  }
 }
 //#endregion

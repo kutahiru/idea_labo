@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Lock } from "lucide-react";
 import { motion } from "framer-motion";
 
-interface IdeaCellProps {
+interface BrainwritingCellProps {
   value?: string;
   isHighlighted?: boolean;
   readOnly?: boolean;
@@ -13,14 +13,14 @@ interface IdeaCellProps {
   colIndex?: number;
 }
 
-export default function IdeaCell({
+export default function BrainwritingCell({
   value = "",
   isHighlighted = false,
   readOnly = false,
   onChange,
   rowIndex = 0,
   colIndex = 0,
-}: IdeaCellProps) {
+}: BrainwritingCellProps) {
   const [lastSavedValue, setLastSavedValue] = useState(value);
   const [localValue, setLocalValue] = useState(value);
   const textareaRef = useRef<HTMLTextAreaElement>(null);

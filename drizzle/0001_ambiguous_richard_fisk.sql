@@ -1,1 +1,0 @@
-ALTER TABLE "brainwritings" ALTER COLUMN "invite_token" SET NOT NULL;

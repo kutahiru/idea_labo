@@ -131,6 +131,8 @@ export const mandalart_inputs = pgTable("mandalart_inputs", {
   mandalart_id: integer("mandalart_id")
     .notNull()
     .references(() => mandalarts.id, { onDelete: "cascade" }),
+  section_row_index: integer("section_row_index").notNull(),
+  section_column_index: integer("section_column_index").notNull(),
   row_index: integer("row_index").notNull(),
   column_index: integer("column_index").notNull(),
   content: varchar("content", { length: 100 }),

@@ -14,7 +14,6 @@ export default function MandalartModal({
   initialData,
   mode,
 }: MandalartModalProps) {
-  // マンダラート固有のデフォルト値を設定
   const defaultData: MandalartFormData = {
     title: "",
     themeName: "",

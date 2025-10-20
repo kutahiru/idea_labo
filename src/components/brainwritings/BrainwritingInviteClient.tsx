@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import toast from "react-hot-toast";
-import BrainwritingInfo from "@/components/brainwritings/BrainwritingInfo";
+import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { USAGE_SCOPE } from "@/utils/brainwriting";
 
@@ -142,7 +142,7 @@ export default function BrainwritingInviteClient({
     return (
       <div className="py-2">
         <div className="mx-auto max-w-4xl">
-          <BrainwritingInfo brainwriting={brainwriting} />
+          <IdeaFrameworkInfo ideaFramework={brainwriting} />
           <div className="mb-8 text-center">
             <h1 className="text-primary mb-4 text-3xl font-bold">
               ブレインライティングに招待されました
@@ -159,7 +159,7 @@ export default function BrainwritingInviteClient({
   return (
     <div className="py-2">
       <div className="mx-auto max-w-4xl">
-        <BrainwritingInfo brainwriting={brainwriting} />
+        <IdeaFrameworkInfo ideaFramework={brainwriting} />
 
         <div className="mb-8 text-center">
           <h1 className="text-primary mb-4 text-3xl font-bold">

@@ -86,7 +86,7 @@ export default function Home() {
 
         {/* 右側のメニューエリア */}
         <div className="flex-1 rounded-3xl md:max-w-134 lg:max-w-164 xl:max-w-160">
-          <div className="flex flex-col items-start gap-4 p-6 xl:gap-6">
+          <div className="flex flex-col items-start gap-4 py-6 xl:gap-6">
             {/* メニュー項目 - ブレインライティング */}
             <motion.div className="relative" variants={item}>
               <div className="border-dashed-wide flex items-center justify-start pl-2">
@@ -123,7 +123,7 @@ export default function Home() {
             <motion.div className="relative" variants={item}>
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
-                  href="/osborn"
+                  href="/osborn-checklists"
                   className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium whitespace-nowrap transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   オズボーンのチェックリスト

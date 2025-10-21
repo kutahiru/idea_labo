@@ -6,9 +6,10 @@ import { MandalartListItem } from "@/types/mandalart";
 import { MandalartFormData } from "@/schemas/mandalart";
 import { CreateButton } from "@/components/shared/Button";
 import { useResourceDelete, useResourceSubmit } from "@/hooks/useResourceSubmit";
-import MandalartIndex from "./MandalartIndex";
+import IdeaFrameworkIndex from "@/components/shared/IdeaFrameworkIndex";
 import MandalartModal from "./MandalartModal";
 import { AnimatePresence } from "framer-motion";
+import { IDEA_FRAMEWORK_TYPES, IDEA_FRAMEWORK_NAMES } from "@/schemas/idea-framework";
 
 interface MandalartPageClientProps {
   initialData: MandalartListItem[];
@@ -37,7 +38,7 @@ export default function MandalartPageClient({ initialData }: MandalartPageClient
   /** マンダラート作成・更新 */
   const handleSubmit = useResourceSubmit<MandalartFormData>({
     apiPath: "api/mandalarts",
-    resourceName: "マンダラート",
+    resourceName: IDEA_FRAMEWORK_NAMES[IDEA_FRAMEWORK_TYPES.MANDALART],
     editingData,
     onSuccess: (isEdit, result) => {
       if (isEdit) {
@@ -52,7 +53,7 @@ export default function MandalartPageClient({ initialData }: MandalartPageClient
   /** マンダラート削除 */
   const handleDelete = useResourceDelete({
     apiPath: "/api/mandalarts",
-    resourceName: "マンダラート",
+    resourceName: IDEA_FRAMEWORK_NAMES[IDEA_FRAMEWORK_TYPES.MANDALART],
   });
 
   return (
@@ -64,7 +65,8 @@ export default function MandalartPageClient({ initialData }: MandalartPageClient
 
       {/* 一覧表示 */}
       <div className="mt-4">
-        <MandalartIndex
+        <IdeaFrameworkIndex
+          frameworkType={IDEA_FRAMEWORK_TYPES.MANDALART}
           initialData={initialData}
           onEdit={handleOpenEditModal}
           onDelete={handleDelete}

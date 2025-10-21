@@ -1,23 +1,35 @@
 "use client";
 
-import BrainwritingIndexRow from "./BrainwritingIndexRow";
-import { BrainwritingListItem } from "@/types/brainwriting";
+import IdeaFrameworkIndexRow from "@/components/shared/IdeaFrameworkIndexRow";
 import { Search, Loader2 } from "lucide-react";
 import SearchBar from "@/components/layout/SearchBar";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useSearch } from "@/hooks/useSearch";
+import { IDEA_FRAMEWORK_NAMES, type IdeaFrameworkType } from "@/schemas/idea-framework";
 
-interface BrainwritingIndexProps {
-  initialData: BrainwritingListItem[];
-  onEdit?: (item: BrainwritingListItem) => void;
-  onDelete?: (item: BrainwritingListItem) => void;
+interface BaseListItem {
+  id: number;
+  title: string;
+  themeName: string;
+  description: string | null;
+  createdAt: Date;
 }
 
-export default function BrainwritingIndex({
+interface IdeaFrameworkIndexProps<T extends BaseListItem> {
+  frameworkType: IdeaFrameworkType;
+  initialData: T[];
+  onEdit?: (item: T) => void;
+  onDelete?: (item: T) => void;
+  getUsageScopeLabel?: (item: T) => string | undefined;
+}
+
+export default function IdeaFrameworkIndex<T extends BaseListItem>({
+  frameworkType,
   initialData,
   onEdit,
   onDelete,
-}: BrainwritingIndexProps) {
+  getUsageScopeLabel,
+}: IdeaFrameworkIndexProps<T>) {
   // 無限スクロール機能
   const { displayedData, loading, observerRef, hasMore } = useInfiniteScroll({
     allData: initialData,
@@ -36,7 +48,9 @@ export default function BrainwritingIndex({
   });
 
   // 検索時は検索結果、通常時は表示データを使用
-  const filteredBrainwritings = searchTerm ? searchResults : displayedData;
+  const filteredItems = searchTerm ? searchResults : displayedData;
+
+  const frameworkName = IDEA_FRAMEWORK_NAMES[frameworkType];
 
   return (
     <div>
@@ -44,11 +58,11 @@ export default function BrainwritingIndex({
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         placeholder="タイトルまたはテーマで検索..."
-        resultCount={searchTerm ? filteredBrainwritings.length : undefined}
+        resultCount={searchTerm ? filteredItems.length : undefined}
       />
 
       {/* 検索結果 */}
-      {filteredBrainwritings.length === 0 && searchTerm ? (
+      {filteredItems.length === 0 && searchTerm ? (
         // 0件の場合
         <div className="py-12 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
@@ -56,18 +70,20 @@ export default function BrainwritingIndex({
           </div>
           <h3 className="mt-4 text-sm font-medium text-gray-900">検索結果が見つかりません</h3>
           <p className="mt-2 text-sm text-gray-500">
-            {searchTerm}に一致するブレインライティングがありません
+            {searchTerm}に一致する{frameworkName}がありません
           </p>
         </div>
       ) : (
         // 0件以外の場合
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {filteredBrainwritings.map((brainwriting, index) => (
-            <BrainwritingIndexRow
-              key={brainwriting.id}
-              {...brainwriting}
-              onEdit={onEdit ? () => onEdit(brainwriting) : undefined}
-              onDelete={onDelete ? () => onDelete(brainwriting) : undefined}
+          {filteredItems.map((item, index) => (
+            <IdeaFrameworkIndexRow
+              key={item.id}
+              frameworkType={frameworkType}
+              {...item}
+              usageScopeLabel={getUsageScopeLabel?.(item)}
+              onEdit={onEdit ? () => onEdit(item) : undefined}
+              onDelete={onDelete ? () => onDelete(item) : undefined}
               index={index}
             />
           ))}

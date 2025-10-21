@@ -5,7 +5,6 @@ import MandalartSection from "./MandalartSection";
 import { MandalartInputData } from "@/types/mandalart";
 
 interface MandalartGridProps {
-  mandalartId: number;
   themeName: string;
   inputs: MandalartInputData[];
   onInputChange: (
@@ -19,7 +18,6 @@ interface MandalartGridProps {
 }
 
 export default function MandalartGrid({
-  mandalartId,
   themeName,
   inputs,
   onInputChange,

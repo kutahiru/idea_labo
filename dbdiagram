@@ -94,6 +94,8 @@ Table mandalarts {
 Table mandalart_inputs {
   id integer [pk, increment, not null]
   mandala_art_id integer [not null, ref: > mandalarts.id, note: "マンダラートID"]
+  section_row_index integer [not null, note: "セクション行インデックス"]
+  section_column_index integer [not null, note: "セクション列インデックス"]
   row_index integer [not null, note: "行インデックス"]
   column_index integer [not null, note: "列インデックス"]
   content text [note: "入力内容"]
@@ -106,22 +108,24 @@ Table mandalart_inputs {
 Table osborn_checklists {
   id integer [pk, increment, not null]
   user_id text [not null, ref: > users.id, note: "ユーザーID"]
-  title varchar [not null, note: "タイトル"]
-  theme_name varchar [not null, note: "テーマ名"]
-  description varchar [note: "説明　"]
-  transfer_content text [note: "転用"]
-  apply_content text [note: "応用"]
-  modify_content text [note: "変更"]
-  magnify_content text [note: "拡大"]
-  minify_content text [note: "縮小"]
-  substitute_content text [note: "代用"]
-  replace_content text [note: "置換"]
-  reverse_content text [note: "逆転"]
-  combine_content text [note: "結合"]
-  created_at timestamp [not null]
-  updated_at timestamp [not null]
+  title varchar(200) [not null, note: "タイトル"]
+  theme_name varchar(100) [not null, note: "テーマ名"]
+  description varchar(1000) [note: "説明"]
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
   
   Note: 'オズボーンチェックリスト'
+}
+
+Table osborn_checklist_inputs {
+  id integer [pk, increment, not null]
+  osborn_checklist_id integer [not null, ref: > osborn_checklists.id, note: "オズボーンチェックリストID"]
+  checklist_type varchar(50) [not null, note: "チェックリストタイプ transfer(転用), apply(応用), modify(変更), magnify(拡大), minify(縮小), substitute(代用), rearrange(再配置), reverse(逆転), combine(結合)"]
+  content varchar(1000) [note: "入力内容"]
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Note: 'オズボーンチェックリスト入力データ'
 }
 
 Table idea_categories {

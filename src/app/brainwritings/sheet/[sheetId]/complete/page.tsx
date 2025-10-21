@@ -8,9 +8,7 @@ interface BrainwritingCompletePageProps {
   params: Promise<{ sheetId: string }>;
 }
 
-export default async function BrainwritingCompletePage({
-  params,
-}: BrainwritingCompletePageProps) {
+export default async function BrainwritingCompletePage({ params }: BrainwritingCompletePageProps) {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -39,6 +37,7 @@ export default async function BrainwritingCompletePage({
   return (
     <BrainwritingCompleteContent
       brainwriting={brainwriting}
+      remainingUserCount={6 - users.length}
     />
   );
 }

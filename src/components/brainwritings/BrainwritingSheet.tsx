@@ -42,24 +42,16 @@ export default function BrainwritingSheet({
           {/* ヘッダー行 */}
           <div className="mb-4 flex">
             <div className="w-60 text-center">
-              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
-                参加者
-              </span>
+              <span className="text-primary text-2xl font-semibold">参加者</span>
             </div>
             <div className="w-80 text-center">
-              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
-                アイデア1
-              </span>
+              <span className="text-primary text-2xl font-semibold">アイデア1</span>
             </div>
             <div className="w-80 text-center">
-              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
-                アイデア2
-              </span>
+              <span className="text-primary text-2xl font-semibold">アイデア2</span>
             </div>
             <div className="w-80 text-center">
-              <span className="text-primary decoration-accent text-2xl font-semibold underline decoration-4 underline-offset-[-4px]">
-                アイデア3
-              </span>
+              <span className="text-primary text-2xl font-semibold">アイデア3</span>
             </div>
           </div>
 

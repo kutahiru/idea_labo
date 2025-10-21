@@ -1,3 +1,5 @@
+import MandalartHelpButton from "@/components/mandalarts/MandalartHelpButton";
+
 export default function MandalartLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div>
@@ -5,6 +7,8 @@ export default function MandalartLayout({ children }: Readonly<{ children: React
         <h1 className="text-primary text-3xl font-bold">マンダラート</h1>
       </div>
       <div className="container mx-auto px-4">{children}</div>
+
+      <MandalartHelpButton />
     </div>
   );
 }

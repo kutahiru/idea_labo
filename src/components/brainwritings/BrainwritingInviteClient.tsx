@@ -161,13 +161,11 @@ export default function BrainwritingInviteClient({
       <div className="mx-auto max-w-4xl">
         <IdeaFrameworkInfo ideaFramework={brainwriting} />
 
-        <div className="mb-8 text-center">
-          <h1 className="text-primary mb-4 text-3xl font-bold">
-            ブレインライティングに招待されました
-          </h1>
+        <div className="mb-4 text-center">
+          <h1 className="text-primary text-3xl font-bold">ブレインライティングに招待されました</h1>
         </div>
 
-        <div className="mt-8 text-center">
+        <div className="mt-4 text-center">
           {status?.canJoin === false ? (
             <div>
               <div className="mb-4 text-center">
@@ -239,7 +237,7 @@ export default function BrainwritingInviteClient({
               )}
               <button
                 onClick={handleJoinBrainwriting}
-                className="group bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white transition-transform hover:scale-105"
+                className="menu-link group bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
                 {isLoggedIn ? "参加する" : "ログインして参加する"}
               </button>

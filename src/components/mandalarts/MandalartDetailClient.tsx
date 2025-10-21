@@ -45,7 +45,6 @@ export default function MandalartDetailClient({ mandalartDetail }: MandalartDeta
 
       <div>
         <MandalartGrid
-          mandalartId={mandalart.id}
           themeName={mandalart.themeName}
           inputs={inputs}
           onInputChange={handleInputChange}

@@ -91,7 +91,7 @@ export default function BrainwritingDetailClient({
     }
 
     // X投稿
-    postBrainwritingToX(brainwriting);
+    postBrainwritingToX({ brainwriting, isOwner: true });
   };
 
   /** URLの有効無効更新 */

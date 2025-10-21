@@ -3,6 +3,7 @@
 import {
   OSBORN_CHECKLIST_TYPES,
   OSBORN_CHECKLIST_NAMES,
+  OSBORN_CHECKLIST_DESCRIPTIONS,
   OsbornChecklistType,
 } from "@/schemas/osborn-checklist";
 import { OsbornChecklistInputData } from "@/types/osborn-checklist";
@@ -44,6 +45,7 @@ export default function OsbornChecklistGrid({
             onChange={value => onInputChange(type, value)}
             index={index}
             title={OSBORN_CHECKLIST_NAMES[type]}
+            description={OSBORN_CHECKLIST_DESCRIPTIONS[type]}
           />
         ))}
       </div>

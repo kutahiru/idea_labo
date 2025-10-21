@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { HelpCircle } from "lucide-react";
 
 interface OsbornChecklistCellProps {
   value?: string;
@@ -9,6 +10,7 @@ interface OsbornChecklistCellProps {
   onChange: (value: string) => void;
   index?: number;
   title: string;
+  description: string;
 }
 
 export default function OsbornChecklistCell({
@@ -17,6 +19,7 @@ export default function OsbornChecklistCell({
   onChange,
   index = 0,
   title,
+  description,
 }: OsbornChecklistCellProps) {
   const [lastSavedValue, setLastSavedValue] = useState(value);
   const [localValue, setLocalValue] = useState(value);
@@ -83,11 +86,20 @@ export default function OsbornChecklistCell({
       className="w-full"
     >
       <div className="rounded-xl bg-white/50 p-4 shadow-sm">
-        <div className="mb-3">
-          <h3 className="text-primary text-xl font-bold">{title}</h3>
+        <div className="mb-3 flex items-center gap-1">
+          <h3 className="text-primary decoration-accent text-xl font-bold underline decoration-4 underline-offset-[-2px]">
+            {title}
+          </h3>
+          <div className="group relative">
+            <HelpCircle className="text-primary/40 hover:text-primary mt-0.5 h-5 w-5 cursor-help transition-colors" />
+            <div className="invisible absolute top-7 left-0 z-10 w-max max-w-80 rounded-lg bg-primary p-3 text-sm text-white opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100 md:max-w-110">
+              <div className="absolute -top-1 left-3 h-2 w-2 rotate-45 bg-primary"></div>
+              <p className="whitespace-pre-line">{description}</p>
+            </div>
+          </div>
         </div>
         <div
-          className="border-primary/50 relative flex min-h-[100px] items-start justify-center rounded-lg border-2 bg-white p-3 shadow-md transition-all duration-300 hover:shadow-lg cursor-text"
+          className="border-primary/50 relative flex min-h-[100px] cursor-text items-start justify-center rounded-lg border-2 bg-white p-3 shadow-md transition-all duration-300 hover:shadow-lg"
           onClick={() => textareaRef.current?.focus()}
         >
           <textarea

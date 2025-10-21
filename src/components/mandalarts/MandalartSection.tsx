@@ -29,13 +29,14 @@ export default function MandalartSection({
     return rowIndex === 1 && columnIndex === 1;
   };
 
-  const isSectionCenter = (rowIndex: number, columnIndex: number): boolean => {
-    return sectionRowIndex === 1 && sectionColumnIndex === 1 && rowIndex === 1 && columnIndex === 1;
+  // 中央セクションかどうか
+  const isSectionCenter = (): boolean => {
+    return sectionRowIndex === 1 && sectionColumnIndex === 1;
   };
 
   const getCellValue = (rowIndex: number, columnIndex: number): string => {
     // 中央セクションの中央セルの場合はテーマを返す
-    if (isSectionCenter(rowIndex, columnIndex)) {
+    if (isSectionCenter() && isCenterCell(rowIndex, columnIndex)) {
       return mandalartTheme;
     }
 
@@ -65,6 +66,7 @@ export default function MandalartSection({
             key={`${rowIndex}-${columnIndex}`}
             value={getCellValue(rowIndex, columnIndex)}
             isCenter={isCenterCell(rowIndex, columnIndex)}
+            isSectionCenter={isSectionCenter()}
             readOnly={isReadOnly(rowIndex, columnIndex)}
             onChange={value => handleCellChange(rowIndex, columnIndex, value)}
             rowIndex={sectionRowIndex * 3 + rowIndex}

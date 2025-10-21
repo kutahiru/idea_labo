@@ -15,7 +15,9 @@ export default function IdeaFrameworkInfo({ ideaFramework }: IdeaFrameworkInfoPr
       {/* テーマ */}
       <div className="mb-4 text-center">
         <div className="border-primary inline-block rounded border-[3px] px-8 py-3">
-          <h3 className="text-primary text-3xl font-bold">{ideaFramework.themeName}</h3>
+          <h3 className="text-primary decoration-accent text-3xl font-bold underline decoration-8 underline-offset-[-6px]">
+            {ideaFramework.themeName}
+          </h3>
         </div>
       </div>
 

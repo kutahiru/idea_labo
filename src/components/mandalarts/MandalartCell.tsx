@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 interface MandalartCellProps {
   value?: string;
   isCenter?: boolean;
+  isSectionCenter?: boolean;
   readOnly?: boolean;
   onChange: (value: string) => void;
   rowIndex?: number;
@@ -15,6 +16,7 @@ interface MandalartCellProps {
 export default function MandalartCell({
   value = "",
   isCenter = false,
+  isSectionCenter = false,
   readOnly = false,
   onChange,
   rowIndex = 0,
@@ -86,6 +88,20 @@ export default function MandalartCell({
   const direction = directions[(rowIndex + colIndex) % 4];
   const delay = (rowIndex * 3 + colIndex) * 0.05;
 
+  // セルのスタイル判定
+  const isMainThemeCell = isSectionCenter && isCenter; // 全体の中心（メインテーマ）
+  const isHighlightCell = (!isSectionCenter && isCenter) || (isSectionCenter && !isCenter); // 各セクション中央 or 中央セクションの周囲
+
+  const getCellStyle = () => {
+    if (isMainThemeCell) {
+      return "border-accent bg-accent/10 shadow-accent/10 border-4 shadow-xl";
+    }
+    if (isHighlightCell) {
+      return "border-primary bg-primary/10 shadow-primary/10 border-2 shadow-xl";
+    }
+    return "border-primary/50 border-2 bg-white shadow-md hover:shadow-lg";
+  };
+
   return (
     <motion.div
       initial={{ x: direction.x, y: direction.y, opacity: 0 }}
@@ -99,10 +115,8 @@ export default function MandalartCell({
     >
       <div
         className={
-          "relative flex h-[72px] items-center justify-center rounded-lg border-2 transition-all duration-300 " +
-          (isCenter
-            ? "border-accent bg-accent/10 shadow-accent/20 shadow-xl"
-            : "border-primary/50 bg-white shadow-md hover:shadow-lg")
+          "relative flex h-[72px] items-center justify-center rounded-lg transition-all duration-300 " +
+          getCellStyle()
         }
       >
         <textarea

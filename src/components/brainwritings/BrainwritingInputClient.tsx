@@ -96,8 +96,10 @@ export default function BrainwritingInputClient({
   // 現在のユーザーの行インデックスを計算（参加順）
   const activeRowIndex = users.findIndex(u => u.user_id === currentUserId);
 
-  // current_user_idが自身と一致しない場合は読み取り専用
-  const isAllReadOnly = sheet.current_user_id !== currentUserId;
+  // current_user_idが自身と一致しない場合、またはX投稿版で作成者の場合は読み取り専用
+  const isAllReadOnly =
+    sheet.current_user_id !== currentUserId ||
+    (activeRowIndex === 0 && brainwriting.usageScope === USAGE_SCOPE.XPOST);
 
   // アイデアコンポーネントに渡す関数を定義
   const handleDataChange = async (
@@ -206,12 +208,14 @@ export default function BrainwritingInputClient({
       />
 
       <div className="mt-6 flex justify-center gap-4">
-        <button
-          onClick={() => window.history.back()}
-          className="rounded-md bg-gray-500 px-6 py-2 text-white transition-transform hover:scale-105"
-        >
-          戻る
-        </button>
+        {brainwriting.usageScope === USAGE_SCOPE.TEAM && (
+          <button
+            onClick={() => router.push(`/brainwritings/${brainwriting.id}/team`)}
+            className="rounded-md bg-gray-500 px-6 py-2 text-white transition-transform hover:scale-105"
+          >
+            戻る
+          </button>
+        )}
         <button
           onClick={handleCompleteClick}
           disabled={isCompleting || isAllReadOnly}

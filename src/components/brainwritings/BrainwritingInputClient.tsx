@@ -8,6 +8,7 @@ import BrainwritingSheet from "@/components/brainwritings/BrainwritingSheet";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";
 import { convertToRowData, handleBrainwritingDataChange, USAGE_SCOPE } from "@/utils/brainwriting";
+import { useAutoRefreshOnFocus } from "@/hooks/useAutoRefreshOnFocus";
 
 interface BrainwritingInputClientProps {
   brainwritingDetail: BrainwritingDetail;
@@ -28,16 +29,17 @@ export default function BrainwritingInputClient({
   const [currentInputs, setCurrentInputs] = useState(inputs);
   const sheet = sheets[0];
 
+  // ブラウザの戻るボタンやタブ切り替えで戻った時に最新データを取得
+  useAutoRefreshOnFocus();
+
+  // inputsが更新されたらcurrentInputsに反映
+  useEffect(() => {
+    setCurrentInputs(inputs);
+  }, [inputs]);
+
   // ロック期限の監視（サーバー計算の残り時間を使用）
   useEffect(() => {
-    console.log("useEffect実行", {
-      initialSecondsLeft,
-      current_user_id: sheet.current_user_id,
-      currentUserId,
-    });
-
     if (initialSecondsLeft === null || sheet.current_user_id !== currentUserId) {
-      console.log("条件不一致で終了");
       return;
     }
 
@@ -50,7 +52,6 @@ export default function BrainwritingInputClient({
     if (timeUntilOneMinute > 0) {
       // 残り1分になったらアラート表示
       const alertTimeout = setTimeout(() => {
-        console.log("残り1分アラート表示");
         toast.error("回答時間が残り1分です", {
           duration: 10000, // 10秒表示
           style: {
@@ -63,7 +64,6 @@ export default function BrainwritingInputClient({
       timeouts.push(alertTimeout);
     } else if (initialSecondsLeft <= 60 && initialSecondsLeft > 0) {
       // すでに残り1分以下の場合、即座に表示
-      console.log("すでに残り1分以下のためアラート表示");
       toast.error("回答時間が残り1分です！", {
         duration: 10000, // 10秒表示
         style: {
@@ -77,13 +77,11 @@ export default function BrainwritingInputClient({
     // 時間切れになったらモーダル表示
     if (timeUntilTimeout > 0) {
       const timeoutTimeout = setTimeout(() => {
-        console.log("時間切れモーダル表示");
         setIsTimeoutModalOpen(true);
       }, timeUntilTimeout);
       timeouts.push(timeoutTimeout);
     } else if (initialSecondsLeft <= 0) {
       // すでに時間切れの場合、即座に表示
-      console.log("すでに時間切れのためモーダル表示");
       setIsTimeoutModalOpen(true);
     }
 

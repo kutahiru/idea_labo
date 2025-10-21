@@ -7,6 +7,7 @@ import BrainwritingSheetList from "./BrainwritingSheetList";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail } from "@/types/brainwriting";
 import { useBrainwritingRealtime } from "@/hooks/useBrainwritingRealtime";
+import { useAutoRefreshOnFocus } from "@/hooks/useAutoRefreshOnFocus";
 
 interface BrainwritingTeamClientProps {
   brainwritingTeam: BrainwritingDetail;
@@ -19,6 +20,9 @@ export default function BrainwritingTeamClient({
 }: BrainwritingTeamClientProps) {
   const { sheets: initialSheets, inputs: initialInputs, users: initialUsers, ...brainwriting } = brainwritingTeam;
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  // ブラウザの戻るボタンやタブ切り替えで戻った時に最新データを取得
+  useAutoRefreshOnFocus();
 
   // AppSync Eventsでリアルタイム更新（参加者、シート、入力データ）
   const { users, sheets, inputs } = useBrainwritingRealtime({

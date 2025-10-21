@@ -1,17 +1,23 @@
-// ブレインライティング一覧行コンポーネント
 "use client";
 
 import Link from "next/link";
 import { formatDate } from "@/utils/date";
-import { BrainwritingListItem } from "@/types/brainwriting";
 import { Clock } from "lucide-react";
-import { getUsageScopeLabel } from "@/utils/brainwriting";
 import { motion } from "framer-motion";
+import { IDEA_FRAMEWORK_BASE_URLS, type IdeaFrameworkType } from "@/schemas/idea-framework";
 
-interface BrainwritingIndexRowProps extends BrainwritingListItem {
+interface IdeaFrameworkIndexRowProps {
+  frameworkType: IdeaFrameworkType;
+  id: number;
+  title: string;
+  themeName: string;
+  description: string | null;
+  createdAt: Date;
+  usageScope?: string; // ブレインライティングのみ
+  usageScopeLabel?: string; // ブレインライティングのみ
   onEdit?: () => void;
   onDelete?: () => void;
-  index?: number; //アニメーション用
+  index?: number;
 }
 
 const cardVariants = {
@@ -25,17 +31,20 @@ const cardVariants = {
   }),
 };
 
-export default function BrainwritingIndexRow({
+export default function IdeaFrameworkIndexRow({
+  frameworkType,
   id,
   title,
   themeName,
   description,
-  usageScope,
   createdAt,
+  usageScopeLabel,
   onEdit,
   onDelete,
   index = 0,
-}: BrainwritingIndexRowProps) {
+}: IdeaFrameworkIndexRowProps) {
+  const baseUrl = IDEA_FRAMEWORK_BASE_URLS[frameworkType];
+
   return (
     <motion.div
       className="group hover:ring-primary/30 relative rounded-xl bg-white p-6 shadow-lg ring-1 ring-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
@@ -63,7 +72,7 @@ export default function BrainwritingIndexRow({
               {/* アクションボタン */}
               <div className="flex items-center gap-2">
                 <Link
-                  href={`/brainwritings/${id}`}
+                  href={`${baseUrl}/${id}`}
                   className="bg-primary inline-flex items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
                 >
                   詳細
@@ -85,10 +94,12 @@ export default function BrainwritingIndexRow({
           </div>
 
           <div className="mt-2 flex items-center justify-between">
-            <span className="bg-primary/10 text-primary ring-primary/20 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ring-1">
-              {getUsageScopeLabel(usageScope)}
-            </span>
-            <time className="flex items-center text-sm text-gray-500">
+            {usageScopeLabel && (
+              <span className="bg-primary/10 text-primary ring-primary/20 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ring-1">
+                {usageScopeLabel}
+              </span>
+            )}
+            <time className={`flex items-center text-sm text-gray-500 ${usageScopeLabel ? "" : "ml-auto"}`}>
               <Clock className="mr-1.5 h-3 w-3" />
               {formatDate(createdAt)}
             </time>

@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import BrainwritingIndex from "./BrainwritingIndex";
+import IdeaFrameworkIndex from "@/components/shared/IdeaFrameworkIndex";
 import BrainwritingModal from "./BrainwritingModal";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { BrainwritingFormData } from "@/schemas/brainwriting";
 import { AnimatePresence } from "framer-motion";
 import { CreateButton } from "@/components/shared/Button";
 import { useResourceSubmit, useResourceDelete } from "@/hooks/useResourceSubmit";
+import { getUsageScopeLabel } from "@/utils/brainwriting";
+import { IDEA_FRAMEWORK_TYPES, IDEA_FRAMEWORK_NAMES } from "@/schemas/idea-framework";
 
 interface BrainwritingPageClientProps {
   initialData: BrainwritingListItem[];
@@ -40,7 +42,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
   // ブレインライティング作成・更新
   const handleSubmit = useResourceSubmit<BrainwritingFormData>({
     apiPath: "/api/brainwritings",
-    resourceName: "ブレインライティング",
+    resourceName: IDEA_FRAMEWORK_NAMES[IDEA_FRAMEWORK_TYPES.BRAINWRITING],
     editingData,
     onSuccess: (isEdit, result) => {
       if (isEdit) {
@@ -55,7 +57,7 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
   // ブレインライティング削除
   const handleDelete = useResourceDelete({
     apiPath: "/api/brainwritings",
-    resourceName: "ブレインライティング",
+    resourceName: IDEA_FRAMEWORK_NAMES[IDEA_FRAMEWORK_TYPES.BRAINWRITING],
   });
 
   return (
@@ -67,10 +69,12 @@ export default function BrainwritingPageClient({ initialData }: BrainwritingPage
 
       {/* 一覧表示 */}
       <div className="mt-4">
-        <BrainwritingIndex
+        <IdeaFrameworkIndex
+          frameworkType={IDEA_FRAMEWORK_TYPES.BRAINWRITING}
           initialData={initialData}
           onEdit={handleOpenEditModal}
           onDelete={handleDelete}
+          getUsageScopeLabel={item => getUsageScopeLabel(item.usageScope)}
         />
       </div>
 

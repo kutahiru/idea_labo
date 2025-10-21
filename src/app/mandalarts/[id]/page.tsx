@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { LoginRequiredMessage } from "@/components/shared/Message";
 import { auth } from "@/app/lib/auth";
 import { getMandalartDetailById } from "@/lib/mandalart";
-import MandalartDetailClient from "@/components/mandalart/MandalartDetailClient";
+import MandalartDetailClient from "@/components/mandalarts/MandalartDetailClient";
 
 interface MandalartDetailPageProps {
   params: Promise<{ id: string }>;

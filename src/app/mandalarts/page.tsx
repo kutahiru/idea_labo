@@ -1,7 +1,7 @@
 import { auth } from "@/app/lib/auth";
 import { LoginRequiredMessage } from "@/components/shared/Message";
 import { getMandalartsByUserId } from "@/lib/mandalart";
-import MandalartPageClient from "../../components/mandalart/MandalartPageClient";
+import MandalartPageClient from "@/components/mandalarts/MandalartPageClient";
 
 export default async function page() {
   const session = await auth();

@@ -148,18 +148,23 @@ export const osborn_checklists = pgTable("osborn_checklists", {
   user_id: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  title: varchar("title", { length: 255 }).notNull(),
+  title: varchar("title", { length: 200 }).notNull(),
   theme_name: varchar("theme_name", { length: 100 }).notNull(),
   description: varchar("description", { length: 1000 }),
-  transfer_content: text("transfer_content"),
-  apply_content: text("apply_content"),
-  modify_content: text("modify_content"),
-  magnify_content: text("magnify_content"),
-  minify_content: text("minify_content"),
-  substitute_content: text("substitute_content"),
-  replace_content: text("replace_content"),
-  reverse_content: text("reverse_content"),
-  combine_content: text("combine_content"),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+  updated_at: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const osborn_checklist_inputs = pgTable("osborn_checklist_inputs", {
+  id: serial("id").primaryKey(),
+  osborn_checklist_id: integer("osborn_checklist_id")
+    .notNull()
+    .references(() => osborn_checklists.id, { onDelete: "cascade" }),
+  checklist_type: varchar("checklist_type", { length: 50 }).notNull(),
+  content: varchar("content", { length: 1000 }),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at")
     .notNull()

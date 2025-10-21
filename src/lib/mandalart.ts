@@ -4,18 +4,10 @@
  */
 
 import { db } from "@/db";
-import { mandalart_inputs, mandalarts, users } from "@/db/schema";
+import { mandalart_inputs, mandalarts } from "@/db/schema";
 import { MandalartInputData, MandalartListItem } from "@/types/mandalart";
 import { MandalartFormData } from "@/schemas/mandalart";
-import {
-  desc,
-  eq,
-  and,
-  isNotNull,
-  lte,
-  isNull,
-  type ExtractTablesWithRelations,
-} from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 
 //#region ユーザーIDに紐づくマンダラートの一覧を取得
 /**

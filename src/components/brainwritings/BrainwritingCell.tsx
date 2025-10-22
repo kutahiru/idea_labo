@@ -52,14 +52,15 @@ export default function BrainwritingCell({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter") {
+    // IME変換中はEnterキーを無視（変換確定のEnterと区別するため）
+    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
       e.preventDefault();
       e.currentTarget.blur(); // 保存のためにフォーカスを外す
 
       // 次の入力フィールドにフォーカス移動
-      const textareas = document.querySelectorAll("textarea:not([readonly])");
-      const currentIndex = Array.from(textareas).indexOf(e.currentTarget);
-      const nextTextarea = textareas[currentIndex + 1];
+      const textarea = document.querySelectorAll("textarea:not([readonly])");
+      const currentIndex = Array.from(textarea).indexOf(e.currentTarget);
+      const nextTextarea = textarea[currentIndex + 1];
 
       if (nextTextarea) {
         (nextTextarea as HTMLTextAreaElement).focus();

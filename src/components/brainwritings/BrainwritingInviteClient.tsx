@@ -161,8 +161,25 @@ export default function BrainwritingInviteClient({
       <div className="mx-auto max-w-4xl">
         <IdeaFrameworkInfo ideaFramework={brainwriting} />
 
-        <div className="mb-4 text-center">
-          <h1 className="text-primary text-3xl font-bold">ブレインライティングに招待されました</h1>
+        <div className="mb-8 text-center">
+          <h1 className="text-primary mb-6 text-3xl font-bold">
+            ブレインライティングに招待されました
+          </h1>
+
+          <div className="mx-auto mb-6 max-w-2xl rounded-lg bg-blue-50 p-6 text-left">
+            <h2 className="mb-3 text-xl font-semibold text-gray-800">ブレインライティングとは？</h2>
+            <p className="mb-4 leading-relaxed text-gray-700">
+              ブレインライティングは、複数人でアイデアを出し合う発想法です。
+              <br />
+              回覧板のようにシートを回していき、前の人のアイデアを参考にしながら新しいアイデアを発展させていきます。
+              <br />
+              発言が苦手なメンバーでも参加しやすく、多様な視点からアイデアを広げることができます。
+            </p>
+            <div className="border-t border-blue-200 pt-4">
+              <p className="font-semibold text-gray-800">ぜひご協力お願いします！</p>
+              <p className="text-gray-700">あなたの創造的なアイデアをお待ちしています。</p>
+            </div>
+          </div>
         </div>
 
         <div className="mt-4 text-center">

@@ -161,6 +161,6 @@ https://www.figma.com/design/sfQLmmaGqgEwSyDF21QqVL/%E3%82%A2%E3%82%A4%E3%83%87%
 
 ## ER図
 
-<img width="1931" height="1787" alt="ER図" src="https://github.com/user-attachments/assets/6e34b6a7-3bc3-4d27-b936-6166d6fad3ec" />
+<img width="1728" height="1734" alt="ER図" src="https://github.com/user-attachments/assets/27b7aead-c3cc-4f46-8557-05daa07ec272" />
 
 論理名はdbdiagramファイルで確認可能

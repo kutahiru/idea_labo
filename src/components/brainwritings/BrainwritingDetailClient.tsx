@@ -191,7 +191,7 @@ export default function BrainwritingDetailClient({
             <BrainwritingSheet
               key={sheet.id}
               brainwritingRows={brainwritingRows}
-              activeRowIndex={0}
+              activeRowIndex={!isAllReadOnly ? 0 : undefined}
               isAllReadOnly={isAllReadOnly}
               onDataChange={(rowIndex, ideaIndex, value) =>
                 handleDataChange(rowIndex, ideaIndex, value, sheet.id)

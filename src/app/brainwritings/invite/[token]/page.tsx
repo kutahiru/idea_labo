@@ -20,15 +20,19 @@ export async function generateMetadata({ params }: InvitePageProps): Promise<Met
     };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const pageUrl = `${siteUrl}/brainwritings/invite/${token}`;
   const ogImageUrl = `${siteUrl}/brainwriting-ogp.png`;
 
   return {
     title: `ブレインライティングに招待されました - ${brainwritingData.themeName}`,
     description: `テーマ「${brainwritingData.themeName}」のブレインライティングに参加しませんか？`,
+    metadataBase: new URL(siteUrl),
     openGraph: {
       title: `ブレインライティングに招待されました`,
       description: `テーマ: ${brainwritingData.themeName}`,
+      url: pageUrl,
+      siteName: "アイデア研究所",
       images: [
         {
           url: ogImageUrl,
@@ -38,6 +42,7 @@ export async function generateMetadata({ params }: InvitePageProps): Promise<Met
         },
       ],
       type: "website",
+      locale: "ja_JP",
     },
     twitter: {
       card: "summary_large_image",

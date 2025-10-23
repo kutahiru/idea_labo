@@ -37,7 +37,7 @@ const wdxlLubrifontJpN = WDXL_Lubrifont_JP_N({
   adjustFontFallback: false, // フォールバック生成を無効化
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   title: "アイデア研究所",

@@ -46,6 +46,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "アイデア研究所",
     description: "発想を抽出しアイデアを結晶化する - ブレインライティング、マンダラート、オズボーンのチェックリストでアイデアを創出",
+    url: siteUrl,
+    siteName: "アイデア研究所",
     images: [
       {
         url: "/top-ogp.png",

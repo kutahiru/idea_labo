@@ -9,6 +9,7 @@ export interface BrainwritingListItem extends BaseIdeaListItem {
   usageScope: typeof USAGE_SCOPE.XPOST | typeof USAGE_SCOPE.TEAM;
   inviteToken: string;
   isInviteActive?: boolean;
+  isResultsPublic?: boolean;
 }
 
 export interface BrainwritingSheetData {

@@ -7,10 +7,15 @@ interface ToggleSwitchProps {
   disabled?: boolean;
 }
 
-export default function ToggleSwitch({ label, checked, onChange, disabled = false }: ToggleSwitchProps) {
+export default function ToggleSwitch({
+  label,
+  checked,
+  onChange,
+  disabled = false,
+}: ToggleSwitchProps) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-sm font-medium text-gray-700">{label}:</span>
+    <div className="flex items-center gap-1.5">
+      <span className="text-sm font-medium text-gray-700">{label}：</span>
       <button
         onClick={() => !disabled && onChange(!checked)}
         disabled={disabled}

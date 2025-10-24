@@ -5,7 +5,7 @@
 
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { UserProfile } from "@/types/user";
 import { UserFormData } from "@/schemas/user";
 
@@ -44,6 +44,7 @@ export async function updateUser(userId: string, data: UserFormData) {
     .update(users)
     .set({
       name: data.name,
+      updated_at: sql`NOW()`,
     })
     .where(eq(users.id, userId))
     .returning({

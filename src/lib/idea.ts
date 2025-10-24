@@ -5,7 +5,7 @@
 
 import { db } from "@/db";
 import { ideas, idea_categories } from "@/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { IdeaListItem } from "@/types/idea";
 import { IdeaFormData } from "@/schemas/idea";
 
@@ -80,6 +80,7 @@ export async function updateIdea(id: number, categoryId: number, data: Partial<I
       name: data.name,
       description: data.description || null,
       priority: data.priority || "medium",
+      updated_at: sql`NOW()`,
     })
     .where(and(eq(ideas.id, id), eq(ideas.idea_category_id, categoryId)))
     .returning({

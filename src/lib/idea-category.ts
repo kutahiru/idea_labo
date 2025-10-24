@@ -5,7 +5,7 @@
 
 import { db } from "@/db";
 import { idea_categories } from "@/db/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { IdeaCategoryListItem } from "@/types/idea-category";
 import { IdeaCategoryFormData } from "@/schemas/idea-category";
 
@@ -75,6 +75,7 @@ export async function updateIdeaCategory(
     .set({
       name: data.name,
       description: data.description || null,
+      updated_at: sql`NOW()`,
     })
     .where(and(eq(idea_categories.id, id), eq(idea_categories.user_id, userId)))
     .returning({

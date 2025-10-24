@@ -54,6 +54,7 @@ export const brainwritings = pgTable("brainwritings", {
   description: varchar("description", { length: 1000 }),
   invite_token: varchar("invite_token", { length: 100 }).notNull().unique(),
   is_invite_active: boolean("is_invite_active").notNull().default(true),
+  is_results_public: boolean("is_results_public").notNull().default(false),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at")
     .notNull()

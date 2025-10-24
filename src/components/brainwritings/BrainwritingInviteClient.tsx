@@ -161,12 +161,12 @@ export default function BrainwritingInviteClient({
       <div className="mx-auto max-w-4xl">
         <IdeaFrameworkInfo ideaFramework={brainwriting} />
 
-        <div className="mb-8 text-center">
+        <div className="mb-4 text-center">
           <h1 className="text-primary mb-6 text-3xl font-bold">
             ブレインライティングに招待されました
           </h1>
 
-          <div className="mx-auto mb-6 max-w-2xl rounded-lg bg-blue-50 p-6 text-left">
+          <div className="mx-auto mb-2 max-w-2xl rounded-lg bg-blue-50 p-6 text-left">
             <h2 className="mb-3 text-xl font-semibold text-gray-800">ブレインライティングとは？</h2>
             <p className="mb-4 leading-relaxed text-gray-700">
               ブレインライティングは、複数人でアイデアを出し合う発想法です。
@@ -182,7 +182,7 @@ export default function BrainwritingInviteClient({
           </div>
         </div>
 
-        <div className="mt-4 text-center">
+        <div className="mt-2 text-center">
           {status?.canJoin === false ? (
             <div>
               <div className="mb-4 text-center">
@@ -261,6 +261,18 @@ export default function BrainwritingInviteClient({
             </div>
           )}
         </div>
+
+        {/* 結果確認ボタン */}
+        {brainwriting.isResultsPublic && (
+          <div className="mt-4 text-center">
+            <button
+              onClick={() => router.push(`/brainwritings/${brainwriting.id}/results`)}
+              className="menu-link bg-primary inline-flex items-center rounded-md px-8 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            >
+              結果を確認
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

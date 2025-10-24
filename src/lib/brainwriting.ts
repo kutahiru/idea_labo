@@ -56,6 +56,7 @@ export async function getBrainwritingsByUserId(userId: string): Promise<Brainwri
       description: brainwritings.description,
       usageScope: brainwritings.usage_scope,
       inviteToken: brainwritings.invite_token,
+      isResultsPublic: brainwritings.is_results_public,
       createdAt: brainwritings.created_at,
     })
     .from(brainwritings)
@@ -187,6 +188,7 @@ export async function getBrainwritingByIdInternal(id: number) {
       description: brainwritings.description,
       usageScope: brainwritings.usage_scope,
       inviteToken: brainwritings.invite_token,
+      isResultsPublic: brainwritings.is_results_public,
       createdAt: brainwritings.created_at,
     })
     .from(brainwritings)
@@ -215,6 +217,7 @@ export async function getBrainwritingById(id: number, userId: string) {
       usageScope: brainwritings.usage_scope,
       inviteToken: brainwritings.invite_token,
       isInviteActive: brainwritings.is_invite_active,
+      isResultsPublic: brainwritings.is_results_public,
       createdAt: brainwritings.created_at,
     })
     .from(brainwritings)
@@ -423,6 +426,7 @@ export async function getBrainwritingByToken(token: string): Promise<Brainwritin
       usageScope: brainwritings.usage_scope,
       inviteToken: brainwritings.invite_token,
       isInviteActive: brainwritings.is_invite_active,
+      isResultsPublic: brainwritings.is_results_public,
       createdAt: brainwritings.created_at,
     })
     .from(brainwritings)
@@ -523,6 +527,45 @@ export async function getBrainwritingDetailForBrainwritingUser(sheetId: number, 
   return {
     ...brainwriting,
     sheets: [sheet], //データ型を流用しているため、配列として返す
+    inputs,
+    users,
+  };
+}
+//#endregion
+
+//#region ブレインライティング結果の取得（第三者向け・公開用）
+/**
+ * ブレインライティング結果の取得（第三者向け・公開用）
+ * 結果が公開設定されている場合のみアクセス可能
+ * @param brainwritingId - ブレインライティングID
+ * @returns ブレインライティング詳細情報
+ */
+export async function getBrainwritingResultsById(
+  brainwritingId: number
+): Promise<BrainwritingDetail | null> {
+  // 基本情報取得（権限チェックなし）
+  const brainwriting = await getBrainwritingByIdInternal(brainwritingId);
+  if (!brainwriting) {
+    return null;
+  }
+
+  // 公開設定されていない場合はアクセス拒否
+  if (!brainwriting.isResultsPublic) {
+    return null;
+  }
+
+  // 参加者情報を取得（参加順でソート）
+  const users = await getBrainwritingUsersByBrainwritingId(brainwritingId);
+
+  // 全シート取得
+  const sheets = await getBrainwritingSheetsByBrainwritingId(brainwritingId);
+
+  // 入力データ取得
+  const inputs = await getBrainwritingInputsByBrainwritingId(brainwritingId);
+
+  return {
+    ...brainwriting,
+    sheets,
     inputs,
     users,
   };
@@ -1006,10 +1049,12 @@ export async function rotateSheetToNextUser(sheetId: number, currentUserId: stri
 /**
  * 招待URLの状態を更新
  * @param brainwritingId - ブレインライティングID
+ * @param userId - ユーザーID（作成者チェック用）
  * @param isInviteActive - 招待URLの有効/無効フラグ
  */
 export async function updateBrainwritingIsInviteActive(
   brainwritingId: number,
+  userId: string,
   isInviteActive: boolean
 ) {
   await db
@@ -1018,6 +1063,28 @@ export async function updateBrainwritingIsInviteActive(
       is_invite_active: isInviteActive,
       updated_at: sql`NOW()`,
     })
-    .where(eq(brainwritings.id, brainwritingId));
+    .where(and(eq(brainwritings.id, brainwritingId), eq(brainwritings.user_id, userId)));
+}
+//#endregion
+
+//#region 結果公開の状態を更新
+/**
+ * 結果公開の状態を更新
+ * @param brainwritingId - ブレインライティングID
+ * @param userId - ユーザーID（作成者チェック用）
+ * @param isResultsPublic - 結果公開の有効/無効フラグ
+ */
+export async function updateBrainwritingIsResultsPublic(
+  brainwritingId: number,
+  userId: string,
+  isResultsPublic: boolean
+) {
+  await db
+    .update(brainwritings)
+    .set({
+      is_results_public: isResultsPublic,
+      updated_at: sql`NOW()`,
+    })
+    .where(and(eq(brainwritings.id, brainwritingId), eq(brainwritings.user_id, userId)));
 }
 //#endregion

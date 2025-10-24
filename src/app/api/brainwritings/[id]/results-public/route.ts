@@ -1,5 +1,5 @@
 import { auth } from "@/app/lib/auth";
-import { updateBrainwritingIsInviteActive } from "@/lib/brainwriting";
+import { updateBrainwritingIsResultsPublic } from "@/lib/brainwriting";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -18,26 +18,26 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   try {
     const body = await request.json();
-    const { isInviteActive } = body;
+    const { isResultsPublic } = body;
 
-    console.log("PATCH /invite-active:", { brainwritingId, isInviteActive, userId: session.user.id });
+    console.log("PATCH /results-public:", { brainwritingId, isResultsPublic, userId: session.user.id });
 
-    if (typeof isInviteActive !== "boolean") {
-      return NextResponse.json({ error: "isInviteActiveはboolean型である必要があります" }, { status: 400 });
+    if (typeof isResultsPublic !== "boolean") {
+      return NextResponse.json({ error: "isResultsPublicはboolean型である必要があります" }, { status: 400 });
     }
 
-    await updateBrainwritingIsInviteActive(brainwritingId, session.user.id, isInviteActive);
-    console.log("更新成功:", { brainwritingId, isInviteActive });
-    return NextResponse.json({ success: true, isInviteActive });
+    await updateBrainwritingIsResultsPublic(brainwritingId, session.user.id, isResultsPublic);
+    console.log("更新成功:", { brainwritingId, isResultsPublic });
+    return NextResponse.json({ success: true, isResultsPublic });
   } catch (error) {
-    console.error("招待URLの状態更新エラー:", error);
+    console.error("結果公開の状態更新エラー:", error);
     console.error("エラー詳細:", {
       message: error instanceof Error ? error.message : "不明なエラー",
       stack: error instanceof Error ? error.stack : undefined,
     });
     return NextResponse.json(
       {
-        error: "招待URLの状態更新に失敗しました",
+        error: "結果公開の状態更新に失敗しました",
         details: error instanceof Error ? error.message : "不明なエラー"
       },
       { status: 500 }

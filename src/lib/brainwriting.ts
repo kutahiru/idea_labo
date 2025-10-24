@@ -19,6 +19,7 @@ import {
   isNotNull,
   lte,
   isNull,
+  sql,
   type ExtractTablesWithRelations,
 } from "drizzle-orm";
 import type { PgTransaction } from "drizzle-orm/pg-core";
@@ -137,6 +138,7 @@ export async function updateBrainwriting(
       theme_name: data.themeName,
       description: data.description,
       usage_scope: data.usageScope,
+      updated_at: sql`NOW()`,
     })
     .where(and(eq(brainwritings.id, id), eq(brainwritings.user_id, userId)))
     .returning({
@@ -265,6 +267,7 @@ export async function upsertBrainwritingInput(
       .set({
         content: content.trim() === "" ? null : content,
         input_user_id: inputUserId,
+        updated_at: sql`NOW()`,
       })
       .where(eq(brainwriting_inputs.id, existingInput[0].id))
       .returning();
@@ -608,7 +611,6 @@ export async function joinBrainwriting(brainwritingId: number, userId: string, u
   let sheetId: number | undefined;
 
   const lockDurationMinutes = Number(process.env.BRAINWRITING_LOCK_DURATION_MINUTES) || 10;
-  const lockExpiresAt = new Date(Date.now() + lockDurationMinutes * 60 * 1000);
 
   if (usageScope === USAGE_SCOPE.XPOST) {
     // X投稿版の場合、既存のシートを更新
@@ -616,7 +618,8 @@ export async function joinBrainwriting(brainwritingId: number, userId: string, u
       .update(brainwriting_sheets)
       .set({
         current_user_id: userId,
-        lock_expires_at: lockExpiresAt,
+        lock_expires_at: sql`NOW() + INTERVAL '${sql.raw(lockDurationMinutes.toString())} minutes'`,
+        updated_at: sql`NOW()`,
       })
       .where(eq(brainwriting_sheets.brainwriting_id, brainwritingId))
       .returning();
@@ -859,6 +862,7 @@ export async function clearAbandonedSessions(brainwritingId: number) {
       .set({
         current_user_id: null,
         lock_expires_at: null,
+        updated_at: sql`NOW()`,
       })
       .where(eq(brainwriting_sheets.id, sheetData.brainwriting_sheet_id));
 
@@ -943,6 +947,7 @@ export async function unlockSheet(sheetId: number, userId: string) {
     .set({
       current_user_id: null,
       lock_expires_at: null,
+      updated_at: sql`NOW()`,
     })
     .where(
       and(eq(brainwriting_sheets.id, sheetId), eq(brainwriting_sheets.current_user_id, userId))
@@ -987,6 +992,7 @@ export async function rotateSheetToNextUser(sheetId: number, currentUserId: stri
     .update(brainwriting_sheets)
     .set({
       current_user_id: nextUserId,
+      updated_at: sql`NOW()`,
     })
     .where(eq(brainwriting_sheets.id, sheetId));
 
@@ -1008,7 +1014,10 @@ export async function updateBrainwritingIsInviteActive(
 ) {
   await db
     .update(brainwritings)
-    .set({ is_invite_active: isInviteActive })
+    .set({
+      is_invite_active: isInviteActive,
+      updated_at: sql`NOW()`,
+    })
     .where(eq(brainwritings.id, brainwritingId));
 }
 //#endregion

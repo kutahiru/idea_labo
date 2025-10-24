@@ -3,10 +3,11 @@ services:
     image: postgres
     restart: always
     environment:
-      TZ: Asia/Tokyo
+      TZ: UTC
       POSTGRES_DB: myapp_development
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+    command: postgres -c timezone=UTC
     volumes:
       - postgresql_data:/var/lib/postgresql/data
     ports:

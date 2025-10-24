@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { osborn_checklists, osborn_checklist_inputs } from "@/db/schema";
 import { OsbornChecklistListItem, OsbornChecklistInputData } from "@/types/osborn-checklist";
 import { OsbornChecklistFormData, OsbornChecklistType } from "@/schemas/osborn-checklist";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, sql } from "drizzle-orm";
 
 //#region ユーザーIDに紐づくオズボーンの一覧を取得
 /**
@@ -82,6 +82,7 @@ export async function updateOsbornChecklist(
       title: data.title,
       theme_name: data.themeName,
       description: data.description,
+      updated_at: sql`NOW()`,
     })
     .where(and(eq(osborn_checklists.id, id), eq(osborn_checklists.user_id, userId)))
     .returning({
@@ -227,7 +228,7 @@ export async function upsertOsbornChecklistInput(
       .update(osborn_checklist_inputs)
       .set({
         content: content || null,
-        updated_at: new Date(),
+        updated_at: sql`NOW()`,
       })
       .where(eq(osborn_checklist_inputs.id, existingInput[0].id))
       .returning();

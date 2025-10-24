@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { mandalart_inputs, mandalarts } from "@/db/schema";
 import { MandalartInputData, MandalartListItem } from "@/types/mandalart";
 import { MandalartFormData } from "@/schemas/mandalart";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, sql } from "drizzle-orm";
 
 //#region ユーザーIDに紐づくマンダラートの一覧を取得
 /**
@@ -80,6 +80,7 @@ export async function updateMandalart(
       title: data.title,
       theme_name: data.themeName,
       description: data.description,
+      updated_at: sql`NOW()`,
     })
     .where(and(eq(mandalarts.id, id), eq(mandalarts.user_id, userId)))
     .returning({
@@ -234,7 +235,7 @@ export async function upsertMandalartInput(
       .update(mandalart_inputs)
       .set({
         content: content || null,
-        updated_at: new Date(),
+        updated_at: sql`NOW()`,
       })
       .where(eq(mandalart_inputs.id, existingInput[0].id))
       .returning();

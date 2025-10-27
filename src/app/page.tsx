@@ -151,7 +151,7 @@ export default function Home() {
                 </Link>
               </div>
               <div className="font-lora text-primary/30 pointer-events-none absolute top-5 left-40 text-xl lg:top-6 lg:left-50 lg:text-2xl xl:text-3xl">
-                Osborn'sChecklist
+                Osborn&apos;sChecklist
               </div>
             </motion.div>
 
@@ -395,7 +395,7 @@ export default function Home() {
           <h2 className="text-primary decoration-accent mb-3 text-3xl font-bold underline decoration-8 underline-offset-[-4px] md:text-4xl lg:text-5xl">
             オズボーンのチェックリストとは？
           </h2>
-          <div className="font-lora text-primary/50 text-lg md:text-xl">Osborn's Checklist</div>
+          <div className="font-lora text-primary/50 text-lg md:text-xl">Osborn&apos;s Checklist</div>
         </div>
 
         {/* 説明エリア */}

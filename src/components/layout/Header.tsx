@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { GoogleLoginButton } from "@/components/shared/Button";
 
@@ -51,10 +52,36 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
 
 export default function Header() {
   const { data: session } = useSession();
+  const pathname = usePathname();
   const isLoggedIn = Boolean(session);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showHeaderOnHome, setShowHeaderOnHome] = useState(false);
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+  useEffect(() => {
+    // トップページの場合、contentが表示されているかチェック
+    if (pathname === "/") {
+      const checkContentShown = () => {
+        const contentShown = sessionStorage.getItem("homeContentShown");
+        setShowHeaderOnHome(contentShown === "true");
+      };
+
+      checkContentShown();
+
+      // 100msごとにチェック（初回ローディング時のため）
+      const interval = setInterval(checkContentShown, 100);
+
+      return () => clearInterval(interval);
+    } else {
+      setShowHeaderOnHome(true);
+    }
+  }, [pathname]);
+
+  // トップページでコンテンツ未表示の場合はヘッダーを表示しない
+  if (pathname === "/" && !showHeaderOnHome) {
+    return null;
+  }
 
   return (
     <header className="border-primary/20 border-b bg-white shadow-sm">

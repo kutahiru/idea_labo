@@ -34,7 +34,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-zen-kaku-gothic-new), Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
 }
 
 .border-dashed-wide {
@@ -106,7 +105,8 @@ body {
 }
 
 @keyframes menu-bg {
-  0%, 100% {
+  0%,
+  100% {
     background-color: transparent;
   }
   50% {
@@ -115,11 +115,11 @@ body {
 }
 
 .menu-link-intro-1::before {
-  animation: menu-shine 0.7s ease-out 1.0s;
+  animation: menu-shine 0.7s ease-out 1s;
 }
 
 .menu-link-intro-1 {
-  animation: menu-bg 0.7s ease-out 1.0s;
+  animation: menu-bg 0.7s ease-out 1s;
 }
 
 .menu-link-intro-2::before {
@@ -131,11 +131,11 @@ body {
 }
 
 .menu-link-intro-3::before {
-  animation: menu-shine 0.7s ease-out 2.0s;
+  animation: menu-shine 0.7s ease-out 2s;
 }
 
 .menu-link-intro-3 {
-  animation: menu-bg 0.7s ease-out 2.0s;
+  animation: menu-bg 0.7s ease-out 2s;
 }
 
 .menu-link-intro-4::before {

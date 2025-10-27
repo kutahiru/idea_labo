@@ -1,7 +1,37 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
+  const [showFooterOnHome, setShowFooterOnHome] = useState(false);
+
+  useEffect(() => {
+    // トップページの場合、contentが表示されているかチェック
+    if (pathname === "/") {
+      const checkContentShown = () => {
+        const contentShown = sessionStorage.getItem("homeContentShown");
+        setShowFooterOnHome(contentShown === "true");
+      };
+
+      checkContentShown();
+
+      // 100msごとにチェック（初回ローディング時のため）
+      const interval = setInterval(checkContentShown, 100);
+
+      return () => clearInterval(interval);
+    } else {
+      setShowFooterOnHome(true);
+    }
+  }, [pathname]);
+
+  // トップページでコンテンツ未表示の場合はフッタを表示しない
+  if (pathname === "/" && !showFooterOnHome) {
+    return null;
+  }
 
   return (
     <footer className="border-primary/20 border-t bg-white py-4">

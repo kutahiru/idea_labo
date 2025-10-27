@@ -43,16 +43,65 @@ const item = {
 };
 
 export default function Home() {
-  const brainwritingRef = useRef(null);
-  const mandalartRef = useRef(null);
-  const osbornRef = useRef(null);
+  const topRef = useRef<HTMLDivElement | null>(null);
+  const brainwritingRef = useRef<HTMLElement | null>(null);
+  const mandalartRef = useRef<HTMLElement | null>(null);
+  const osbornRef = useRef<HTMLElement | null>(null);
+  const isTopInView = useInView(topRef, { once: false, amount: 0.3 });
   const isBrainwritingInView = useInView(brainwritingRef, { once: false, amount: 0.3 });
   const isMandalartInView = useInView(mandalartRef, { once: false, amount: 0.3 });
   const isOsbornInView = useInView(osbornRef, { once: false, amount: 0.3 });
 
+  const scrollToSection = (ref: React.RefObject<HTMLElement | HTMLDivElement | null>) => {
+    if (ref.current) {
+      const elementPosition = ref.current.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - 100; // 100px上にオフセット
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4">
+    <div className="relative container mx-auto px-4">
+      {/* 右端の固定ナビゲーション */}
+      <motion.nav
+        className="fixed top-1/2 right-8 z-50 hidden -translate-y-1/2 lg:block"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 1.5 }}
+      >
+        <div className="flex flex-col gap-6">
+          <button
+            onClick={() => scrollToSection(topRef)}
+            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isTopInView ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
+            aria-label="トップへスクロール"
+          />
+
+          <button
+            onClick={() => scrollToSection(brainwritingRef)}
+            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isBrainwritingInView ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
+            aria-label="ブレインライティングセクションへスクロール"
+          />
+
+          <button
+            onClick={() => scrollToSection(mandalartRef)}
+            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isMandalartInView ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
+            aria-label="マンダラートセクションへスクロール"
+          />
+
+          <button
+            onClick={() => scrollToSection(osbornRef)}
+            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isOsbornInView ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
+            aria-label="オズボーンのチェックリストセクションへスクロール"
+          />
+        </div>
+      </motion.nav>
+
       <motion.div
+        ref={topRef}
         className="mt-8 text-center md:mb-8"
         initial="hidden"
         animate="show"
@@ -395,7 +444,9 @@ export default function Home() {
           <h2 className="text-primary decoration-accent mb-3 text-3xl font-bold underline decoration-8 underline-offset-[-4px] md:text-4xl lg:text-5xl">
             オズボーンのチェックリストとは？
           </h2>
-          <div className="font-lora text-primary/50 text-lg md:text-xl">Osborn&apos;s Checklist</div>
+          <div className="font-lora text-primary/50 text-lg md:text-xl">
+            Osborn&apos;s Checklist
+          </div>
         </div>
 
         {/* 説明エリア */}

@@ -23,7 +23,7 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.3,
     },
   },
 };
@@ -36,8 +36,67 @@ const item = {
     scale: 1,
     transition: {
       type: "spring" as const,
-      stiffness: 100,
-      damping: 12,
+      stiffness: 40,
+      damping: 20,
+      duration: 1.2,
+    },
+  },
+};
+
+const videoItem = {
+  hidden: { opacity: 0, scale: 0 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 50,
+      damping: 18,
+      duration: 1.0,
+    },
+  },
+};
+
+const catchphraseItem = {
+  hidden: { opacity: 0, y: 60 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 50,
+      damping: 18,
+      duration: 1.0,
+    },
+  },
+};
+
+const menuItem = {
+  hidden: { opacity: 0, x: 100 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 50,
+      damping: 18,
+      duration: 1.0,
+    },
+  },
+};
+
+const logoItem = {
+  hidden: { opacity: 0, scale: 0, rotate: -180 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 15,
+      duration: 1.0,
+      delay: 2.5,
     },
   },
 };
@@ -71,7 +130,7 @@ export default function Home() {
         className="fixed top-1/2 right-8 z-50 hidden -translate-y-1/2 lg:block"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 1.5 }}
+        transition={{ duration: 0.6, delay: 2.8 }}
       >
         <div className="flex flex-col gap-6">
           <button
@@ -108,22 +167,26 @@ export default function Home() {
         variants={container}
       >
         <motion.h1
-          className="font-wdxl-lubrifont text-primary decoration-accent mb-4 flex items-center justify-center gap-4 text-5xl tracking-widest underline decoration-[12px] underline-offset-[-4px] md:gap-6 md:text-6xl md:decoration-[20px] md:underline-offset-[-6px] lg:text-7xl xl:text-8xl xl:decoration-[28px] xl:underline-offset-[-8px]"
+          className="font-wdxl-lubrifont text-primary mb-4 flex items-center justify-center gap-4 text-5xl tracking-widest md:gap-6 md:text-6xl lg:text-7xl xl:text-8xl"
           variants={item}
         >
-          <Image
-            src="/logo.png"
-            alt="ロゴ"
-            width={120}
-            height={120}
-            priority
-            className="h-16 w-auto translate-x-4 md:h-20 md:translate-x-5 lg:h-24 xl:h-32"
-          />
-          アイデア研究所
+          <motion.div variants={logoItem} initial="hidden" animate="show">
+            <Image
+              src="/logo.png"
+              alt="ロゴ"
+              width={120}
+              height={120}
+              priority
+              className="h-16 w-auto translate-x-4 md:h-20 md:translate-x-5 lg:h-24 xl:h-32"
+            />
+          </motion.div>
+          <span className="title-underline">
+            <span>アイデア研究所</span>
+          </span>
         </motion.h1>
 
         {/* スマホサイズのキャッチコピー */}
-        <motion.div className="md:hidden" variants={item}>
+        <motion.div className="md:hidden" variants={catchphraseItem}>
           <h2 className="text-primary rounded-lg px-2 pb-6 text-2xl font-medium">
             発想を抽出しアイデアを結晶化する
           </h2>
@@ -139,7 +202,7 @@ export default function Home() {
         {/* 左側の装飾枠 */}
         <motion.div
           className="h-90 overflow-hidden rounded-3xl md:w-80 lg:w-116 xl:h-120 xl:w-144"
-          variants={item}
+          variants={videoItem}
         >
           <video className="h-full w-full object-cover" autoPlay loop muted playsInline>
             <source src="/top-video.mp4" type="video/mp4" />
@@ -147,21 +210,24 @@ export default function Home() {
         </motion.div>
 
         {/* 中央のキャッチコピー（タブレット以上） */}
-        <motion.div className="hidden md:block md:px-0" variants={item}>
+        <motion.div className="hidden md:block md:px-0" variants={catchphraseItem}>
           <h2 className="text-primary rounded-lg px-2 py-1 text-2xl font-medium md:whitespace-nowrap md:[writing-mode:vertical-rl] lg:text-3xl xl:text-4xl">
             発想を抽出しアイデアを結晶化する
           </h2>
         </motion.div>
 
         {/* 右側のメニューエリア */}
-        <div className="flex-1 rounded-3xl md:max-w-134 lg:max-w-164 xl:max-w-160">
+        <motion.div
+          className="flex-1 rounded-3xl md:max-w-134 lg:max-w-164 xl:max-w-160"
+          variants={menuItem}
+        >
           <div className="flex flex-col items-start gap-4 py-6 xl:gap-6">
             {/* メニュー項目 - ブレインライティング */}
-            <motion.div className="relative" variants={item}>
+            <div className="relative">
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
                   href="/brainwritings"
-                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
+                  className="menu-link menu-link-intro-1 text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   ブレインライティング
                   <ChevronRight className="h-3 w-3 xl:h-6 xl:w-6" />
@@ -170,14 +236,14 @@ export default function Home() {
                   Brainwriting
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* メニュー項目 - マンダラート */}
-            <motion.div className="relative" variants={item}>
+            <div className="relative">
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
                   href="/mandalarts"
-                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
+                  className="menu-link menu-link-intro-2 text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   マンダラート
                   <ChevronRight className="h-3 w-3 xl:h-6 xl:w-6" />
@@ -186,14 +252,14 @@ export default function Home() {
               <div className="font-lora text-primary/30 pointer-events-none absolute top-5 left-12 text-xl lg:top-6 lg:left-14 lg:text-2xl xl:text-3xl">
                 Mandalart
               </div>
-            </motion.div>
+            </div>
 
             {/* メニュー項目 - オズボーンのチェックリスト */}
-            <motion.div className="relative" variants={item}>
+            <div className="relative">
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
                   href="/osborn-checklists"
-                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium whitespace-nowrap transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
+                  className="menu-link menu-link-intro-3 text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium whitespace-nowrap transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   オズボーンのチェックリスト
                   <ChevronRight className="h-3 w-3 xl:h-6 xl:w-6" />
@@ -202,14 +268,14 @@ export default function Home() {
               <div className="font-lora text-primary/30 pointer-events-none absolute top-5 left-40 text-xl lg:top-6 lg:left-50 lg:text-2xl xl:text-3xl">
                 Osborn&apos;sChecklist
               </div>
-            </motion.div>
+            </div>
 
             {/* メニュー項目 - アイデア一覧 */}
-            <motion.div className="relative" variants={item}>
+            <div className="relative">
               <div className="border-dashed-wide flex items-center justify-start pl-2">
                 <Link
                   href="/idea-categories"
-                  className="menu-link text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
+                  className="menu-link menu-link-intro-4 text-primary hover:text-primary-hover hover:bg-accent mb-6 flex items-center gap-2 rounded px-2 py-1 text-2xl font-medium transition-all duration-300 ease-out lg:text-3xl xl:text-4xl"
                 >
                   アイデア一覧
                   <ChevronRight className="h-3 w-3 xl:h-6 xl:w-6" />
@@ -218,9 +284,9 @@ export default function Home() {
               <div className="font-lora text-primary/30 pointer-events-none absolute top-5 left-24 text-xl lg:top-6 lg:left-26 lg:text-2xl xl:text-3xl">
                 IdeaList
               </div>
-            </motion.div>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
 
       {/* スクロールインジケーター */}
@@ -228,7 +294,7 @@ export default function Home() {
         className="mt-8 flex flex-col items-center gap-2 md:mt-12"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1 }}
+        transition={{ duration: 0.8, delay: 2.5 }}
       >
         <span className="text-primary/60 text-sm font-medium tracking-wider">SCROLL</span>
         <motion.div

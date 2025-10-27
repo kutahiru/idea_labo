@@ -94,6 +94,57 @@ body {
   box-shadow: 0 4px 12px rgba(250, 170, 32, 0.3);
 }
 
+/* 初回ロード時のアニメーション */
+@keyframes menu-shine {
+  0% {
+    left: -150%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes menu-bg {
+  0%, 100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: var(--accent);
+  }
+}
+
+.menu-link-intro-1::before {
+  animation: menu-shine 0.7s ease-out 1.0s;
+}
+
+.menu-link-intro-1 {
+  animation: menu-bg 0.7s ease-out 1.0s;
+}
+
+.menu-link-intro-2::before {
+  animation: menu-shine 0.7s ease-out 1.5s;
+}
+
+.menu-link-intro-2 {
+  animation: menu-bg 0.7s ease-out 1.5s;
+}
+
+.menu-link-intro-3::before {
+  animation: menu-shine 0.7s ease-out 2.0s;
+}
+
+.menu-link-intro-3 {
+  animation: menu-bg 0.7s ease-out 2.0s;
+}
+
+.menu-link-intro-4::before {
+  animation: menu-shine 0.7s ease-out 2.5s;
+}
+
+.menu-link-intro-4 {
+  animation: menu-bg 0.7s ease-out 2.5s;
+}
+
 .header-link {
   position: relative;
   overflow: hidden;
@@ -145,4 +196,50 @@ body {
     transparent 2px,
     transparent 6px
   );
+}
+
+/* タイトルの下線アニメーション */
+.title-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.title-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 12px;
+  background-color: var(--accent);
+  animation: drawUnderline 1.2s ease-out 3.2s forwards;
+  z-index: -1;
+}
+
+.title-underline span {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .title-underline::after {
+    bottom: -6px;
+    height: 20px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .title-underline::after {
+    bottom: -8px;
+    height: 28px;
+  }
+}
+
+@keyframes drawUnderline {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }

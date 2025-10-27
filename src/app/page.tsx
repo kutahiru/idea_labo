@@ -2,8 +2,21 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight } from "lucide-react";
-import { motion } from "framer-motion";
+import {
+  ChevronRight,
+  Users,
+  Lightbulb,
+  TrendingUp,
+  ChevronDown,
+  Grid3x3,
+  Target,
+  Maximize2,
+  CheckSquare,
+  Sparkles,
+  RefreshCw,
+} from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 const container = {
   hidden: { opacity: 0 },
@@ -30,6 +43,13 @@ const item = {
 };
 
 export default function Home() {
+  const brainwritingRef = useRef(null);
+  const mandalartRef = useRef(null);
+  const osbornRef = useRef(null);
+  const isBrainwritingInView = useInView(brainwritingRef, { once: false, amount: 0.3 });
+  const isMandalartInView = useInView(mandalartRef, { once: false, amount: 0.3 });
+  const isOsbornInView = useInView(osbornRef, { once: false, amount: 0.3 });
+
   return (
     <div className="container mx-auto px-4">
       <motion.div
@@ -131,7 +151,7 @@ export default function Home() {
                 </Link>
               </div>
               <div className="font-lora text-primary/30 pointer-events-none absolute top-5 left-40 text-xl lg:top-6 lg:left-50 lg:text-2xl xl:text-3xl">
-                OsbornChecklist
+                Osborn'sChecklist
               </div>
             </motion.div>
 
@@ -153,6 +173,307 @@ export default function Home() {
           </div>
         </div>
       </motion.div>
+
+      {/* スクロールインジケーター */}
+      <motion.div
+        className="mt-8 flex flex-col items-center gap-2 md:mt-12"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1 }}
+      >
+        <span className="text-primary/60 text-sm font-medium tracking-wider">SCROLL</span>
+        <motion.div
+          animate={{
+            y: [0, 8, 0],
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          <ChevronDown className="text-primary/60 h-6 w-6" />
+        </motion.div>
+      </motion.div>
+
+      {/* ブレインライティング説明セクション */}
+      <motion.section
+        ref={brainwritingRef}
+        className="mt-16 mb-12 md:mt-24 md:mb-16 lg:mt-32 lg:mb-20"
+        initial={{ opacity: 0, y: 80 }}
+        animate={isBrainwritingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 80 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        {/* タイトル */}
+        <div className="mb-8 text-center md:mb-12">
+          <h2 className="text-primary decoration-accent mb-3 text-3xl font-bold underline decoration-8 underline-offset-[-4px] md:text-4xl lg:text-5xl">
+            ブレインライティングとは？
+          </h2>
+          <div className="font-lora text-primary/50 text-lg md:text-xl">Brainwriting</div>
+        </div>
+
+        {/* 説明エリア */}
+        <div>
+          <p className="text-primary mx-auto mb-12 max-w-4xl text-center text-base leading-relaxed md:mb-16 md:text-lg">
+            ブレインライティングは、複数人で紙を回しながらアイデアを書き込んでいく発想法です。
+            <br />
+            他の人のアイデアに触発されながら、次々と新しいアイデアが生まれていきます。
+          </p>
+
+          {/* 特徴リスト - ミニマルデザイン */}
+          <div className="mx-auto max-w-3xl space-y-8 md:space-y-12">
+            {/* アイテム1: チームで発想 */}
+            <div className="group">
+              <div className="border-primary/20 hover:border-accent flex items-start gap-6 border-l-4 pl-6 transition-colors duration-300 md:gap-8 md:pl-8">
+                <div className="flex-shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center">
+                    <Users className="text-primary h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">チームで発想</h3>
+                  <p className="leading-relaxed text-gray-600 md:text-lg">
+                    最大6人まで参加可能。みんなのアイデアを見ながら、刺激を受けて新しい発想が生まれます。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* アイテム2: アイデアの連鎖 */}
+            <div className="group">
+              <div className="border-primary/20 hover:border-accent flex items-start gap-6 border-l-4 pl-6 transition-colors duration-300 md:gap-8 md:pl-8">
+                <div className="flex-shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center">
+                    <Lightbulb className="text-primary h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
+                    アイデアの連鎖
+                  </h3>
+                  <p className="leading-relaxed text-gray-600 md:text-lg">
+                    他の人のアイデアから発想を広げ、連鎖的に新しいアイデアが生まれる仕組みです。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* アイテム3: 効率的な発想 */}
+            <div className="group">
+              <div className="border-primary/20 hover:border-accent flex items-start gap-6 border-l-4 pl-6 transition-colors duration-300 md:gap-8 md:pl-8">
+                <div className="flex-shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center">
+                    <TrendingUp className="text-primary h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">効率的な発想</h3>
+                  <p className="leading-relaxed text-gray-600 md:text-lg">
+                    6行×3列の形式で、1つのシートから最大18個のアイデアを効率的に生み出せます。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTAボタン */}
+          <div className="mt-8 text-center md:mt-10">
+            <Link
+              href="/brainwritings"
+              className="menu-link bg-primary inline-flex items-center gap-3 rounded-md px-8 py-4 text-lg font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            >
+              ブレインライティングを始める
+              <ChevronRight className="h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* マンダラート説明セクション */}
+      <motion.section
+        ref={mandalartRef}
+        className="mt-16 mb-12 md:mt-24 md:mb-16 lg:mt-32 lg:mb-20"
+        initial={{ opacity: 0, y: 80 }}
+        animate={isMandalartInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 80 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        {/* タイトル */}
+        <div className="mb-8 text-center md:mb-12">
+          <h2 className="text-primary decoration-accent mb-3 text-3xl font-bold underline decoration-8 underline-offset-[-4px] md:text-4xl lg:text-5xl">
+            マンダラートとは？
+          </h2>
+          <div className="font-lora text-primary/50 text-lg md:text-xl">Mandalart</div>
+        </div>
+
+        {/* 説明エリア */}
+        <div>
+          <p className="text-primary mx-auto mb-12 max-w-4xl text-center text-base leading-relaxed md:mb-16 md:text-lg">
+            マンダラートは、9×9のマス目を使ってアイデアを整理・拡張する思考法です。
+            <br />
+            中心にテーマを置き、周囲に関連するアイデアを配置することで、思考を体系的に深めていきます。
+          </p>
+
+          {/* 特徴リスト - ミニマルデザイン */}
+          <div className="mx-auto max-w-3xl space-y-8 md:space-y-12">
+            {/* アイテム1: 視覚的な整理 */}
+            <div className="group">
+              <div className="border-primary/20 hover:border-accent flex items-start gap-6 border-l-4 pl-6 transition-colors duration-300 md:gap-8 md:pl-8">
+                <div className="flex-shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center">
+                    <Grid3x3 className="text-primary h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">視覚的な整理</h3>
+                  <p className="leading-relaxed text-gray-600 md:text-lg">
+                    9×9のマス目を使って、思考を視覚的に整理。全体像を見渡しながら、体系的にアイデアを配置できます。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* アイテム2: アイデアの拡張 */}
+            <div className="group">
+              <div className="border-primary/20 hover:border-accent flex items-start gap-6 border-l-4 pl-6 transition-colors duration-300 md:gap-8 md:pl-8">
+                <div className="flex-shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center">
+                    <Maximize2 className="text-primary h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
+                    アイデアの拡張
+                  </h3>
+                  <p className="leading-relaxed text-gray-600 md:text-lg">
+                    中心から外側へと発想を広げることで、1つのテーマから最大81個のアイデアを生み出せます。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* アイテム3: 目標達成 */}
+            <div className="group">
+              <div className="border-primary/20 hover:border-accent flex items-start gap-6 border-l-4 pl-6 transition-colors duration-300 md:gap-8 md:pl-8">
+                <div className="flex-shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center">
+                    <Target className="text-primary h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">目標達成</h3>
+                  <p className="leading-relaxed text-gray-600 md:text-lg">
+                    大きな目標を細分化し、具体的な行動に落とし込むことで、達成への道筋が明確になります。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTAボタン */}
+          <div className="mt-8 text-center md:mt-10">
+            <Link
+              href="/mandalarts"
+              className="menu-link bg-primary inline-flex items-center gap-3 rounded-md px-8 py-4 text-lg font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            >
+              マンダラートを始める
+              <ChevronRight className="h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* オズボーンのチェックリスト説明セクション */}
+      <motion.section
+        ref={osbornRef}
+        className="mt-16 mb-12 md:mt-24 md:mb-16 lg:mt-32 lg:mb-20"
+        initial={{ opacity: 0, y: 80 }}
+        animate={isOsbornInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 80 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        {/* タイトル */}
+        <div className="mb-8 text-center md:mb-12">
+          <h2 className="text-primary decoration-accent mb-3 text-3xl font-bold underline decoration-8 underline-offset-[-4px] md:text-4xl lg:text-5xl">
+            オズボーンのチェックリストとは？
+          </h2>
+          <div className="font-lora text-primary/50 text-lg md:text-xl">Osborn's Checklist</div>
+        </div>
+
+        {/* 説明エリア */}
+        <div>
+          <p className="text-primary mx-auto mb-12 max-w-4xl text-center text-base leading-relaxed md:mb-16 md:text-lg">
+            オズボーンのチェックリストは、9つの視点から既存のアイデアを発展させる発想法です。
+            <br />
+            転用・応用・変更・拡大・縮小・代用・置換・逆転・結合という切り口から、新しいアイデアを生み出します。
+          </p>
+
+          {/* 特徴リスト - ミニマルデザイン */}
+          <div className="mx-auto max-w-3xl space-y-8 md:space-y-12">
+            {/* アイテム1: 9つの視点 */}
+            <div className="group">
+              <div className="border-primary/20 hover:border-accent flex items-start gap-6 border-l-4 pl-6 transition-colors duration-300 md:gap-8 md:pl-8">
+                <div className="flex-shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center">
+                    <CheckSquare className="text-primary h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">9つの視点</h3>
+                  <p className="leading-relaxed text-gray-600 md:text-lg">
+                    転用・応用・変更・拡大・縮小・代用・置換・逆転・結合の9つの切り口で、体系的にアイデアを発想できます。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* アイテム2: 多角的な発想 */}
+            <div className="group">
+              <div className="border-primary/20 hover:border-accent flex items-start gap-6 border-l-4 pl-6 transition-colors duration-300 md:gap-8 md:pl-8">
+                <div className="flex-shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center">
+                    <Sparkles className="text-primary h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">多角的な発想</h3>
+                  <p className="leading-relaxed text-gray-600 md:text-lg">
+                    様々な角度からアイデアを見直すことで、思いもよらない新しい発想が生まれます。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* アイテム3: 既存アイデアの改善 */}
+            <div className="group">
+              <div className="border-primary/20 hover:border-accent flex items-start gap-6 border-l-4 pl-6 transition-colors duration-300 md:gap-8 md:pl-8">
+                <div className="flex-shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center">
+                    <RefreshCw className="text-primary h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
+                    既存アイデアの改善
+                  </h3>
+                  <p className="leading-relaxed text-gray-600 md:text-lg">
+                    既存の商品やサービスに9つの視点を当てることで、改善・改良のヒントが見つかります。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTAボタン */}
+          <div className="mt-8 text-center md:mt-10">
+            <Link
+              href="/osborn-checklists"
+              className="menu-link bg-primary inline-flex items-center gap-3 rounded-md px-8 py-4 text-lg font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            >
+              オズボーンのチェックリストを始める
+              <ChevronRight className="h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+      </motion.section>
     </div>
   );
 }

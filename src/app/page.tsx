@@ -14,9 +14,10 @@ import {
   CheckSquare,
   Sparkles,
   RefreshCw,
+  FlaskConical,
 } from "lucide-react";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 
 const container = {
   hidden: { opacity: 0 },
@@ -102,14 +103,41 @@ const logoItem = {
 };
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState<boolean | null>(null);
+  const [showContent, setShowContent] = useState(false);
   const topRef = useRef<HTMLDivElement | null>(null);
   const brainwritingRef = useRef<HTMLElement | null>(null);
   const mandalartRef = useRef<HTMLElement | null>(null);
   const osbornRef = useRef<HTMLElement | null>(null);
   const isTopInView = useInView(topRef, { once: false, amount: 0.3 });
-  const isBrainwritingInView = useInView(brainwritingRef, { once: false, amount: 0.3 });
-  const isMandalartInView = useInView(mandalartRef, { once: false, amount: 0.3 });
-  const isOsbornInView = useInView(osbornRef, { once: false, amount: 0.3 });
+  const isBrainwritingInView = useInView(brainwritingRef, { once: true, margin: "0px 0px -200px 0px" });
+  const isMandalartInView = useInView(mandalartRef, { once: true, margin: "0px 0px -200px 0px" });
+  const isOsbornInView = useInView(osbornRef, { once: true, margin: "0px 0px -200px 0px" });
+
+  useEffect(() => {
+    // sessionStorageで初回アクセスかチェック
+    const hasVisited = sessionStorage.getItem("hasVisitedHome");
+
+    if (hasVisited) {
+      // 2回目以降はローディングをスキップ
+      setIsLoading(false);
+      setShowContent(true);
+    } else {
+      // 初回アクセス時のみローディング表示
+      setIsLoading(true);
+      sessionStorage.setItem("hasVisitedHome", "true");
+
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        // ローディング終了後、少し遅延してコンテンツを表示
+        setTimeout(() => {
+          setShowContent(true);
+        }, 500);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const scrollToSection = (ref: React.RefObject<HTMLElement | HTMLDivElement | null>) => {
     if (ref.current) {
@@ -124,6 +152,37 @@ export default function Home() {
   };
 
   return (
+    <>
+      <AnimatePresence mode="wait">
+        {isLoading === true && (
+          <motion.div
+            key="loading"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="relative">
+              {/* フラスコ */}
+              <motion.div
+                animate={{
+                  rotate: [-2, 2, -2],
+                  y: [0, -5, 0],
+                }}
+                transition={{
+                  duration: 0.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <FlaskConical className="text-primary h-32 w-32" strokeWidth={1.5} />
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+    {showContent && (
     <div className="relative container mx-auto px-4">
       {/* 右端の固定ナビゲーション */}
       <motion.nav
@@ -310,13 +369,18 @@ export default function Home() {
           <ChevronDown className="text-primary/60 h-6 w-6" />
         </motion.div>
       </motion.div>
+    </div>
+    )}
 
+      {showContent && (
+      <div className="relative container mx-auto px-4">
       {/* ブレインライティング説明セクション */}
       <motion.section
         ref={brainwritingRef}
         className="mt-16 mb-12 md:mt-24 md:mb-16 lg:mt-32 lg:mb-20"
         initial={{ opacity: 0, y: 80 }}
-        animate={isBrainwritingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 80 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         {/* タイトル */}
@@ -409,7 +473,8 @@ export default function Home() {
         ref={mandalartRef}
         className="mt-16 mb-12 md:mt-24 md:mb-16 lg:mt-32 lg:mb-20"
         initial={{ opacity: 0, y: 80 }}
-        animate={isMandalartInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 80 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         {/* タイトル */}
@@ -502,7 +567,8 @@ export default function Home() {
         ref={osbornRef}
         className="mt-16 mb-12 md:mt-24 md:mb-16 lg:mt-32 lg:mb-20"
         initial={{ opacity: 0, y: 80 }}
-        animate={isOsbornInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 80 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         {/* タイトル */}
@@ -591,6 +657,8 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-    </div>
+      </div>
+      )}
+    </>
   );
 }

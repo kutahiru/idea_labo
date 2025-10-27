@@ -109,10 +109,10 @@ export default function Home() {
   const brainwritingRef = useRef<HTMLElement | null>(null);
   const mandalartRef = useRef<HTMLElement | null>(null);
   const osbornRef = useRef<HTMLElement | null>(null);
-  const isTopInView = useInView(topRef, { once: false, amount: 0.3 });
-  const isBrainwritingInView = useInView(brainwritingRef, { once: true, margin: "0px 0px -200px 0px" });
-  const isMandalartInView = useInView(mandalartRef, { once: true, margin: "0px 0px -200px 0px" });
-  const isOsbornInView = useInView(osbornRef, { once: true, margin: "0px 0px -200px 0px" });
+  const isTopNavActive = useInView(topRef, { once: false, amount: 0.3 });
+  const isBrainwritingNavActive = useInView(brainwritingRef, { once: false, amount: 0.3 });
+  const isMandalartNavActive = useInView(mandalartRef, { once: false, amount: 0.3 });
+  const isOsbornNavActive = useInView(osbornRef, { once: false, amount: 0.3 });
 
   useEffect(() => {
     // sessionStorageで初回アクセスかチェック
@@ -122,18 +122,22 @@ export default function Home() {
       // 2回目以降はローディングをスキップ
       setIsLoading(false);
       setShowContent(true);
+      sessionStorage.setItem("homeContentShown", "true");
     } else {
       // 初回アクセス時のみローディング表示
       setIsLoading(true);
       sessionStorage.setItem("hasVisitedHome", "true");
 
       const timer = setTimeout(() => {
-        setIsLoading(false);
-        // ローディング終了後、少し遅延してコンテンツを表示
+        setIsLoading(false); // フラスコの円形縮小開始（1.5秒かかる）
+
+        // フラスコが完全に消えてからコンテンツ表示開始
         setTimeout(() => {
           setShowContent(true);
-        }, 500);
-      }, 3000);
+          // ヘッダーも同時に表示
+          sessionStorage.setItem("homeContentShown", "true");
+        }, 1700);
+      }, 2000);
 
       return () => clearTimeout(timer);
     }
@@ -158,9 +162,9 @@ export default function Home() {
           <motion.div
             key="loading"
             className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ clipPath: "circle(150% at 50% 50%)" }}
+            exit={{ clipPath: "circle(0% at 50% 50%)" }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
           >
             <div className="relative">
               {/* フラスコ */}
@@ -182,9 +186,8 @@ export default function Home() {
         )}
       </AnimatePresence>
 
+    {/* 右端の固定ナビゲーション */}
     {showContent && (
-    <div className="relative container mx-auto px-4">
-      {/* 右端の固定ナビゲーション */}
       <motion.nav
         className="fixed top-1/2 right-8 z-50 hidden -translate-y-1/2 lg:block"
         initial={{ opacity: 0, x: 20 }}
@@ -194,30 +197,33 @@ export default function Home() {
         <div className="flex flex-col gap-6">
           <button
             onClick={() => scrollToSection(topRef)}
-            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isTopInView ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
+            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isTopNavActive ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
             aria-label="トップへスクロール"
           />
 
           <button
             onClick={() => scrollToSection(brainwritingRef)}
-            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isBrainwritingInView ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
+            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isBrainwritingNavActive ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
             aria-label="ブレインライティングセクションへスクロール"
           />
 
           <button
             onClick={() => scrollToSection(mandalartRef)}
-            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isMandalartInView ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
+            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isMandalartNavActive ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
             aria-label="マンダラートセクションへスクロール"
           />
 
           <button
             onClick={() => scrollToSection(osbornRef)}
-            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isOsbornInView ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
+            className={`h-3 w-3 rounded-full border-2 transition-all duration-300 ${isOsbornNavActive ? "border-primary bg-primary scale-125" : "border-primary/30 hover:border-primary hover:scale-110"}`}
             aria-label="オズボーンのチェックリストセクションへスクロール"
           />
         </div>
       </motion.nav>
+    )}
 
+    {showContent && (
+    <div className="relative container mx-auto px-4">
       <motion.div
         ref={topRef}
         className="mt-8 text-center md:mb-8"

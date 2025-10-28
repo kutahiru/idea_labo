@@ -3,7 +3,7 @@
  */
 import { publishEvent } from "./server";
 import { NAMESPACES } from "./namespaces";
-import { BRAINWRITING_EVENT_TYPES, BrainwritingEventType } from "./event-types";
+import { BrainwritingEventType } from "./event-types";
 
 /**
  * ブレインライティングのイベントを発行

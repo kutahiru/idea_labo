@@ -39,6 +39,7 @@ Table brainwritings {
   description varchar [note: "説明　"]
   invite_token varchar [unique, note: "招待トークン"]
   is_invite_active boolean [not null, default: true, note: "招待URLが有効かどうか"]
+  is_results_public boolean [not null, default: true, note: "結果公開が有効かどうか"]
   created_at timestamp [not null]
   updated_at timestamp [not null]
 
@@ -84,12 +85,15 @@ Table mandalarts {
   user_id text [not null, ref: > users.id, note: "ユーザーID"]
   title varchar [not null, note: "タイトル"]
   theme_name varchar [not null, note: "テーマ名"]
-  description varchar [note: "説明　"]
+  description varchar [note: "説明"]
+  public_token varchar [unique, note: "公開トークン"]
+  is_results_public boolean [not null, default: true, note: "結果公開が有効かどうか"]
   created_at timestamp [not null]
   updated_at timestamp [not null]
 
   Note: 'マンダラート'
 }
+
 
 Table mandalart_inputs {
   id integer [pk, increment, not null]
@@ -111,6 +115,7 @@ Table osborn_checklists {
   title varchar(200) [not null, note: "タイトル"]
   theme_name varchar(100) [not null, note: "テーマ名"]
   description varchar(1000) [note: "説明"]
+  is_results_public boolean [not null, default: true, note: "結果公開が有効かどうか"]
   created_at timestamp [not null, default: `now()`]
   updated_at timestamp [not null, default: `now()`]
   

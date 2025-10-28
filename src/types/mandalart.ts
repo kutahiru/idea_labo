@@ -4,8 +4,10 @@ import { BaseIdeaListItem } from "../schemas/idea-framework";
  * 一覧表示用の型定義
  * 他のアイデアと共通の定義はBaseIdeaListItemに実装
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface MandalartListItem extends BaseIdeaListItem {}
+export interface MandalartListItem extends BaseIdeaListItem {
+  publicToken?: string | null;
+  isResultsPublic?: boolean;
+}
 
 export interface MandalartInputData {
   id: number;

@@ -8,6 +8,7 @@ import { mandalart_inputs, mandalarts } from "@/db/schema";
 import { MandalartInputData, MandalartListItem } from "@/types/mandalart";
 import { MandalartFormData } from "@/schemas/mandalart";
 import { desc, eq, and, sql } from "drizzle-orm";
+import { generateToken } from "@/lib/token";
 
 //#region ユーザーIDに紐づくマンダラートの一覧を取得
 /**
@@ -39,6 +40,9 @@ export async function getMandalartsByUserId(userId: string): Promise<MandalartLi
  * @returns 作成された情報
  */
 export async function createMandalart(userId: string, data: MandalartFormData) {
+  // 公開トークンを生成
+  const publicToken = generateToken();
+
   return await db.transaction(async tx => {
     const result = await tx
       .insert(mandalarts)
@@ -47,6 +51,7 @@ export async function createMandalart(userId: string, data: MandalartFormData) {
         title: data.title,
         theme_name: data.themeName,
         description: data.description,
+        public_token: publicToken,
       })
       .returning({
         id: mandalarts.id,
@@ -127,6 +132,8 @@ export async function getMandalartById(id: number, userId: string) {
       title: mandalarts.title,
       themeName: mandalarts.theme_name,
       description: mandalarts.description,
+      publicToken: mandalarts.public_token,
+      isResultsPublic: mandalarts.is_results_public,
       createdAt: mandalarts.created_at,
     })
     .from(mandalarts)
@@ -153,6 +160,51 @@ export async function getMandalartDetailById(mandalartId: number, userId: string
 
   // 入力データ取得
   const inputs = await getMandalartInputsByMandalartId(mandalartId);
+
+  return {
+    ...mandalart,
+    inputs,
+  };
+}
+//#endregion
+
+//#region マンダラートの詳細の取得（公開トークン条件）
+/**
+ * マンダラート詳細の取得（公開トークン条件）
+ * @param token - 公開トークン
+ * @returns マンダラート詳細情報（公開されていない場合はnull）
+ */
+export async function getMandalartDetailByToken(token: string) {
+  // トークンでマンダラート基本情報を取得（公開されているもののみ）
+  const result = await db
+    .select({
+      id: mandalarts.id,
+      userId: mandalarts.user_id,
+      title: mandalarts.title,
+      themeName: mandalarts.theme_name,
+      description: mandalarts.description,
+      publicToken: mandalarts.public_token,
+      isResultsPublic: mandalarts.is_results_public,
+      createdAt: mandalarts.created_at,
+    })
+    .from(mandalarts)
+    .where(
+      and(
+        eq(mandalarts.public_token, token),
+        eq(mandalarts.is_results_public, true)
+      )
+    )
+    .limit(1);
+
+  const mandalart = result[0];
+
+  // 見つからない場合はnull
+  if (!mandalart) {
+    return null;
+  }
+
+  // 入力データ取得
+  const inputs = await getMandalartInputsByMandalartId(mandalart.id);
 
   return {
     ...mandalart,
@@ -257,5 +309,27 @@ export async function upsertMandalartInput(
 
     return result[0];
   }
+}
+//#endregion
+
+//#region マンダラートの結果公開フラグの更新
+/**
+ * マンダラートの結果公開フラグの更新
+ * @param mandalartId - マンダラートID
+ * @param userId - ユーザーID
+ * @param isResultsPublic - 結果公開フラグ
+ */
+export async function updateMandalartIsResultsPublic(
+  mandalartId: number,
+  userId: string,
+  isResultsPublic: boolean
+) {
+  await db
+    .update(mandalarts)
+    .set({
+      is_results_public: isResultsPublic,
+      updated_at: sql`NOW()`,
+    })
+    .where(and(eq(mandalarts.id, mandalartId), eq(mandalarts.user_id, userId)));
 }
 //#endregion

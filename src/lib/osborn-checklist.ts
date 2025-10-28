@@ -8,6 +8,7 @@ import { osborn_checklists, osborn_checklist_inputs } from "@/db/schema";
 import { OsbornChecklistListItem, OsbornChecklistInputData } from "@/types/osborn-checklist";
 import { OsbornChecklistFormData, OsbornChecklistType } from "@/schemas/osborn-checklist";
 import { desc, eq, and, sql } from "drizzle-orm";
+import { generateToken } from "@/lib/token";
 
 //#region ユーザーIDに紐づくオズボーンの一覧を取得
 /**
@@ -41,6 +42,9 @@ export async function getOsbornChecklistsByUserId(
  * @returns 作成された情報
  */
 export async function createOsbornChecklist(userId: string, data: OsbornChecklistFormData) {
+  // 公開トークンを生成
+  const publicToken = generateToken();
+
   return await db.transaction(async tx => {
     const result = await tx
       .insert(osborn_checklists)
@@ -49,6 +53,7 @@ export async function createOsbornChecklist(userId: string, data: OsbornChecklis
         title: data.title,
         theme_name: data.themeName,
         description: data.description,
+        public_token: publicToken,
       })
       .returning({
         id: osborn_checklists.id,
@@ -129,6 +134,8 @@ export async function getOsbornChecklistById(id: number, userId: string) {
       title: osborn_checklists.title,
       themeName: osborn_checklists.theme_name,
       description: osborn_checklists.description,
+      publicToken: osborn_checklists.public_token,
+      isResultsPublic: osborn_checklists.is_results_public,
       createdAt: osborn_checklists.created_at,
     })
     .from(osborn_checklists)
@@ -247,5 +254,72 @@ export async function upsertOsbornChecklistInput(
 
     return result[0];
   }
+}
+//#endregion
+
+//#region オズボーンの詳細の取得（公開トークン条件）
+/**
+ * オズボーン詳細の取得（公開トークン条件）
+ * @param token - 公開トークン
+ * @returns オズボーン詳細情報（公開されていない場合はnull）
+ */
+export async function getOsbornChecklistDetailByToken(token: string) {
+  // トークンでオズボーン基本情報を取得（公開されているもののみ）
+  const result = await db
+    .select({
+      id: osborn_checklists.id,
+      userId: osborn_checklists.user_id,
+      title: osborn_checklists.title,
+      themeName: osborn_checklists.theme_name,
+      description: osborn_checklists.description,
+      publicToken: osborn_checklists.public_token,
+      isResultsPublic: osborn_checklists.is_results_public,
+      createdAt: osborn_checklists.created_at,
+    })
+    .from(osborn_checklists)
+    .where(
+      and(
+        eq(osborn_checklists.public_token, token),
+        eq(osborn_checklists.is_results_public, true)
+      )
+    )
+    .limit(1);
+
+  const osbornChecklist = result[0];
+
+  // 見つからない場合はnull
+  if (!osbornChecklist) {
+    return null;
+  }
+
+  // 入力データ取得
+  const inputs = await getOsbornChecklistInputsByOsbornChecklistId(osbornChecklist.id);
+
+  return {
+    ...osbornChecklist,
+    inputs,
+  };
+}
+//#endregion
+
+//#region オズボーンの結果公開フラグの更新
+/**
+ * オズボーンの結果公開フラグの更新
+ * @param osbornChecklistId - オズボーンID
+ * @param userId - ユーザーID
+ * @param isResultsPublic - 結果公開フラグ
+ */
+export async function updateOsbornChecklistIsResultsPublic(
+  osbornChecklistId: number,
+  userId: string,
+  isResultsPublic: boolean
+) {
+  await db
+    .update(osborn_checklists)
+    .set({
+      is_results_public: isResultsPublic,
+      updated_at: sql`NOW()`,
+    })
+    .where(and(eq(osborn_checklists.id, osbornChecklistId), eq(osborn_checklists.user_id, userId)));
 }
 //#endregion

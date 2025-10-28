@@ -126,7 +126,7 @@ export default function MandalartCell({
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           readOnly={readOnly}
-          placeholder={readOnly ? "" : "入力"}
+          placeholder=""
           rows={1}
           maxLength={30}
           className={

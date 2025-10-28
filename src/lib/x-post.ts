@@ -1,8 +1,10 @@
 /**
  * X(Twitter)投稿関連
  */
-import { generateInviteUrl } from "@/lib/invite-url";
+import { generateInviteUrl, generateMandalartPublicUrl, generateOsbornChecklistPublicUrl } from "@/lib/token";
 import { BrainwritingListItem } from "../types/brainwriting";
+import { MandalartListItem } from "../types/mandalart";
+import { OsbornChecklistListItem } from "../types/osborn-checklist";
 
 export interface PostBrainwritingToXParams {
   brainwriting: BrainwritingListItem;
@@ -67,4 +69,58 @@ function formatBrainwritingForX(
 function openXPost(content: string): void {
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(content)}`;
   window.open(tweetUrl, "_blank");
+}
+
+export interface PostMandalartToXParams {
+  mandalart: MandalartListItem;
+}
+
+// マンダラートをXに投稿
+export function postMandalartToX({ mandalart }: PostMandalartToXParams): void {
+  const content = formatMandalartForX(mandalart);
+  openXPost(content);
+}
+
+// マンダラートをX投稿用にフォーマット
+function formatMandalartForX(mandalart: MandalartListItem): string {
+  const publicUrl = generateMandalartPublicUrl(mandalart.publicToken);
+  const truncatedTheme =
+    mandalart.themeName.length > 30
+      ? mandalart.themeName.slice(0, 30) + "..."
+      : mandalart.themeName;
+
+  return `📊マンダラート
+📝テーマ:${truncatedTheme}
+アイデアを整理しました！
+
+🔗結果はこちら: ${publicUrl}
+
+#アイデア研究所`;
+}
+
+export interface PostOsbornChecklistToXParams {
+  osbornChecklist: OsbornChecklistListItem;
+}
+
+// オズボーンのチェックリストをXに投稿
+export function postOsbornChecklistToX({ osbornChecklist }: PostOsbornChecklistToXParams): void {
+  const content = formatOsbornChecklistForX(osbornChecklist);
+  openXPost(content);
+}
+
+// オズボーンのチェックリストをX投稿用にフォーマット
+function formatOsbornChecklistForX(osbornChecklist: OsbornChecklistListItem): string {
+  const publicUrl = generateOsbornChecklistPublicUrl(osbornChecklist.publicToken);
+  const truncatedTheme =
+    osbornChecklist.themeName.length > 30
+      ? osbornChecklist.themeName.slice(0, 30) + "..."
+      : osbornChecklist.themeName;
+
+  return `✅オズボーンのチェックリスト
+📝テーマ:${truncatedTheme}
+アイデアを整理しました！
+
+🔗結果はこちら: ${publicUrl}
+
+#アイデア研究所`;
 }

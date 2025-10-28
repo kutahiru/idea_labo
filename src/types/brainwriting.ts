@@ -7,7 +7,7 @@ import { USAGE_SCOPE } from "@/utils/brainwriting";
  */
 export interface BrainwritingListItem extends BaseIdeaListItem {
   usageScope: typeof USAGE_SCOPE.XPOST | typeof USAGE_SCOPE.TEAM;
-  inviteToken: string;
+  inviteToken?: string;
   isInviteActive?: boolean;
   isResultsPublic?: boolean;
 }

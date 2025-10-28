@@ -1,7 +1,7 @@
 "use client";
 
 import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
-import XPostButton from "@/components/brainwritings/XPostButton";
+import { XPostButton } from "@/components/shared/Button";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { postBrainwritingToX } from "@/lib/x-post";
 import { useRouter } from "next/navigation";

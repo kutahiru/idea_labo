@@ -18,7 +18,7 @@ export default function OsbornChecklistDetailClient({
   osbornChecklistDetail,
 }: OsbornChecklistDetailClientProps) {
   const { inputs, ...osbornChecklist } = osbornChecklistDetail;
-  const [isResultsPublic, setIsResultsPublic] = useState(osbornChecklist.isResultsPublic ?? true);
+  const [isResultsPublic, setIsResultsPublic] = useState(osbornChecklist.isResultsPublic ?? false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleInputChange = async (checklistType: OsbornChecklistType, value: string) => {

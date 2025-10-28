@@ -15,7 +15,7 @@ interface MandalartDetailClientProps {
 
 export default function MandalartDetailClient({ mandalartDetail }: MandalartDetailClientProps) {
   const { inputs, ...mandalart } = mandalartDetail;
-  const [isResultsPublic, setIsResultsPublic] = useState(mandalart.isResultsPublic ?? true);
+  const [isResultsPublic, setIsResultsPublic] = useState(mandalart.isResultsPublic ?? false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleInputChange = async (

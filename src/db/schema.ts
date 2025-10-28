@@ -121,7 +121,7 @@ export const mandalarts = pgTable("mandalarts", {
   theme_name: varchar("theme_name", { length: 100 }).notNull(),
   description: varchar("description", { length: 1000 }),
   public_token: varchar("public_token", { length: 100 }).notNull().unique(),
-  is_results_public: boolean("is_results_public").notNull().default(true),
+  is_results_public: boolean("is_results_public").notNull().default(false),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at")
     .notNull()
@@ -155,7 +155,7 @@ export const osborn_checklists = pgTable("osborn_checklists", {
   theme_name: varchar("theme_name", { length: 100 }).notNull(),
   description: varchar("description", { length: 1000 }),
   public_token: varchar("public_token", { length: 100 }).notNull().unique(),
-  is_results_public: boolean("is_results_public").notNull().default(true),
+  is_results_public: boolean("is_results_public").notNull().default(false),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at")
     .notNull()

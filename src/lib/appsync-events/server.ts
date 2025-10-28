@@ -2,8 +2,6 @@
  * サーバー側 AppSync Events ユーティリティ
  * API Routeからイベントを発行するために使用
  */
-import { post } from "aws-amplify/api";
-
 interface PublishEventParams {
   namespace: string;
   channel: string;

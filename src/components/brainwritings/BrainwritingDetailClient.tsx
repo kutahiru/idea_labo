@@ -191,7 +191,7 @@ export default function BrainwritingDetailClient({
       )}
 
       {/* 招待リンクコピー（チーム利用版） */}
-      {brainwriting.usageScope === USAGE_SCOPE.TEAM && (
+      {brainwriting.usageScope === USAGE_SCOPE.TEAM && brainwriting.inviteToken && (
         <InviteLinkCopy
           inviteToken={brainwriting.inviteToken}
           brainwritingId={brainwriting.id}

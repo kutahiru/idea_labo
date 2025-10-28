@@ -35,7 +35,6 @@ export default async function OsbornChecklistDetailPage({
   return (
     <OsbornChecklistDetailClient
       osbornChecklistDetail={OsbornChecklistDetail}
-      currentUserId={session.user.id}
     />
   );
 }

@@ -31,7 +31,7 @@ import {
 } from "@/types/brainwriting";
 import { BrainwritingFormData } from "@/schemas/brainwriting";
 import { USAGE_SCOPE, sortUsersByFirstRow } from "@/utils/brainwriting";
-import { generateInviteData } from "@/lib/invite-url";
+import { generateToken } from "@/lib/token";
 
 // トランザクション型定義
 type DbTransaction = PgTransaction<
@@ -55,8 +55,6 @@ export async function getBrainwritingsByUserId(userId: string): Promise<Brainwri
       themeName: brainwritings.theme_name,
       description: brainwritings.description,
       usageScope: brainwritings.usage_scope,
-      inviteToken: brainwritings.invite_token,
-      isResultsPublic: brainwritings.is_results_public,
       createdAt: brainwritings.created_at,
     })
     .from(brainwritings)
@@ -70,11 +68,11 @@ export async function getBrainwritingsByUserId(userId: string): Promise<Brainwri
  * ブレインライティングの新規作成
  * @param userId - ユーザーID
  * @param data - ブレインライティングのフォームデータ
- * @returns 作成されたブレインライティング情報（招待URL含む）
+ * @returns 作成されたブレインライティング情報
  */
 export async function createBrainwriting(userId: string, data: BrainwritingFormData) {
-  // URLを生成
-  const inviteData = generateInviteData();
+  // 招待トークンを生成
+  const inviteToken = generateToken();
 
   return await db.transaction(async tx => {
     const result = await tx
@@ -85,7 +83,7 @@ export async function createBrainwriting(userId: string, data: BrainwritingFormD
         theme_name: data.themeName,
         description: data.description,
         usage_scope: data.usageScope,
-        invite_token: inviteData.token,
+        invite_token: inviteToken,
       })
       .returning({
         id: brainwritings.id,
@@ -93,7 +91,6 @@ export async function createBrainwriting(userId: string, data: BrainwritingFormD
         themeName: brainwritings.theme_name,
         description: brainwritings.description,
         usageScope: brainwritings.usage_scope,
-        inviteToken: brainwritings.invite_token,
         createdAt: brainwritings.created_at,
       });
 
@@ -110,11 +107,7 @@ export async function createBrainwriting(userId: string, data: BrainwritingFormD
       await createSheetsWithInputsInternal(tx, brainwriting.id);
     }
 
-    // 招待URLを含むレスポンスを返す
-    return {
-      ...brainwriting,
-      inviteUrl: inviteData.url, // 完全なURLをレスポンスに含める
-    };
+    return brainwriting;
   });
 }
 //#endregion

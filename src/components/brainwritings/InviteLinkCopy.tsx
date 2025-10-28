@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Copy, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
-import { generateInviteUrl } from "@/lib/invite-url";
+import { generateInviteUrl } from "@/lib/token";
 import ToggleSwitch from "@/components/shared/ToggleSwitch";
 
 interface InviteLinkCopyProps {

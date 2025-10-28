@@ -4,7 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import BrainwritingSheet from "./BrainwritingSheet";
-import XPostButton from "./XPostButton";
+import { XPostButton } from "@/components/shared/Button";
 import InviteLinkCopy from "./InviteLinkCopy";
 import ToggleSwitch from "@/components/shared/ToggleSwitch";
 import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";

@@ -31,6 +31,6 @@ export default async function MandalartDetailPage({ params }: MandalartDetailPag
   }
 
   return (
-    <MandalartDetailClient mandalartDetail={mandalartDetail} currentUserId={session.user.id} />
+    <MandalartDetailClient mandalartDetail={mandalartDetail} />
   );
 }

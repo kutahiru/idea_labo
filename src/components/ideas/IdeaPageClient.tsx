@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import IdeaIndex from "./IdeaIndex";
 import IdeaModal from "./IdeaModal";
 import { IdeaListItem } from "@/types/idea";
-import { IdeaFormData } from "@/schemas/idea";
 import { AnimatePresence } from "framer-motion";
 import { CreateButton } from "@/components/shared/Button";
-import { useResourceSubmit, useResourceDelete } from "@/hooks/useResourceSubmit";
+import { useResourceDelete } from "@/hooks/useResourceSubmit";
 
 interface IdeaPageClientProps {
   initialData: IdeaListItem[];
@@ -36,19 +35,8 @@ export default function IdeaPageClient({ initialData, categoryId }: IdeaPageClie
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingData(null);
+    router.refresh();
   };
-
-  // アイデア作成・更新
-  const handleSubmit = useResourceSubmit<IdeaFormData>({
-    apiPath: "/api/ideas",
-    resourceName: "アイデア",
-    editingData,
-    additionalData: { categoryId },
-    onSuccess: () => {
-      router.refresh();
-      handleCloseModal();
-    },
-  });
 
   // アイデア削除
   const handleDelete = useResourceDelete({
@@ -73,9 +61,10 @@ export default function IdeaPageClient({ initialData, categoryId }: IdeaPageClie
         {isModalOpen && (
           <IdeaModal
             onClose={handleCloseModal}
-            onSubmit={handleSubmit}
             initialData={editingData || undefined}
             mode={editingData ? "edit" : "create"}
+            fixedCategoryId={categoryId}
+            showCategoryField={false}
           />
         )}
       </AnimatePresence>

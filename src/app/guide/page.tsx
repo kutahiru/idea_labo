@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import BrainwritingGuideModal from "@/components/brainwritings/BrainwritingGuideModal";
 import MandalartGuideModal from "@/components/mandalarts/MandalartGuideModal";
 import OsbornChecklistGuideModal from "@/components/osborn-checklists/OsbornChecklistGuideModal";
@@ -49,6 +50,15 @@ export default function GuidePage() {
               <br />
               発言が苦手なメンバーでも参加しやすいという利点があります。
             </p>
+            <div className="mb-4 flex justify-center">
+              <Image
+                src="/brainwriting_guide.png"
+                alt="ブレインライティングのガイド"
+                width={600}
+                height={400}
+                className="rounded-lg border border-gray-300"
+              />
+            </div>
             <div className="ml-4 space-y-2">
               <div>
                 <h4 className="font-semibold text-gray-800">X投稿版</h4>
@@ -85,11 +95,20 @@ export default function GuidePage() {
             <p className="text-primary decoration-accent mb-4 text-lg font-semibold underline decoration-4 underline-offset-[-2px]">
               個人で網羅的にアイデアを発想する
             </p>
-            <p className="leading-relaxed">
+            <p className="mb-3 leading-relaxed">
               9×9の81マスのマス目にアイデアや目標を書き込んで思考を整理し、アイデアを発展させるフレームワークです。
               <br />
               キーワードを網羅的に可視化することで、新たなアイデアへとつなげることができます。
             </p>
+            <div className="flex justify-center">
+              <Image
+                src="/mandalart_guide.png"
+                alt="マンダラートのガイド"
+                width={600}
+                height={400}
+                className="rounded-lg border border-gray-300"
+              />
+            </div>
           </div>
 
           {/* オズボーンのチェックリスト */}
@@ -106,11 +125,20 @@ export default function GuidePage() {
             <p className="text-primary decoration-accent mb-4 text-lg font-semibold underline decoration-4 underline-offset-[-2px]">
               個人で既存のアイデアから別視点のアイデアを発想する
             </p>
-            <p className="leading-relaxed">
-              既存の物事や課題に対して、「転用」「応用」「変更」「拡大」「縮小」「代用」「置換」「逆転」「結合」の9つの視点から強制的に問いを立て、新しいアイデアを発想するためのフレームワークです。
+            <p className="mb-3 leading-relaxed">
+              既存の物事や課題に対して、「転用」「応用」「変更」「拡大」「縮小」「代用」「再配置」「逆転」「結合」の9つの視点から強制的に問いを立て、新しいアイデアを発想するためのフレームワークです。
               <br />
               様々な視点で考えることを可能とするため、斬新なアイデアを生み出すことができます。
             </p>
+            <div className="flex justify-center">
+              <Image
+                src="/osborn_checklist_guide.png"
+                alt="オズボーンのチェックリストのガイド"
+                width={600}
+                height={400}
+                className="rounded-lg border border-gray-300"
+              />
+            </div>
           </div>
         </section>
 

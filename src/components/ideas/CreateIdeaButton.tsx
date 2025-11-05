@@ -1,16 +1,32 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Lightbulb } from "lucide-react";
 import IdeaModal from "./IdeaModal";
 import { AnimatePresence } from "framer-motion";
 import { IdeaCategoryListItem } from "@/types/idea-category";
+import { IdeaFormData } from "@/schemas/idea";
+import { useResourceSubmit } from "@/hooks/useResourceSubmit";
 import toast from "react-hot-toast";
+import { parseJson } from "@/lib/api/utils";
 
 export default function CreateIdeaButton() {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState<IdeaCategoryListItem[]>([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+
+  // アイデア作成
+  const handleSubmit = useResourceSubmit<IdeaFormData & { categoryId: number }>({
+    apiPath: "/api/ideas",
+    resourceName: "アイデア",
+    editingData: null,
+    onSuccess: () => {
+      router.refresh();
+      setIsModalOpen(false);
+    },
+  });
 
   // カテゴリ一覧を取得（初回のみ）
   const fetchCategories = async () => {
@@ -24,10 +40,9 @@ export default function CreateIdeaButton() {
         throw new Error("カテゴリの読み込みに失敗しました");
       }
 
-      const data = await response.json();
+      const data = await parseJson<IdeaCategoryListItem[]>(response, "カテゴリの読み込みに失敗しました");
       setCategories(data);
     } catch (error) {
-      console.error("カテゴリ取得エラー:", error);
       toast.error(
         error instanceof Error ? error.message : "カテゴリの読み込みに失敗しました"
       );
@@ -58,6 +73,7 @@ export default function CreateIdeaButton() {
         {isModalOpen && (
           <IdeaModal
             onClose={() => setIsModalOpen(false)}
+            onSubmit={handleSubmit}
             categories={categories}
             mode={"create"}
             showCategoryField={true}

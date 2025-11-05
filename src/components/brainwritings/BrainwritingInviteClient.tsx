@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { USAGE_SCOPE } from "@/utils/brainwriting";
+import { parseJsonSafe, parseJson } from "@/lib/api/utils";
 
 interface BrainwritingInviteClientProps {
   brainwriting: BrainwritingListItem;
@@ -28,7 +29,7 @@ export default function BrainwritingInviteClient({
     isFull: boolean;
     canJoin?: boolean;
   } | null>(null);
-  const [errorCount, setErrorCount] = useState(0);
+  const errorCountRef = useRef(0);
 
   // ログイン後にロック状態をチェック（定期的に更新）
   useEffect(() => {
@@ -46,16 +47,17 @@ export default function BrainwritingInviteClient({
             throw new Error("参加状況の取得に失敗しました");
           }
 
-          let data;
-          try {
-            data = await response.json();
-          } catch (error) {
-            console.error("JSONパースエラー:", error);
-            throw new Error("データの読み込みに失敗しました");
-          }
+          const data = await parseJson<{
+            isLocked?: boolean;
+            lockExpiresAt?: string | null;
+            currentCount: number;
+            maxCount: number;
+            isFull: boolean;
+            canJoin?: boolean;
+          }>(response, "参加状況の読み込みに失敗しました");
 
           // 成功時はエラーカウンターをリセット
-          setErrorCount(0);
+          errorCountRef.current = 0;
 
           // X投稿版の場合はロック情報も含める
           if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
@@ -77,17 +79,14 @@ export default function BrainwritingInviteClient({
           }
         } catch (error) {
           console.error("ロック状態チェックエラー:", error);
-          setErrorCount((prev) => {
-            const newCount = prev + 1;
-            if (newCount >= MAX_ERRORS) {
-              // 最大エラー回数に達したらポーリングを停止
-              if (intervalId) {
-                clearInterval(intervalId);
-              }
-              toast.error("参加状況の取得に失敗しました。ページを再読み込みしてください。");
+          errorCountRef.current += 1;
+          if (errorCountRef.current >= MAX_ERRORS) {
+            // 最大エラー回数に達したらポーリングを停止
+            if (intervalId) {
+              clearInterval(intervalId);
             }
-            return newCount;
-          });
+            toast.error("参加状況の取得に失敗しました。ページを再読み込みしてください。");
+          }
         }
       }
     };
@@ -129,22 +128,14 @@ export default function BrainwritingInviteClient({
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({
+        const errorData = await parseJsonSafe(response, {
           error: "参加に失敗しました",
-        }));
+        });
         toast.error(errorData.error || "参加に失敗しました");
         return;
       }
 
-      const data = await response.json().catch(() => {
-        console.error("JSONパースエラー");
-        toast.error("データの読み込みに失敗しました");
-        return null;
-      });
-
-      if (!data) {
-        return;
-      }
+      const data = await parseJson<{ sheetId: number }>(response, "参加データの読み込みに失敗しました");
 
       if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
         // X投稿版の場合

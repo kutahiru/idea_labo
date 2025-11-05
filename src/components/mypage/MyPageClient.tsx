@@ -9,6 +9,7 @@ import UserEditModal from "./UserEditModal";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { Pencil } from "lucide-react";
+import { parseJsonSafe, parseJson } from "@/lib/api/utils";
 
 interface MyPageClientProps {
   initialData: UserProfile;
@@ -40,12 +41,14 @@ export default function MyPageClient({ initialData }: MyPageClientProps) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await parseJsonSafe(response, {
+          error: "更新に失敗しました",
+        });
         throw new Error(errorData.error || "更新に失敗しました");
       }
 
-      const result = await response.json();
-      
+      const result = await parseJson<UserProfile>(response);
+
       // セッションを更新
       await update({ name: result.name });
       

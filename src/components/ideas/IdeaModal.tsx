@@ -17,6 +17,7 @@ import { ModalActions } from "@/components/shared/ModalActions";
 
 interface CreateIdeaModalProps {
   onClose: () => void;
+  onSubmit: (data: IdeaFormData & { categoryId: number }) => Promise<void>; // 外部からの送信処理（必須）
   categories?: IdeaCategoryListItem[]; // showCategoryField=falseの場合は不要
   initialData?: IdeaFormData & { id?: number };
   mode: "create" | "edit";
@@ -26,6 +27,7 @@ interface CreateIdeaModalProps {
 
 export default function CreateIdeaModal({
   onClose,
+  onSubmit,
   categories,
   initialData,
   mode,
@@ -104,36 +106,11 @@ export default function CreateIdeaModal({
 
     setIsSubmitting(true);
     try {
-      const url =
-        mode === "edit" && initialData?.id ? `/api/ideas/${initialData.id}` : "/api/ideas";
-      const method = mode === "edit" ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          categoryId: finalCategoryId, // 固定カテゴリがあれば上書き
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `${mode === "edit" ? "更新" : "作成"}に失敗しました`);
-      }
-
-      const { toast } = await import("react-hot-toast");
-      toast.success(`アイデアが${mode === "edit" ? "更新" : "作成"}されました`);
-
+      await onSubmit({ ...formData, categoryId: finalCategoryId });
       onClose();
     } catch (error) {
-      console.error("アイデア作成エラー:", error);
-      const { toast } = await import("react-hot-toast");
-      toast.error(
-        `エラーが発生しました: ${error instanceof Error ? error.message : "不明なエラー"}`
-      );
+      console.error("アイデア送信エラー:", error);
+      // エラーハンドリングは外部のonSubmit（useResourceSubmit）で行われる
     } finally {
       setIsSubmitting(false);
     }

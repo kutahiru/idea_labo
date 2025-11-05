@@ -9,6 +9,7 @@ import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";
 import { convertToRowData, handleBrainwritingDataChange, USAGE_SCOPE } from "@/utils/brainwriting";
 import { useAutoRefreshOnFocus } from "@/hooks/useAutoRefreshOnFocus";
+import { parseJsonSafe, parseJson } from "@/lib/api/utils";
 
 interface BrainwritingInputClientProps {
   brainwritingDetail: BrainwritingDetail;
@@ -143,10 +144,9 @@ export default function BrainwritingInputClient({
 
     let latestInputs: BrainwritingInputData[];
     try {
-      latestInputs = await response.json();
+      latestInputs = await parseJson<BrainwritingInputData[]>(response);
     } catch (error) {
-      console.error("JSONパースエラー:", error);
-      toast.error("データの読み込みに失敗しました");
+      toast.error(error instanceof Error ? error.message : "データの読み込みに失敗しました");
       return;
     }
 
@@ -178,7 +178,7 @@ export default function BrainwritingInputClient({
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: "完了処理に失敗しました" }));
+        const errorData = await parseJsonSafe(response, { error: "完了処理に失敗しました" });
         throw new Error(errorData.error || "完了処理に失敗しました");
       }
 

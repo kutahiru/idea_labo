@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { UserFormData, userFormDataSchema } from "@/schemas/user";
+import { parseJsonSafe, parseJson } from "@/lib/api/utils";
 
 interface AddUserClientProps {
   currentName: string;
@@ -70,11 +71,13 @@ export default function AddUserClient({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await parseJsonSafe(response, {
+          error: "ユーザー名の更新に失敗しました",
+        });
         throw new Error(errorData.error || "ユーザー名の更新に失敗しました");
       }
 
-      const result = await response.json();
+      const result = await parseJson<{ name: string }>(response);
 
       // セッションを更新
       await update({ name: result.name });

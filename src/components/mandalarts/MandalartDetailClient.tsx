@@ -8,6 +8,7 @@ import MandalartGrid from "./MandalartGrid";
 import { XPostButton } from "../shared/Button";
 import ToggleSwitch from "../shared/ToggleSwitch";
 import { postMandalartToX } from "@/lib/x-post";
+import { parseJsonSafe } from "@/lib/api/utils";
 
 interface MandalartDetailClientProps {
   mandalartDetail: MandalartDetail;
@@ -42,7 +43,7 @@ export default function MandalartDetailClient({ mandalartDetail }: MandalartDeta
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: "保存に失敗しました" }));
+        const errorData = await parseJsonSafe(response, { error: "保存に失敗しました" });
         toast.error(errorData.error || "保存に失敗しました");
         return;
       }
@@ -72,7 +73,7 @@ export default function MandalartDetailClient({ mandalartDetail }: MandalartDeta
       });
 
       if (!response.ok) {
-        const error = await response.json();
+        const error = await parseJsonSafe(response, { error: "結果公開の状態更新に失敗しました" });
         toast.error(error.error || "結果公開の状態更新に失敗しました");
         return;
       }

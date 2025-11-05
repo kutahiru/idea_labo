@@ -1,5 +1,6 @@
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { parseJsonSafe, parseJson } from "@/lib/api/utils";
 
 interface UseResourceSubmitOptions {
   apiPath: string;
@@ -39,11 +40,14 @@ export function useResourceSubmit<T>({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await parseJsonSafe(response, {
+          error: `${editingData ? "更新" : "作成"}に失敗しました`,
+        });
         throw new Error(errorData.error || `${editingData ? "更新" : "作成"}に失敗しました`);
       }
 
-      const result = await response.json();
+      const result = await parseJson(response);
+
       toast.success(`${resourceName}が${editingData ? "更新" : "作成"}されました`);
 
       // コールバック関数が設定されていれば実行
@@ -79,7 +83,9 @@ export function useResourceDelete({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await parseJsonSafe(response, {
+          error: "削除に失敗しました",
+        });
         throw new Error(errorData.error || "削除に失敗しました");
       }
 

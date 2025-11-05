@@ -5,6 +5,7 @@ import { Lightbulb } from "lucide-react";
 import IdeaModal from "./IdeaModal";
 import { AnimatePresence } from "framer-motion";
 import { IdeaCategoryListItem } from "@/types/idea-category";
+import toast from "react-hot-toast";
 
 export default function CreateIdeaButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,12 +19,18 @@ export default function CreateIdeaButton() {
     setIsLoadingCategories(true);
     try {
       const response = await fetch("/api/idea-categories");
-      if (response.ok) {
-        const data = await response.json();
-        setCategories(data);
+
+      if (!response.ok) {
+        throw new Error("カテゴリの読み込みに失敗しました");
       }
+
+      const data = await response.json();
+      setCategories(data);
     } catch (error) {
       console.error("カテゴリ取得エラー:", error);
+      toast.error(
+        error instanceof Error ? error.message : "カテゴリの読み込みに失敗しました"
+      );
     } finally {
       setIsLoadingCategories(false);
     }

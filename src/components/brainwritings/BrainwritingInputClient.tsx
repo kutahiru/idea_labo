@@ -140,7 +140,15 @@ export default function BrainwritingInputClient({
       toast.error("データの取得に失敗しました");
       return;
     }
-    const latestInputs: BrainwritingInputData[] = await response.json();
+
+    let latestInputs: BrainwritingInputData[];
+    try {
+      latestInputs = await response.json();
+    } catch (error) {
+      console.error("JSONパースエラー:", error);
+      toast.error("データの読み込みに失敗しました");
+      return;
+    }
 
     // 現在のユーザーの入力データのみチェック
     const myInputs = latestInputs.filter(input => input.row_index === activeRowIndex);
@@ -170,7 +178,7 @@ export default function BrainwritingInputClient({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({ error: "完了処理に失敗しました" }));
         throw new Error(errorData.error || "完了処理に失敗しました");
       }
 

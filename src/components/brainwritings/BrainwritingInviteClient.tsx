@@ -28,39 +28,66 @@ export default function BrainwritingInviteClient({
     isFull: boolean;
     canJoin?: boolean;
   } | null>(null);
+  const [errorCount, setErrorCount] = useState(0);
 
   // ログイン後にロック状態をチェック（定期的に更新）
   useEffect(() => {
+    const MAX_ERRORS = 3;
+    let intervalId: NodeJS.Timeout | null = null;
+
     const checkLockStatus = async () => {
       if (isLoggedIn && brainwriting.id) {
         try {
           const response = await fetch(
             `/api/brainwritings/${brainwriting.id}/join-status?usageScope=${brainwriting.usageScope}`
           );
-          if (response.ok) {
-            const data = await response.json();
 
-            // X投稿版の場合はロック情報も含める
-            if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
-              setStatus({
-                isLocked: data.isLocked || false,
-                lockExpiresAt: data.lockExpiresAt ? new Date(data.lockExpiresAt) : null,
-                currentCount: data.currentCount || 0,
-                maxCount: data.maxCount || 6,
-                isFull: data.isFull || false,
-              });
-            } else {
-              // チーム版の場合はロック情報なし
-              setStatus({
-                currentCount: data.currentCount || 0,
-                maxCount: data.maxCount || 6,
-                isFull: data.isFull || false,
-                canJoin: data.canJoin !== false,
-              });
-            }
+          if (!response.ok) {
+            throw new Error("参加状況の取得に失敗しました");
+          }
+
+          let data;
+          try {
+            data = await response.json();
+          } catch (error) {
+            console.error("JSONパースエラー:", error);
+            throw new Error("データの読み込みに失敗しました");
+          }
+
+          // 成功時はエラーカウンターをリセット
+          setErrorCount(0);
+
+          // X投稿版の場合はロック情報も含める
+          if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
+            setStatus({
+              isLocked: data.isLocked || false,
+              lockExpiresAt: data.lockExpiresAt ? new Date(data.lockExpiresAt) : null,
+              currentCount: data.currentCount || 0,
+              maxCount: data.maxCount || 6,
+              isFull: data.isFull || false,
+            });
+          } else {
+            // チーム版の場合はロック情報なし
+            setStatus({
+              currentCount: data.currentCount || 0,
+              maxCount: data.maxCount || 6,
+              isFull: data.isFull || false,
+              canJoin: data.canJoin !== false,
+            });
           }
         } catch (error) {
           console.error("ロック状態チェックエラー:", error);
+          setErrorCount((prev) => {
+            const newCount = prev + 1;
+            if (newCount >= MAX_ERRORS) {
+              // 最大エラー回数に達したらポーリングを停止
+              if (intervalId) {
+                clearInterval(intervalId);
+              }
+              toast.error("参加状況の取得に失敗しました。ページを再読み込みしてください。");
+            }
+            return newCount;
+          });
         }
       }
     };
@@ -68,10 +95,14 @@ export default function BrainwritingInviteClient({
     checkLockStatus(); // 初回実行
 
     // 10秒ごとに定期的にチェック
-    const interval = setInterval(checkLockStatus, 10000);
+    intervalId = setInterval(checkLockStatus, 10000);
 
     // クリーンアップ関数
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [isLoggedIn, brainwriting.id, brainwriting.usageScope]);
 
   const handleJoinBrainwriting = async () => {
@@ -97,10 +128,21 @@ export default function BrainwritingInviteClient({
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        toast.error(data.error || "参加に失敗しました");
+        const errorData = await response.json().catch(() => ({
+          error: "参加に失敗しました",
+        }));
+        toast.error(errorData.error || "参加に失敗しました");
+        return;
+      }
+
+      const data = await response.json().catch(() => {
+        console.error("JSONパースエラー");
+        toast.error("データの読み込みに失敗しました");
+        return null;
+      });
+
+      if (!data) {
         return;
       }
 

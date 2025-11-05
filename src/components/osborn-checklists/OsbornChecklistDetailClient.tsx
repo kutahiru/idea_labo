@@ -23,7 +23,7 @@ export default function OsbornChecklistDetailClient({
 
   const handleInputChange = async (checklistType: OsbornChecklistType, value: string) => {
     try {
-      await fetch("/api/osborn-checklists/inputs", {
+      const response = await fetch("/api/osborn-checklists/inputs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,8 +34,15 @@ export default function OsbornChecklistDetailClient({
           content: value,
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "保存に失敗しました" }));
+        toast.error(errorData.error || "保存に失敗しました");
+        return;
+      }
     } catch (error) {
       console.error("オズボーンのチェックリスト入力保存エラー:", error);
+      toast.error("ネットワークエラーが発生しました");
     }
   };
 

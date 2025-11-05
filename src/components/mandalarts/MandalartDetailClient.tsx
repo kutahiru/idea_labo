@@ -26,7 +26,7 @@ export default function MandalartDetailClient({ mandalartDetail }: MandalartDeta
     value: string
   ) => {
     try {
-      await fetch("/api/mandalarts/inputs", {
+      const response = await fetch("/api/mandalarts/inputs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,8 +40,15 @@ export default function MandalartDetailClient({ mandalartDetail }: MandalartDeta
           content: value,
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "保存に失敗しました" }));
+        toast.error(errorData.error || "保存に失敗しました");
+        return;
+      }
     } catch (error) {
       console.error("マンダラート入力保存エラー:", error);
+      toast.error("ネットワークエラーが発生しました");
     }
   };
 

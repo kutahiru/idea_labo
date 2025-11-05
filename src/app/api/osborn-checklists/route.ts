@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkAuth } from "@/lib/api/utils";
+import { checkAuth, apiErrors } from "@/lib/api/utils";
 import { osbornChecklistFormDataSchema } from "@/schemas/osborn-checklist";
 import { createOsbornChecklist } from "@/lib/osborn-checklist";
 
@@ -16,20 +16,14 @@ export async function POST(request: NextRequest) {
     const validationResult = osbornChecklistFormDataSchema.safeParse(body);
 
     if (!validationResult.success) {
-      return NextResponse.json(
-        {
-          error: "入力データが無効です",
-          details: validationResult.error.issues,
-        },
-        { status: 400 }
-      );
+      return apiErrors.invalidData(validationResult.error.issues);
     }
 
     const result = await createOsbornChecklist(authResult.userId, validationResult.data);
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    console.error("オズボーンのチェックリスト作成エラー", error);
-    return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
+    console.error("オズボーンのチェックリスト作成エラー:", error);
+    return apiErrors.serverError();
   }
 }

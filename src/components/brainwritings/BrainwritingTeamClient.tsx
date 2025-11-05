@@ -8,7 +8,7 @@ import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail } from "@/types/brainwriting";
 import { useBrainwritingRealtime } from "@/hooks/useBrainwritingRealtime";
 import { useAutoRefreshOnFocus } from "@/hooks/useAutoRefreshOnFocus";
-import { parseJsonSafe } from "@/lib/api/utils";
+import { parseJsonSafe } from "@/lib/client-utils";
 
 interface BrainwritingTeamClientProps {
   brainwritingTeam: BrainwritingDetail;

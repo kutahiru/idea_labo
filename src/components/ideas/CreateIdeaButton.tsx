@@ -9,7 +9,7 @@ import { IdeaCategoryListItem } from "@/types/idea-category";
 import { IdeaFormData } from "@/schemas/idea";
 import { useResourceSubmit } from "@/hooks/useResourceSubmit";
 import toast from "react-hot-toast";
-import { parseJson } from "@/lib/api/utils";
+import { parseJson } from "@/lib/client-utils";
 
 export default function CreateIdeaButton() {
   const router = useRouter();

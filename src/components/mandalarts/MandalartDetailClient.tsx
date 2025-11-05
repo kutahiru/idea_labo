@@ -8,7 +8,7 @@ import MandalartGrid from "./MandalartGrid";
 import { XPostButton } from "../shared/Button";
 import ToggleSwitch from "../shared/ToggleSwitch";
 import { postMandalartToX } from "@/lib/x-post";
-import { parseJsonSafe } from "@/lib/api/utils";
+import { parseJsonSafe } from "@/lib/client-utils";
 
 interface MandalartDetailClientProps {
   mandalartDetail: MandalartDetail;

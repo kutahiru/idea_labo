@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { USAGE_SCOPE } from "@/utils/brainwriting";
-import { parseJsonSafe, parseJson } from "@/lib/api/utils";
+import { parseJsonSafe, parseJson } from "@/lib/client-utils";
 
 interface BrainwritingInviteClientProps {
   brainwriting: BrainwritingListItem;

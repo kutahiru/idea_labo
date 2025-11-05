@@ -9,7 +9,7 @@ import UserEditModal from "./UserEditModal";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { Pencil } from "lucide-react";
-import { parseJsonSafe, parseJson } from "@/lib/api/utils";
+import { parseJsonSafe, parseJson } from "@/lib/client-utils";
 
 interface MyPageClientProps {
   initialData: UserProfile;

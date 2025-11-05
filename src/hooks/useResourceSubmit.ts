@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { parseJsonSafe, parseJson } from "@/lib/api/utils";
+import { parseJsonSafe, parseJson } from "@/lib/client-utils";
 
 interface UseResourceSubmitOptions {
   apiPath: string;

@@ -9,7 +9,7 @@ import OsbornChecklistGrid from "./OsbornChecklistGrid";
 import { XPostButton } from "../shared/Button";
 import ToggleSwitch from "../shared/ToggleSwitch";
 import { postOsbornChecklistToX } from "@/lib/x-post";
-import { parseJsonSafe } from "@/lib/api/utils";
+import { parseJsonSafe } from "@/lib/client-utils";
 
 interface OsbornChecklistDetailClientProps {
   osbornChecklistDetail: OsbornChecklistDetail;

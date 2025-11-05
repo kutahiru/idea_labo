@@ -9,7 +9,7 @@ import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";
 import { convertToRowData, handleBrainwritingDataChange, USAGE_SCOPE } from "@/utils/brainwriting";
 import { useAutoRefreshOnFocus } from "@/hooks/useAutoRefreshOnFocus";
-import { parseJsonSafe, parseJson } from "@/lib/api/utils";
+import { parseJsonSafe, parseJson } from "@/lib/client-utils";
 
 interface BrainwritingInputClientProps {
   brainwritingDetail: BrainwritingDetail;

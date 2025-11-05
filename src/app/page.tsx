@@ -616,7 +616,7 @@ export default function Home() {
                         9つの視点
                       </h3>
                       <p className="leading-relaxed text-gray-600 md:text-lg">
-                        転用・応用・変更・拡大・縮小・代用・置換・逆転・結合の9つの切り口で、体系的にアイデアを発想できます。
+                        転用・応用・変更・拡大・縮小・代用・再配置・逆転・結合の9つの切り口で、体系的にアイデアを発想できます。
                       </p>
                     </div>
                   </div>

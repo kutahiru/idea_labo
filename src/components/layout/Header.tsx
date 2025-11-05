@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { GoogleLoginButton } from "@/components/shared/Button";
 
 interface NavigationProps {
@@ -14,6 +14,26 @@ interface NavigationProps {
 }
 
 function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
+  const [isFrameworkOpen, setIsFrameworkOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // ドロップダウン外クリックで閉じる
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsFrameworkOpen(false);
+      }
+    };
+
+    if (isFrameworkOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFrameworkOpen]);
+
   return (
     <div className="space-y-1 text-right md:flex md:items-center md:space-y-0 md:space-x-4 md:text-left">
       <Link
@@ -24,8 +44,110 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
         ガイド
       </Link>
 
+      {/* フレームワークドロップダウン */}
+      {isLoggedIn && (
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setIsFrameworkOpen(!isFrameworkOpen)}
+            className="font-lora header-link text-primary flex w-full items-center justify-end gap-1 rounded-md px-3 py-2 text-base font-medium transition-all md:justify-start md:text-sm"
+          >
+            フレームワーク
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${isFrameworkOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {/* デスクトップ用ドロップダウン */}
+          <div
+            className={`hidden md:block md:absolute md:left-0 md:top-full md:mt-1 md:w-56 md:origin-top md:transition-all md:duration-200 ${
+              isFrameworkOpen
+                ? "md:scale-100 md:opacity-100"
+                : "md:pointer-events-none md:scale-95 md:opacity-0"
+            }`}
+          >
+            <div className="rounded-md border border-gray-200 bg-white shadow-lg">
+              <div className="py-1">
+                <Link
+                  href="/brainwritings"
+                  className="font-lora header-link text-primary block rounded-md px-3 py-2 text-base font-medium md:text-sm md:transition-colors"
+                  onClick={() => {
+                    setIsFrameworkOpen(false);
+                    closeMenu?.();
+                  }}
+                >
+                  ブレインライティング
+                </Link>
+                <Link
+                  href="/mandalarts"
+                  className="font-lora header-link text-primary block rounded-md px-3 py-2 text-base font-medium md:text-sm md:transition-colors"
+                  onClick={() => {
+                    setIsFrameworkOpen(false);
+                    closeMenu?.();
+                  }}
+                >
+                  マンダラート
+                </Link>
+                <Link
+                  href="/osborn-checklists"
+                  className="font-lora header-link text-primary block rounded-md px-3 py-2 text-base font-medium md:text-sm md:transition-colors"
+                  onClick={() => {
+                    setIsFrameworkOpen(false);
+                    closeMenu?.();
+                  }}
+                >
+                  オズボーンのチェックリスト
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* モバイル用展開リスト */}
+          {isFrameworkOpen && (
+            <div className="mt-1 space-y-1 md:hidden">
+              <Link
+                href="/brainwritings"
+                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-gray-100"
+                onClick={() => {
+                  setIsFrameworkOpen(false);
+                  closeMenu?.();
+                }}
+              >
+                ブレインライティング
+              </Link>
+              <Link
+                href="/mandalarts"
+                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-gray-100"
+                onClick={() => {
+                  setIsFrameworkOpen(false);
+                  closeMenu?.();
+                }}
+              >
+                マンダラート
+              </Link>
+              <Link
+                href="/osborn-checklists"
+                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-gray-100"
+                onClick={() => {
+                  setIsFrameworkOpen(false);
+                  closeMenu?.();
+                }}
+              >
+                オズボーンのチェックリスト
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+
       {isLoggedIn ? (
         <>
+          <Link
+            href="/idea-categories"
+            className="font-lora header-link text-primary block rounded-md px-3 py-2 text-base font-medium md:text-sm md:transition-colors"
+            onClick={closeMenu}
+          >
+            アイデア一覧
+          </Link>
           <Link
             href="/mypage"
             className="font-lora header-link text-primary block rounded-md px-3 py-2 text-base font-medium md:text-sm md:transition-colors"
@@ -84,7 +206,7 @@ export default function Header() {
   }
 
   return (
-    <header className="border-primary/20 border-b bg-white shadow-sm">
+    <header className="border-primary/20 relative z-50 border-b bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* 左側：ロゴ */}

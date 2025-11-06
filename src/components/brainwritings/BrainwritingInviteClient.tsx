@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import { BrainwritingListItem } from "@/types/brainwriting";
 import { USAGE_SCOPE } from "@/utils/brainwriting";
+import { parseJsonSafe, parseJson } from "@/lib/client-utils";
 
 interface BrainwritingInviteClientProps {
   brainwriting: BrainwritingListItem;
@@ -28,39 +29,64 @@ export default function BrainwritingInviteClient({
     isFull: boolean;
     canJoin?: boolean;
   } | null>(null);
+  const errorCountRef = useRef(0);
 
   // ログイン後にロック状態をチェック（定期的に更新）
   useEffect(() => {
+    const MAX_ERRORS = 3;
+    let intervalId: NodeJS.Timeout | null = null;
+
     const checkLockStatus = async () => {
       if (isLoggedIn && brainwriting.id) {
         try {
           const response = await fetch(
             `/api/brainwritings/${brainwriting.id}/join-status?usageScope=${brainwriting.usageScope}`
           );
-          if (response.ok) {
-            const data = await response.json();
 
-            // X投稿版の場合はロック情報も含める
-            if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
-              setStatus({
-                isLocked: data.isLocked || false,
-                lockExpiresAt: data.lockExpiresAt ? new Date(data.lockExpiresAt) : null,
-                currentCount: data.currentCount || 0,
-                maxCount: data.maxCount || 6,
-                isFull: data.isFull || false,
-              });
-            } else {
-              // チーム版の場合はロック情報なし
-              setStatus({
-                currentCount: data.currentCount || 0,
-                maxCount: data.maxCount || 6,
-                isFull: data.isFull || false,
-                canJoin: data.canJoin !== false,
-              });
-            }
+          if (!response.ok) {
+            throw new Error("参加状況の取得に失敗しました");
+          }
+
+          const data = await parseJson<{
+            isLocked?: boolean;
+            lockExpiresAt?: string | null;
+            currentCount: number;
+            maxCount: number;
+            isFull: boolean;
+            canJoin?: boolean;
+          }>(response, "参加状況の読み込みに失敗しました");
+
+          // 成功時はエラーカウンターをリセット
+          errorCountRef.current = 0;
+
+          // X投稿版の場合はロック情報も含める
+          if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
+            setStatus({
+              isLocked: data.isLocked || false,
+              lockExpiresAt: data.lockExpiresAt ? new Date(data.lockExpiresAt) : null,
+              currentCount: data.currentCount || 0,
+              maxCount: data.maxCount || 6,
+              isFull: data.isFull || false,
+            });
+          } else {
+            // チーム版の場合はロック情報なし
+            setStatus({
+              currentCount: data.currentCount || 0,
+              maxCount: data.maxCount || 6,
+              isFull: data.isFull || false,
+              canJoin: data.canJoin !== false,
+            });
           }
         } catch (error) {
           console.error("ロック状態チェックエラー:", error);
+          errorCountRef.current += 1;
+          if (errorCountRef.current >= MAX_ERRORS) {
+            // 最大エラー回数に達したらポーリングを停止
+            if (intervalId) {
+              clearInterval(intervalId);
+            }
+            toast.error("参加状況の取得に失敗しました。ページを再読み込みしてください。");
+          }
         }
       }
     };
@@ -68,10 +94,14 @@ export default function BrainwritingInviteClient({
     checkLockStatus(); // 初回実行
 
     // 10秒ごとに定期的にチェック
-    const interval = setInterval(checkLockStatus, 10000);
+    intervalId = setInterval(checkLockStatus, 10000);
 
     // クリーンアップ関数
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [isLoggedIn, brainwriting.id, brainwriting.usageScope]);
 
   const handleJoinBrainwriting = async () => {
@@ -97,12 +127,15 @@ export default function BrainwritingInviteClient({
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        toast.error(data.error || "参加に失敗しました");
+        const errorData = await parseJsonSafe(response, {
+          error: "参加に失敗しました",
+        });
+        toast.error(errorData.error || "参加に失敗しました");
         return;
       }
+
+      const data = await parseJson<{ sheetId: number }>(response, "参加データの読み込みに失敗しました");
 
       if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
         // X投稿版の場合

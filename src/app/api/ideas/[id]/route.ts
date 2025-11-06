@@ -1,21 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateIdea, deleteIdea, checkIdeaOwnership } from "@/lib/idea";
 import { ideaFormDataSchema } from "@/schemas/idea";
-import { checkAuth, apiErrors } from "@/lib/api/utils";
+import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 
 /** 更新 */
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // 認証チェック
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const id = parseInt((await params).id);
-    if (isNaN(id)) {
-      return apiErrors.invalidId();
-    }
+    const { userId, id: ideaId } = validateResult;
 
     // リクエストボディを取得・検証
     const body = await request.json();
@@ -25,20 +21,20 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: "カテゴリIDが無効です" }, { status: 400 });
     }
 
-    const validationResult = ideaFormDataSchema.safeParse(formData);
+    const parsedBody = ideaFormDataSchema.safeParse(formData);
 
-    if (!validationResult.success) {
-      return apiErrors.invalidData(validationResult.error.issues);
+    if (!parsedBody.success) {
+      return apiErrors.invalidData(parsedBody.error.issues);
     }
 
     // 所有者チェック
-    const isOwner = await checkIdeaOwnership(id, authResult.userId);
+    const isOwner = await checkIdeaOwnership(ideaId, userId);
     if (!isOwner) {
       return apiErrors.notFound("アイデア");
     }
 
     // アイデアを更新
-    const result = await updateIdea(id, parseInt(categoryId), validationResult.data);
+    const result = await updateIdea(ideaId, parseInt(categoryId), parsedBody.data);
 
     if (!result) {
       return apiErrors.notFound("アイデア");
@@ -57,25 +53,21 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 認証チェック
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const id = parseInt((await params).id);
-    if (isNaN(id)) {
-      return apiErrors.invalidId();
-    }
+    const { userId, id: ideaId } = validateResult;
 
     // 所有者チェック
-    const isOwner = await checkIdeaOwnership(id, authResult.userId);
+    const isOwner = await checkIdeaOwnership(ideaId, userId);
     if (!isOwner) {
       return apiErrors.notFound("アイデア");
     }
 
     // アイデアを削除
-    const result = await deleteIdea(id);
+    const result = await deleteIdea(ideaId);
 
     if (!result) {
       return apiErrors.notFound("アイデア");

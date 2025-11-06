@@ -8,6 +8,7 @@ import MandalartGrid from "./MandalartGrid";
 import { XPostButton } from "../shared/Button";
 import ToggleSwitch from "../shared/ToggleSwitch";
 import { postMandalartToX } from "@/lib/x-post";
+import { parseJsonSafe } from "@/lib/client-utils";
 
 interface MandalartDetailClientProps {
   mandalartDetail: MandalartDetail;
@@ -26,7 +27,7 @@ export default function MandalartDetailClient({ mandalartDetail }: MandalartDeta
     value: string
   ) => {
     try {
-      await fetch("/api/mandalarts/inputs", {
+      const response = await fetch("/api/mandalarts/inputs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,8 +41,15 @@ export default function MandalartDetailClient({ mandalartDetail }: MandalartDeta
           content: value,
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await parseJsonSafe(response, { error: "保存に失敗しました" });
+        toast.error(errorData.error || "保存に失敗しました");
+        return;
+      }
     } catch (error) {
       console.error("マンダラート入力保存エラー:", error);
+      toast.error("ネットワークエラーが発生しました");
     }
   };
 
@@ -65,7 +73,7 @@ export default function MandalartDetailClient({ mandalartDetail }: MandalartDeta
       });
 
       if (!response.ok) {
-        const error = await response.json();
+        const error = await parseJsonSafe(response, { error: "結果公開の状態更新に失敗しました" });
         toast.error(error.error || "結果公開の状態更新に失敗しました");
         return;
       }

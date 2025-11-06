@@ -8,6 +8,7 @@ import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail } from "@/types/brainwriting";
 import { useBrainwritingRealtime } from "@/hooks/useBrainwritingRealtime";
 import { useAutoRefreshOnFocus } from "@/hooks/useAutoRefreshOnFocus";
+import { parseJsonSafe } from "@/lib/client-utils";
 
 interface BrainwritingTeamClientProps {
   brainwritingTeam: BrainwritingDetail;
@@ -57,7 +58,9 @@ export default function BrainwritingTeamClient({
       });
 
       if (!response.ok) {
-        const data = await response.json();
+        const data = await parseJsonSafe(response, {
+          error: "開始に失敗しました",
+        });
         toast.error(data.error || "開始に失敗しました");
         return;
       }

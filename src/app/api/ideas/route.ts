@@ -18,25 +18,19 @@ export async function POST(request: NextRequest) {
     const { categoryId, ...formData } = body;
 
     if (!categoryId || isNaN(parseInt(categoryId))) {
-      return NextResponse.json({ error: "カテゴリIDが無効です" }, { status: 400 });
+      return apiErrors.invalidData("カテゴリIDが無効です");
     }
 
     // カテゴリの所有者確認
     const isOwner = await checkCategoryOwnership(parseInt(categoryId), authResult.userId);
     if (!isOwner) {
-      return apiErrors.notFound("アイデア");
+      return apiErrors.notFound("カテゴリ");
     }
 
     const validationResult = ideaFormDataSchema.safeParse(formData);
 
     if (!validationResult.success) {
-      return NextResponse.json(
-        {
-          error: "入力データが無効です",
-          details: validationResult.error.issues,
-        },
-        { status: 400 }
-      );
+      return apiErrors.invalidData(validationResult.error.issues);
     }
 
     // アイデアを作成
@@ -45,6 +39,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     console.error("アイデア作成エラー:", error);
-    return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
+    return apiErrors.serverError();
   }
 }

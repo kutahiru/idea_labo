@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getIdeaCategoriesByUserId, createIdeaCategory } from "@/lib/idea-category";
 import { ideaCategoryFormDataSchema } from "@/schemas/idea-category";
-import { checkAuth } from "@/lib/api/utils";
+import { checkAuth, apiErrors } from "@/lib/api/utils";
 
 /** 一覧取得 */
 export async function GET() {
@@ -16,7 +16,7 @@ export async function GET() {
     return NextResponse.json(ideaCategoryList);
   } catch (error) {
     console.error("アイデアカテゴリ一覧取得エラー:", error);
-    return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
+    return apiErrors.serverError();
   }
 }
 
@@ -34,13 +34,7 @@ export async function POST(request: NextRequest) {
     const validationResult = ideaCategoryFormDataSchema.safeParse(body);
 
     if (!validationResult.success) {
-      return NextResponse.json(
-        {
-          error: "入力データが無効です",
-          details: validationResult.error.issues,
-        },
-        { status: 400 }
-      );
+      return apiErrors.invalidData(validationResult.error.issues);
     }
 
     // アイデアカテゴリを作成
@@ -49,6 +43,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     console.error("アイデアカテゴリ作成エラー:", error);
-    return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
+    return apiErrors.serverError();
   }
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { checkAuth, apiErrors } from "@/lib/api/utils";
+import { validateIdRequest, apiErrors } from "@/lib/api/utils";
 import { getBrainwritingSheetsByBrainwritingId } from "@/lib/brainwriting";
 
 interface SheetsParams {
@@ -8,17 +8,12 @@ interface SheetsParams {
 
 export async function GET(request: Request, { params }: SheetsParams) {
   try {
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const { id } = await params;
-    const brainwritingId = parseInt(id);
-
-    if (isNaN(brainwritingId)) {
-      return apiErrors.invalidId();
-    }
+    const { id: brainwritingId } = validateResult;
 
     const sheets = await getBrainwritingSheetsByBrainwritingId(brainwritingId);
 

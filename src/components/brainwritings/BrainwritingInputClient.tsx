@@ -9,6 +9,7 @@ import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";
 import { convertToRowData, handleBrainwritingDataChange, USAGE_SCOPE } from "@/utils/brainwriting";
 import { useAutoRefreshOnFocus } from "@/hooks/useAutoRefreshOnFocus";
+import { parseJsonSafe, parseJson } from "@/lib/client-utils";
 
 interface BrainwritingInputClientProps {
   brainwritingDetail: BrainwritingDetail;
@@ -135,12 +136,19 @@ export default function BrainwritingInputClient({
     await new Promise(resolve => setTimeout(resolve, 200));
 
     // APIから最新のinputsを取得して検証
-    const response = await fetch(`/api/brainwritings/sheet/${sheet.id}/inputs`);
+    const response = await fetch(`/api/brainwritings/sheets/${sheet.id}/inputs`);
     if (!response.ok) {
       toast.error("データの取得に失敗しました");
       return;
     }
-    const latestInputs: BrainwritingInputData[] = await response.json();
+
+    let latestInputs: BrainwritingInputData[];
+    try {
+      latestInputs = await parseJson<BrainwritingInputData[]>(response);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "データの読み込みに失敗しました");
+      return;
+    }
 
     // 現在のユーザーの入力データのみチェック
     const myInputs = latestInputs.filter(input => input.row_index === activeRowIndex);
@@ -165,12 +173,12 @@ export default function BrainwritingInputClient({
     setIsCompleting(true);
 
     try {
-      const response = await fetch(`/api/brainwritings/sheet/${sheet.id}/complete`, {
+      const response = await fetch(`/api/brainwritings/sheets/${sheet.id}/complete`, {
         method: "POST",
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await parseJsonSafe(response, { error: "完了処理に失敗しました" });
         throw new Error(errorData.error || "完了処理に失敗しました");
       }
 

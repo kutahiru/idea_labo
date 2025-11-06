@@ -1,23 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiErrors, checkAuth } from "@/lib/api/utils";
+import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 import { deleteMandalart, getMandalartDetailById, updateMandalart } from "@/lib/mandalart";
 import { mandalartFormDataSchema } from "@/schemas/mandalart";
 
 // 個別取得
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // 認証チェック
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const id = parseInt((await params).id);
-    if (isNaN(id)) {
-      return apiErrors.invalidData();
-    }
+    const { userId, id: mandalartId } = validateResult;
 
-    const mandalartDetail = await getMandalartDetailById(id, authResult.userId);
+    const mandalartDetail = await getMandalartDetailById(mandalartId, userId);
 
     if (!mandalartDetail) {
       return apiErrors.notFound("マンダラート");
@@ -32,27 +28,23 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // 認証チェック
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const id = parseInt((await params).id);
-    if (isNaN(id)) {
-      return apiErrors.invalidId();
-    }
+    const { userId, id: mandalartId } = validateResult;
 
     //リクエストボディを取得・検証
     const body = await request.json();
-    const validationResult = mandalartFormDataSchema.safeParse(body);
+    const parsedBody = mandalartFormDataSchema.safeParse(body);
 
-    if (!validationResult.success) {
-      return apiErrors.invalidData(validationResult.error.issues);
+    if (!parsedBody.success) {
+      return apiErrors.invalidData(parsedBody.error.issues);
     }
 
     // マンダラートを更新
-    const result = await updateMandalart(id, authResult.userId, validationResult.data);
+    const result = await updateMandalart(mandalartId, userId, parsedBody.data);
 
     if (!result) {
       return apiErrors.notFound("マンダラート");
@@ -70,18 +62,14 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 認証チェック
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const id = parseInt((await params).id);
-    if (isNaN(id)) {
-      return apiErrors.invalidId();
-    }
+    const { userId, id: mandalartId } = validateResult;
 
-    const result = await deleteMandalart(id, authResult.userId);
+    const result = await deleteMandalart(mandalartId, userId);
 
     if (!result) {
       return apiErrors.notFound("マンダラート");

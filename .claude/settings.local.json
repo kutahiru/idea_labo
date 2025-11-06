@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npm run db:generate:*)",
       "Bash(mv:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(for file in /app/src/components/mandalarts/MandalartDetailClient.tsx /app/src/components/osborn-checklists/OsbornChecklistDetailClient.tsx /app/src/components/brainwritings/BrainwritingInviteClient.tsx /app/src/components/brainwritings/BrainwritingInputClient.tsx /app/src/components/brainwritings/BrainwritingTeamClient.tsx /app/src/components/mypage/MyPageClient.tsx /app/src/components/mypage/AddUserClient.tsx /app/src/components/ideas/CreateIdeaButton.tsx)",
+      "Bash(do)",
+      "Bash(sed:*)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

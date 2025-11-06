@@ -136,7 +136,7 @@ export default function BrainwritingInputClient({
     await new Promise(resolve => setTimeout(resolve, 200));
 
     // APIから最新のinputsを取得して検証
-    const response = await fetch(`/api/brainwritings/sheet/${sheet.id}/inputs`);
+    const response = await fetch(`/api/brainwritings/sheets/${sheet.id}/inputs`);
     if (!response.ok) {
       toast.error("データの取得に失敗しました");
       return;
@@ -173,7 +173,7 @@ export default function BrainwritingInputClient({
     setIsCompleting(true);
 
     try {
-      const response = await fetch(`/api/brainwritings/sheet/${sheet.id}/complete`, {
+      const response = await fetch(`/api/brainwritings/sheets/${sheet.id}/complete`, {
         method: "POST",
       });
 

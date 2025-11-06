@@ -73,7 +73,7 @@ export default function BrainwritingDetailClient({
 
     // APIから最新のinputsを取得して検証
     const currentSheet = sheets[activeSheetIndex];
-    const response = await fetch(`/api/brainwritings/sheet/${currentSheet.id}/inputs`);
+    const response = await fetch(`/api/brainwritings/sheets/${currentSheet.id}/inputs`);
     if (!response.ok) {
       toast.error("データの取得に失敗しました");
       return;

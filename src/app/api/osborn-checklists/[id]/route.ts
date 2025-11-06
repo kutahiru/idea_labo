@@ -1,31 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiErrors, checkAuth } from "@/lib/api/utils";
+import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 import { deleteOsbornChecklist, updateOsbornChecklist } from "@/lib/osborn-checklist";
 import { osbornChecklistFormDataSchema } from "@/schemas/osborn-checklist";
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // 認証チェック
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const id = parseInt((await params).id);
-    if (isNaN(id)) {
-      return apiErrors.invalidId();
-    }
+    const { userId, id: osbornChecklistId } = validateResult;
 
     //リクエストボディを取得・検証
     const body = await request.json();
-    const validationResult = osbornChecklistFormDataSchema.safeParse(body);
+    const parsedBody = osbornChecklistFormDataSchema.safeParse(body);
 
-    if (!validationResult.success) {
-      return apiErrors.invalidData(validationResult.error.issues);
+    if (!parsedBody.success) {
+      return apiErrors.invalidData(parsedBody.error.issues);
     }
 
     // オズボーンを更新
-    const result = await updateOsbornChecklist(id, authResult.userId, validationResult.data);
+    const result = await updateOsbornChecklist(osbornChecklistId, userId, parsedBody.data);
 
     if (!result) {
       return apiErrors.notFound("オズボーンのチェックリスト");
@@ -43,18 +39,14 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 認証チェック
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const id = parseInt((await params).id);
-    if (isNaN(id)) {
-      return apiErrors.invalidId();
-    }
+    const { userId, id: osbornChecklistId } = validateResult;
 
-    const result = await deleteOsbornChecklist(id, authResult.userId);
+    const result = await deleteOsbornChecklist(osbornChecklistId, userId);
 
     if (!result) {
       return apiErrors.notFound("オズボーンのチェックリスト");

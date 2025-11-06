@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkAuth, apiErrors } from "@/lib/api/utils";
+import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 import {
   checkJoinStatus,
   checkSheetLockStatus,
@@ -7,7 +7,7 @@ import {
   clearAbandonedSessions,
   checkTeamJoinable,
 } from "@/lib/brainwriting";
-import { USAGE_SCOPE } from "../../../../../utils/brainwriting";
+import { USAGE_SCOPE } from "@/utils/brainwriting";
 
 interface JoinStatusParams {
   params: Promise<{ id: string }>;
@@ -16,17 +16,12 @@ interface JoinStatusParams {
 // 放置されている状態のクリアと参加状況のチェック
 export async function GET(request: NextRequest, { params }: JoinStatusParams) {
   try {
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const { id } = await params;
-    const brainwritingId = parseInt(id);
-
-    if (isNaN(brainwritingId)) {
-      return apiErrors.invalidId();
-    }
+    const { userId, id: brainwritingId } = validateResult;
 
     // usageScopeをクエリパラメータから取得
     const { searchParams } = new URL(request.url);
@@ -41,12 +36,12 @@ export async function GET(request: NextRequest, { params }: JoinStatusParams) {
       await clearAbandonedSessions(brainwritingId);
     }
 
-    const joinStatus = await checkJoinStatus(brainwritingId, authResult.userId);
+    const joinStatus = await checkJoinStatus(brainwritingId, userId);
     const brainwritingUserStatus = await checkUserCount(brainwritingId);
 
     // X投稿版の場合はロック状態も返す
     if (usageScope === USAGE_SCOPE.XPOST) {
-      const lockStatus = await checkSheetLockStatus(brainwritingId, authResult.userId);
+      const lockStatus = await checkSheetLockStatus(brainwritingId, userId);
 
       return NextResponse.json({
         ...joinStatus,
@@ -57,7 +52,7 @@ export async function GET(request: NextRequest, { params }: JoinStatusParams) {
 
     // チーム版の場合はロック状態を返さない
     // シートが存在していて参加者に含まれていない場合は参加不可
-    const teamJoinable = await checkTeamJoinable(brainwritingId, authResult.userId);
+    const teamJoinable = await checkTeamJoinable(brainwritingId, userId);
 
     return NextResponse.json({
       ...joinStatus,

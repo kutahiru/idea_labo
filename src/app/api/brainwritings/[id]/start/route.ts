@@ -2,25 +2,19 @@ import { createSheetsForTeam, checkJoinStatus } from "@/lib/brainwriting";
 import { NextRequest, NextResponse } from "next/server";
 import { publishBrainwritingEvent } from "@/lib/appsync-events/brainwriting-events";
 import { BRAINWRITING_EVENT_TYPES } from "@/lib/appsync-events/event-types";
-import { checkAuth, apiErrors } from "@/lib/api/utils";
+import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 
 export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // 認証チェック
-    const authResult = await checkAuth();
-    if ("error" in authResult) {
-      return authResult.error;
+    const validateResult = await validateIdRequest(params);
+    if ("error" in validateResult) {
+      return validateResult.error;
     }
 
-    const { id } = await params;
-    const brainwritingId = parseInt(id);
-
-    if (isNaN(brainwritingId)) {
-      return apiErrors.invalidId();
-    }
+    const { userId, id: brainwritingId } = validateResult;
 
     // 参加チェック
-    const joinStatus = await checkJoinStatus(brainwritingId, authResult.userId);
+    const joinStatus = await checkJoinStatus(brainwritingId, userId);
     if (!joinStatus.isJoined) {
       return apiErrors.forbidden("参加していません");
     }

@@ -22,3 +22,30 @@ export const apiErrors = {
   forbidden: (message?: string) =>
     NextResponse.json({ error: message || "アクセス権限がありません" }, { status: 403 }),
 };
+
+/**
+ * APIリクエストの共通バリデーション（ID付きリソース）
+ * - 認証チェック
+ * - IDパース・バリデーション
+ *
+ * @param params - { id: string } を含むparamsオブジェクト
+ * @returns エラー時は { error: Response }、成功時は { userId: string, id: number }
+ */
+export async function validateIdRequest(params: Promise<{ id: string }>) {
+  const authResult = await checkAuth();
+  if ("error" in authResult) {
+    return { error: authResult.error };
+  }
+
+  const { id } = await params;
+  const parsedId = parseInt(id);
+
+  if (isNaN(parsedId)) {
+    return { error: apiErrors.invalidId() };
+  }
+
+  return {
+    userId: authResult.userId,
+    id: parsedId,
+  };
+}

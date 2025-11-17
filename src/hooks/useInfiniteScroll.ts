@@ -1,3 +1,6 @@
+/**
+ * IntersectionObserverを使用した無限スクロール機能を提供するカスタムフック
+ */
 import { useState, useCallback, useEffect, useRef } from "react";
 
 interface UseInfiniteScrollProps<T> {

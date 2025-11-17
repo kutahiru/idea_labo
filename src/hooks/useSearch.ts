@@ -1,3 +1,6 @@
+/**
+ * 複数フィールドを対象とした検索フィルタリング機能を提供するカスタムフック
+ */
 import { useState, useMemo } from "react";
 
 interface UseSearchProps<T> {

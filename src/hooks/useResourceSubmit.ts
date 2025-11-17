@@ -1,3 +1,6 @@
+/**
+ * リソースの作成・更新・削除を行う汎用的なCRUD操作機能を提供するカスタムフック
+ */
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { parseJsonSafe, parseJson } from "@/lib/client-utils";

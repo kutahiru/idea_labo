@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     // リクエストボディを取得
     const body = await request.json();
-    const { osbornChecklistId, checklistType, content } = body;
+    const { osbornChecklistId, checklistType, content, skipIfNotEmpty } = body;
 
     // バリデーション
     if (!osbornChecklistId || typeof osbornChecklistId !== "number") {
@@ -29,7 +29,8 @@ export async function POST(request: NextRequest) {
       osbornChecklistId,
       authResult.userId,
       checklistType,
-      content || ""
+      content || "",
+      skipIfNotEmpty || false
     );
 
     return NextResponse.json(result);

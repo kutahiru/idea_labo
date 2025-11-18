@@ -10,6 +10,8 @@ import { XPostButton } from "../shared/Button";
 import ToggleSwitch from "../shared/ToggleSwitch";
 import { postOsbornChecklistToX } from "@/lib/x-post";
 import { parseJsonSafe } from "@/lib/client-utils";
+import { Loader2, HelpCircle } from "lucide-react";
+import { useOsbornChecklistAI } from "@/hooks/useOsbornChecklistAI";
 
 interface OsbornChecklistDetailClientProps {
   osbornChecklistDetail: OsbornChecklistDetail;
@@ -21,8 +23,9 @@ export default function OsbornChecklistDetailClient({
   const { inputs, ...osbornChecklist } = osbornChecklistDetail;
   const [isResultsPublic, setIsResultsPublic] = useState(osbornChecklist.isResultsPublic ?? false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [currentInputs, setCurrentInputs] = useState(inputs);
 
-  const handleInputChange = async (checklistType: OsbornChecklistType, value: string) => {
+  const handleInputChange = async (checklistType: OsbornChecklistType, value: string, skipIfNotEmpty = false) => {
     try {
       const response = await fetch("/api/osborn-checklists/inputs", {
         method: "POST",
@@ -33,6 +36,7 @@ export default function OsbornChecklistDetailClient({
           osbornChecklistId: osbornChecklist.id,
           checklistType,
           content: value,
+          skipIfNotEmpty,
         }),
       });
 
@@ -41,11 +45,36 @@ export default function OsbornChecklistDetailClient({
         toast.error(errorData.error || "保存に失敗しました");
         return;
       }
+
+      const data = await response.json();
+
+      // nullが返された場合はスキップされたのでローカル状態を更新しない
+      if (data === null) {
+        return;
+      }
+
+      // ローカル状態を更新
+      setCurrentInputs(prev => {
+        const existingIndex = prev.findIndex(input => input.checklist_type === checklistType);
+        if (existingIndex >= 0) {
+          const updated = [...prev];
+          updated[existingIndex] = { ...updated[existingIndex], content: value };
+          return updated;
+        }
+        return prev;
+      });
     } catch (error) {
       console.error("オズボーンのチェックリスト入力保存エラー:", error);
       toast.error("ネットワークエラーが発生しました");
     }
   };
+
+  // AI自動入力のカスタムhook
+  const { isGenerating, handleAIGenerate } = useOsbornChecklistAI({
+    osbornChecklistId: osbornChecklist.id,
+    currentInputs,
+    onInputChange: handleInputChange,
+  });
 
   // X投稿ボタンのクリックハンドラー
   const handleXPost = () => {
@@ -86,6 +115,35 @@ export default function OsbornChecklistDetailClient({
     <div className="mb-8">
       <IdeaFrameworkInfo ideaFramework={osbornChecklist} />
 
+      {/* AI自動入力ボタン */}
+      <div className="mt-8 mb-6 flex justify-center">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={handleAIGenerate}
+            disabled={isGenerating}
+            className={`inline-flex items-center rounded-md px-6 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 ${
+              isGenerating ? "cursor-not-allowed bg-gray-400" : "menu-link bg-primary hover:scale-105 hover:shadow-xl"
+            }`}
+          >
+            {isGenerating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isGenerating ? "生成中..." : "AIで自動入力"}
+          </button>
+          <div className="group relative">
+            <HelpCircle className="text-primary/40 hover:text-primary mt-0.5 h-5 w-5 cursor-help transition-colors" />
+            <div className="invisible absolute top-7 left-0 z-10 w-max max-w-80 rounded-lg bg-primary p-3 text-sm text-white opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100 md:max-w-110">
+              <div className="absolute -top-1 left-3 h-2 w-2 rotate-45 bg-primary"></div>
+              <p className="whitespace-pre-line">
+                AIがテーマを元にアイデアを自動生成します。
+                {"\n"}
+                既に入力済みの項目は上書きされず、
+                {"\n"}
+                未入力の項目のみが更新されます。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* X投稿ボタンと結果公開トグル */}
       <div className="mt-8 mb-6 flex items-center justify-center gap-6">
         <XPostButton buttonName="公開" onClick={handleXPost} disabled={!isResultsPublic} />
@@ -110,9 +168,9 @@ export default function OsbornChecklistDetailClient({
       <div>
         <OsbornChecklistGrid
           osbornChecklistId={osbornChecklist.id}
-          inputs={inputs}
+          inputs={currentInputs}
           onInputChange={handleInputChange}
-          readOnly={false}
+          readOnly={isGenerating}
         />
       </div>
     </div>

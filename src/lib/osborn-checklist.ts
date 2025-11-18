@@ -203,13 +203,15 @@ export async function getOsbornChecklistInputsByOsbornChecklistId(
  * @param userId - ユーザーID
  * @param checklistType - チェックリストの種類
  * @param content - 入力内容
- * @returns 保存・更新された入力データ
+ * @param skipIfNotEmpty - 既存の入力が空でない場合はスキップする（AI生成時に使用）
+ * @returns 保存・更新された入力データ、またはスキップされた場合はnull
  */
 export async function upsertOsbornChecklistInput(
   osbornChecklistId: number,
   userId: string,
   checklistType: OsbornChecklistType,
-  content: string
+  content: string,
+  skipIfNotEmpty = false
 ) {
   // オズボーンの所有者チェック
   const osbornChecklist = await getOsbornChecklistById(osbornChecklistId, userId);
@@ -230,6 +232,11 @@ export async function upsertOsbornChecklistInput(
     .limit(1);
 
   if (existingInput.length > 0) {
+    // skipIfNotEmptyがtrueで、既存の入力が空でない場合はスキップ
+    if (skipIfNotEmpty && existingInput[0].content && existingInput[0].content.trim() !== "") {
+      return null;
+    }
+
     // 更新
     const result = await db
       .update(osborn_checklist_inputs)

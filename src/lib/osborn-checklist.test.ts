@@ -439,6 +439,109 @@ describe('OsbornChecklist Data Access Layer', () => {
         osbornChecklistLib.upsertOsbornChecklistInput(1, 'user-456', OSBORN_CHECKLIST_TYPES.TRANSFER, 'テスト')
       ).rejects.toThrow('Unauthorized: OsbornChecklist not found or access denied')
     })
+
+    it('skipIfNotEmptyがtrueで既存の入力が空でない場合、nullを返す', async () => {
+      const mockChecklist = {
+        id: 1,
+        userId: 'user-123',
+        title: 'テストチェックリスト',
+      }
+
+      const mockExistingInput = {
+        id: 1,
+        osborn_checklist_id: 1,
+        checklist_type: OSBORN_CHECKLIST_TYPES.TRANSFER,
+        content: '既存の入力',
+      }
+
+      // getOsbornChecklistById のモック
+      const mockChecklistChain = {
+        from: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockResolvedValue([mockChecklist]),
+      }
+
+      // 既存データ検索（空でない内容が存在する）
+      const mockExistingChain = {
+        from: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockResolvedValue([mockExistingInput]),
+      }
+
+      vi.mocked(db.select)
+        .mockReturnValueOnce(mockChecklistChain as any)
+        .mockReturnValueOnce(mockExistingChain as any)
+
+      const result = await osbornChecklistLib.upsertOsbornChecklistInput(
+        1,
+        'user-123',
+        OSBORN_CHECKLIST_TYPES.TRANSFER,
+        '新しい入力',
+        true // skipIfNotEmpty
+      )
+
+      expect(result).toBeNull()
+      expect(db.update).not.toHaveBeenCalled()
+    })
+
+    it('skipIfNotEmptyがtrueで既存の入力が空の場合、更新する', async () => {
+      const mockChecklist = {
+        id: 1,
+        userId: 'user-123',
+        title: 'テストチェックリスト',
+      }
+
+      const mockExistingInput = {
+        id: 1,
+        osborn_checklist_id: 1,
+        checklist_type: OSBORN_CHECKLIST_TYPES.TRANSFER,
+        content: '',
+      }
+
+      const mockUpdatedInput = {
+        ...mockExistingInput,
+        content: '新しい入力',
+        updated_at: new Date(),
+      }
+
+      // getOsbornChecklistById のモック
+      const mockChecklistChain = {
+        from: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockResolvedValue([mockChecklist]),
+      }
+
+      // 既存データ検索（空の内容が存在する）
+      const mockExistingChain = {
+        from: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockResolvedValue([mockExistingInput]),
+      }
+
+      // 更新
+      const mockUpdateChain = {
+        set: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        returning: vi.fn().mockResolvedValue([mockUpdatedInput]),
+      }
+
+      vi.mocked(db.select)
+        .mockReturnValueOnce(mockChecklistChain as any)
+        .mockReturnValueOnce(mockExistingChain as any)
+
+      vi.mocked(db.update).mockReturnValue(mockUpdateChain as any)
+
+      const result = await osbornChecklistLib.upsertOsbornChecklistInput(
+        1,
+        'user-123',
+        OSBORN_CHECKLIST_TYPES.TRANSFER,
+        '新しい入力',
+        true // skipIfNotEmpty
+      )
+
+      expect(db.update).toHaveBeenCalled()
+      expect(result).toEqual(mockUpdatedInput)
+    })
   })
 
   describe('updateOsbornChecklistIsResultsPublic', () => {

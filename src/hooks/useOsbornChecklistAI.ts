@@ -35,12 +35,19 @@ export function useOsbornChecklistAI({
     const loadingToast = toast.loading("AIでアイデアを生成中...");
 
     try {
+      // AbortControllerを使用してタイムアウトを実装
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60秒のタイムアウト
+
       const response = await fetch(`/api/osborn-checklists/${osbornChecklistId}/ai-generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorData = await parseJsonSafe(response, { error: "AI生成に失敗しました" });
@@ -59,7 +66,13 @@ export function useOsbornChecklistAI({
       toast.success("AIでアイデアを生成しました！");
     } catch (error) {
       console.error("AI生成エラー:", error);
-      toast.error("AI生成中にエラーが発生しました");
+
+      // エラーの種類に応じたメッセージを表示
+      if (error instanceof Error && error.name === "AbortError") {
+        toast.error("タイムアウトしました。もう一度お試しください");
+      } else {
+        toast.error("AI生成中にエラーが発生しました");
+      }
     } finally {
       toast.dismiss(loadingToast);
       setIsGenerating(false);

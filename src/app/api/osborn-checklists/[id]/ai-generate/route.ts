@@ -8,7 +8,11 @@ import { OSBORN_CHECKLIST_TYPES } from "@/schemas/osborn-checklist";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  timeout: 50 * 1000, // 50秒のタイムアウト
 });
+
+// API Routeの最大実行時間を60秒に設定（Vercel Hobbyプランでは10秒が上限）
+export const maxDuration = 60;
 
 export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -94,6 +98,9 @@ JSON形式で以下のように出力してください：
 
 ※テーマが不適切な場合は、ideasフィールドは空のオブジェクトにしてください。`;
 
+    console.log("OpenAI API呼び出し開始");
+    const startTime = Date.now();
+
     const completion = await openai.chat.completions.create({
       model: process.env.OPENAI_MODEL,
       messages: [
@@ -109,6 +116,9 @@ JSON形式で以下のように出力してください：
       ],
       response_format: { type: "json_object" },
     });
+
+    const duration = Date.now() - startTime;
+    console.log(`OpenAI API呼び出し完了（所要時間: ${duration}ms）`);
 
     const content = completion.choices[0]?.message?.content;
     if (!content) {

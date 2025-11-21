@@ -11,7 +11,7 @@ import { generateOsbornIdeas } from "@/lib/osborn-ai-worker";
 // Lambda クライアントの初期化（本番環境のみ）
 const lambdaClient = process.env.NODE_ENV !== "development"
   ? new LambdaClient({
-      region: process.env.AWS_REGION || "ap-northeast-1",
+      region: process.env.APPSYNC_REGION || "ap-northeast-1",
     })
   : null;
 

@@ -9,6 +9,7 @@
 
 import * as dotenv from "dotenv";
 import * as path from "path";
+import type { Context, Callback } from "aws-lambda";
 import { handler } from "./index";
 
 // .env.local を読み込み
@@ -39,10 +40,26 @@ async function runTest() {
 
   try {
     const startTime = Date.now();
-    
+
     // Lambda handler を呼び出し
-    const result = await handler(EVENT, {} as any, {} as any);
-    
+    const mockContext: Context = {
+      callbackWaitsForEmptyEventLoop: true,
+      functionName: "osborn-ai-worker-local",
+      functionVersion: "$LATEST",
+      invokedFunctionArn: "arn:aws:lambda:local:000000000000:function:osborn-ai-worker-local",
+      memoryLimitInMB: "512",
+      awsRequestId: "local-test-request-id",
+      logGroupName: "/aws/lambda/osborn-ai-worker-local",
+      logStreamName: "local/test",
+      getRemainingTimeInMillis: () => 180000,
+      done: () => {},
+      fail: () => {},
+      succeed: () => {},
+    };
+    const mockCallback: Callback = () => {};
+
+    const result = await handler(EVENT, mockContext, mockCallback);
+
     const duration = Date.now() - startTime;
     
     console.log("\n=== テスト成功 ===");

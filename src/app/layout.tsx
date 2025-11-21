@@ -80,14 +80,14 @@ export default async function RootLayout({
   return (
     <html lang="ja" className="h-full">
       <body className={`${fontVariables} flex min-h-full flex-col antialiased`}>
-        <AmplifyProvider>
-          <SessionProvider session={session}>
+        <SessionProvider session={session}>
+          <AmplifyProvider>
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
             <ToastProvider />
-          </SessionProvider>
-        </AmplifyProvider>
+          </AmplifyProvider>
+        </SessionProvider>
       </body>
     </html>
   );

@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
     const result = await joinBrainwriting(brainwritingId, authResult.userId, usageScope);
 
     // AppSync Eventsにイベントを発行
+    console.log(`📢 USER_JOINEDイベント発行開始 (brainwritingId: ${brainwritingId})`);
     await publishBrainwritingEvent(brainwritingId, BRAINWRITING_EVENT_TYPES.USER_JOINED);
+    console.log(`✅ USER_JOINEDイベント発行完了`);
 
     return NextResponse.json({
       message: "参加しました",

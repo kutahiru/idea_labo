@@ -1,8 +1,8 @@
 import { createSheetsForTeam, checkJoinStatus } from "@/lib/brainwriting";
 import { NextRequest, NextResponse } from "next/server";
+import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 import { publishBrainwritingEvent } from "@/lib/appsync-events/brainwriting-events";
 import { BRAINWRITING_EVENT_TYPES } from "@/lib/appsync-events/event-types";
-import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 
 export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

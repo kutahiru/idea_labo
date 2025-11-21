@@ -4,11 +4,17 @@
  */
 
 import { db } from "@/db";
-import { osborn_checklists, osborn_checklist_inputs } from "@/db/schema";
+import { osborn_checklists, osborn_checklist_inputs, osborn_ai_generations } from "@/db/schema";
 import { OsbornChecklistListItem, OsbornChecklistInputData } from "@/types/osborn-checklist";
 import { OsbornChecklistFormData, OsbornChecklistType } from "@/schemas/osborn-checklist";
-import { desc, eq, and, sql } from "drizzle-orm";
+import { desc, eq, and, sql, gte } from "drizzle-orm";
 import { generateToken } from "@/lib/token";
+
+/**
+ * AI生成状態の有効期限（ミリ秒）
+ * 10分以内の状態のみ有効とする
+ */
+const AI_GENERATION_EXPIRY_MS = 10 * 60 * 1000;
 
 //#region ユーザーIDに紐づくオズボーンの一覧を取得
 /**
@@ -163,9 +169,18 @@ export async function getOsbornChecklistDetailById(osbornChecklistId: number, us
   // 入力データ取得
   const inputs = await getOsbornChecklistInputsByOsbornChecklistId(osbornChecklistId);
 
+  // AI生成情報を取得
+  const aiGeneration = await getAIGenerationByOsbornChecklistId(osbornChecklistId);
+
   return {
     ...osbornChecklist,
     inputs,
+    aiGeneration: aiGeneration
+      ? {
+          status: aiGeneration.generation_status,
+          errorMessage: aiGeneration.error_message,
+        }
+      : null,
   };
 }
 //#endregion
@@ -285,10 +300,7 @@ export async function getOsbornChecklistDetailByToken(token: string) {
     })
     .from(osborn_checklists)
     .where(
-      and(
-        eq(osborn_checklists.public_token, token),
-        eq(osborn_checklists.is_results_public, true)
-      )
+      and(eq(osborn_checklists.public_token, token), eq(osborn_checklists.is_results_public, true))
     )
     .limit(1);
 
@@ -305,6 +317,7 @@ export async function getOsbornChecklistDetailByToken(token: string) {
   return {
     ...osbornChecklist,
     inputs,
+    aiGeneration: null, // 公開ページではAI生成情報は表示しない
   };
 }
 //#endregion
@@ -328,5 +341,89 @@ export async function updateOsbornChecklistIsResultsPublic(
       updated_at: sql`NOW()`,
     })
     .where(and(eq(osborn_checklists.id, osbornChecklistId), eq(osborn_checklists.user_id, userId)));
+}
+//#endregion
+
+//#region AI生成の取得(指定時刻以内)
+/**
+ * AI生成状態を取得
+ * @param osbornChecklistId - オズボーンID
+ * @returns AI生成状態（存在しない場合はnull）
+ */
+export async function getAIGenerationByOsbornChecklistId(osbornChecklistId: number) {
+  const expiryTime = new Date(Date.now() - AI_GENERATION_EXPIRY_MS);
+
+  const result = await db
+    .select()
+    .from(osborn_ai_generations)
+    .where(
+      and(
+        eq(osborn_ai_generations.osborn_checklist_id, osbornChecklistId),
+        gte(osborn_ai_generations.updated_at, expiryTime)
+      )
+    )
+    .limit(1);
+
+  return result[0] || null;
+}
+//#endregion
+
+//#region AI生成ジョブの作成
+/**
+ * AI生成ジョブを作成
+ * @param osbornChecklistId - オズボーンID
+ * @returns 作成されたジョブ
+ */
+export async function createAIGeneration(osbornChecklistId: number) {
+  const result = await db
+    .insert(osborn_ai_generations)
+    .values({
+      osborn_checklist_id: osbornChecklistId,
+      generation_status: "pending",
+    })
+    .returning();
+
+  return result[0];
+}
+//#endregion
+
+//#region AI生成状態の更新
+/**
+ * AI生成状態を更新
+ * @param id - AI生成ID
+ * @param status - ステータス
+ * @param errorMessage - エラーメッセージ（オプション）
+ */
+export async function updateAIGenerationStatus(
+  id: number,
+  status: "pending" | "processing" | "completed" | "failed",
+  errorMessage?: string
+) {
+  await db
+    .update(osborn_ai_generations)
+    .set({
+      generation_status: status,
+      error_message: errorMessage || null,
+      updated_at: sql`NOW()`,
+    })
+    .where(eq(osborn_ai_generations.id, id));
+}
+//#endregion
+
+//#region AI生成結果の保存
+/**
+ * AI生成結果を保存
+ * @param id - AI生成ID
+ * @param result - 生成結果（JSON文字列）
+ */
+export async function updateAIGenerationResult(id: number, result: string) {
+  await db
+    .update(osborn_ai_generations)
+    .set({
+      generation_status: "completed",
+      generation_result: result,
+      updated_at: sql`NOW()`,
+    })
+    .where(eq(osborn_ai_generations.id, id));
 }
 //#endregion

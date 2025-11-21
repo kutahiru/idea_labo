@@ -9,3 +9,11 @@ export const BRAINWRITING_EVENT_TYPES = {
 
 export type BrainwritingEventType =
   (typeof BRAINWRITING_EVENT_TYPES)[keyof typeof BRAINWRITING_EVENT_TYPES];
+
+export const OSBORN_CHECKLIST_EVENT_TYPES = {
+  AI_GENERATION_COMPLETED: "AI_GENERATION_COMPLETED",
+  AI_GENERATION_FAILED: "AI_GENERATION_FAILED",
+} as const;
+
+export type OsbornChecklistEventType =
+  (typeof OSBORN_CHECKLIST_EVENT_TYPES)[keyof typeof OSBORN_CHECKLIST_EVENT_TYPES];

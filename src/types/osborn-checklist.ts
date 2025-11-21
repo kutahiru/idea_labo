@@ -21,4 +21,8 @@ export interface OsbornChecklistInputData {
 
 export interface OsbornChecklistDetail extends OsbornChecklistListItem {
   inputs: OsbornChecklistInputData[];
+  aiGeneration: {
+    status: string;
+    errorMessage: string | null;
+  } | null;
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { OsbornChecklistDetail } from "@/types/osborn-checklist";
 import { OsbornChecklistType } from "@/schemas/osborn-checklist";
@@ -20,10 +21,21 @@ interface OsbornChecklistDetailClientProps {
 export default function OsbornChecklistDetailClient({
   osbornChecklistDetail,
 }: OsbornChecklistDetailClientProps) {
-  const { inputs, ...osbornChecklist } = osbornChecklistDetail;
+  const router = useRouter();
+  const { inputs, aiGeneration, ...osbornChecklist } = osbornChecklistDetail;
   const [isResultsPublic, setIsResultsPublic] = useState(osbornChecklist.isResultsPublic ?? false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentInputs, setCurrentInputs] = useState(inputs);
+
+  // propsのinputsが更新されたら、currentInputsも更新
+  useEffect(() => {
+    setCurrentInputs(inputs);
+  }, [inputs]);
+
+  // データ再取得関数
+  const handleRefresh = useCallback(async () => {
+    router.refresh();
+  }, [router]);
 
   const handleInputChange = async (checklistType: OsbornChecklistType, value: string, skipIfNotEmpty = false) => {
     try {
@@ -73,7 +85,8 @@ export default function OsbornChecklistDetailClient({
   const { isGenerating, handleAIGenerate } = useOsbornChecklistAI({
     osbornChecklistId: osbornChecklist.id,
     currentInputs,
-    onInputChange: handleInputChange,
+    aiGeneration: aiGeneration || null,
+    onRefresh: handleRefresh,
   });
 
   // X投稿ボタンのクリックハンドラー

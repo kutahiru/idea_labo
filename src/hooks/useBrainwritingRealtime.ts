@@ -1,5 +1,5 @@
 /**
- * ブレインライティングのリアルタイム監視フック
+ * ブレインライティングのリアルタイム監視フック（IAM認証）
  * 参加者、シート情報、入力データをリアルタイムで更新
  */
 "use client";
@@ -7,6 +7,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { events } from "aws-amplify/data";
 import { BRAINWRITING_EVENT_TYPES } from "@/lib/appsync-events/event-types";
+import { useAmplifyConfig } from "@/components/providers/AmplifyProvider";
 import type {
   BrainwritingUserData,
   BrainwritingSheetData,
@@ -26,6 +27,7 @@ export function useBrainwritingRealtime({
   initialSheets,
   initialInputs,
 }: UseBrainwritingRealtimeProps) {
+  const { isConfigured } = useAmplifyConfig();
   const [users, setUsers] = useState<BrainwritingUserData[]>(initialUsers);
   const [sheets, setSheets] = useState<BrainwritingSheetData[]>(initialSheets);
   const [inputs, setInputs] = useState<BrainwritingInputData[]>(initialInputs);
@@ -82,30 +84,35 @@ export function useBrainwritingRealtime({
   }, [brainwritingId, fetchLatestInputs]);
 
   useEffect(() => {
+    // Amplify設定が完了するまで待機
+    if (!isConfigured) {
+      return;
+    }
+
     let unsubscribe: { unsubscribe: () => void } | undefined;
 
     const connect = async () => {
       try {
-        // AWS Amplify Eventsでチャンネルを購読
-        const channel = await events.connect(`/brainwriting/${brainwritingId}`);
+        console.log("🔌 ブレインライティング接続開始:", `brainwriting/brainwriting/${brainwritingId}`);
+        // AWS Amplify Events でチャンネルを購読（IAM認証、名前空間指定）
+        const channel = await events.connect(`brainwriting/brainwriting/${brainwritingId}`);
+        console.log("✅ ブレインライティング接続成功");
         setIsConnected(true);
 
-        //ここがAppSync Eventsからのイベントを待ち受ける
         unsubscribe = channel.subscribe({
-          //このnextは次のメッセージが来たときの処理
           next: (data: unknown) => {
+            console.log("🔔 ブレインライティングメッセージ受信:", data);
             try {
               const message = typeof data === "string" ? JSON.parse(data) : data;
+              console.log("🔔 パース後:", message);
 
               // AppSync Eventsのメッセージ構造に対応
-              if (message.event && message.event.data) {
-                const eventDataStr = message.event.data;
-                const eventData =
-                  typeof eventDataStr === "string" ? JSON.parse(eventDataStr) : eventDataStr;
-
+              if (message.event && message.event.type) {
+                console.log("🔔 イベントタイプ:", message.event.type);
                 // イベントタイプに応じて処理
-                switch (eventData.type) {
+                switch (message.event.type) {
                   case BRAINWRITING_EVENT_TYPES.USER_JOINED:
+                    console.log("👥 ユーザー参加イベント検知");
                     fetchLatestUsers();
                     break;
                   case BRAINWRITING_EVENT_TYPES.BRAINWRITING_STARTED:
@@ -114,6 +121,8 @@ export function useBrainwritingRealtime({
                     fetchLatestSheets();
                     break;
                 }
+              } else {
+                console.log("⚠️ メッセージ構造が不正:", message);
               }
             } catch (error) {
               console.error("イベントデータのパースエラー:", error);
@@ -137,7 +146,7 @@ export function useBrainwritingRealtime({
         unsubscribe.unsubscribe();
       }
     };
-  }, [brainwritingId, fetchLatestUsers, fetchLatestSheets]);
+  }, [isConfigured, brainwritingId, fetchLatestUsers, fetchLatestSheets]);
 
   return { users, sheets, inputs, isConnected };
 }

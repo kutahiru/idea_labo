@@ -1,0 +1,28 @@
+{
+  "name": "osborn-ai-worker",
+  "version": "1.0.0",
+  "description": "AWS Lambda function for Osborn Checklist AI generation",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild index.ts --bundle --platform=node --target=es2020 --format=cjs --outfile=index.js --external:pg-native",
+    "typecheck": "tsc --noEmit",
+    "package": "npm run build && zip function.zip index.js",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.44.5",
+    "ob-appsync-events-request": "^0.0.7",
+    "openai": "^6.9.0",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^20",
+    "@vitest/ui": "^2.1.8",
+    "dotenv": "^16.4.7",
+    "esbuild": "^0.27.0",
+    "typescript": "^5",
+    "vitest": "^2.1.8"
+  }
+}

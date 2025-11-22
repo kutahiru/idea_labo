@@ -12,18 +12,20 @@ interface PublishEventParams {
 
 /**
  * AppSync Eventsにイベントを発行（IAM認証）
+ * Amplify HostingのIAMロールを使用して署名
  */
 export async function publishEvent({ namespace, channel, data }: PublishEventParams) {
   try {
     // channelにnamespaceを含める
     const fullChannel = `${namespace}${channel}`;
     const appsyncUrl = process.env.APPSYNC_EVENTS_URL;
+    const region = process.env.APPSYNC_REGION || "ap-northeast-1";
+
     console.log("📡 AppSync Events発行:", {
       fullChannel,
       data,
-      appsyncUrl,
-      awsRegion: process.env.AWS_REGION,
-      appsyncRegion: process.env.APPSYNC_REGION
+      appsyncUrl: appsyncUrl ? "✓" : "✗",
+      region,
     });
 
     if (!appsyncUrl) {
@@ -31,14 +33,17 @@ export async function publishEvent({ namespace, channel, data }: PublishEventPar
     }
 
     // IAM署名付きリクエストを作成
-    // 第3引数以降はイベントデータのみ（namespaceは不要）
+    // リージョンを明示的に指定してIAMロールの認証情報を使用
     const request = await PublishRequest.signed(
-      appsyncUrl,
+      {
+        url: appsyncUrl,
+        region: region,
+      },
       fullChannel,
       data
     );
 
-    console.log("📤 リクエストURL:", request.url);
+    console.log("📤 AppSync Events発行リクエスト送信");
 
     const response = await fetch(request);
 
@@ -52,6 +57,7 @@ export async function publishEvent({ namespace, channel, data }: PublishEventPar
       throw new Error(`Failed to publish event: ${response.status}`);
     }
 
+    console.log("✅ AppSync Events発行成功");
     return { success: true };
   } catch (error) {
     console.error("publishEvent エラー:", error);

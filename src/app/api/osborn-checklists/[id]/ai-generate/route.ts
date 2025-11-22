@@ -9,6 +9,7 @@ import {
 import { generateOsbornIdeas } from "@/lib/osborn-ai-worker";
 
 // Lambda クライアントの初期化（本番環境のみ）
+// AWS SDKはデフォルトでIAMロールの認証情報を自動取得
 const lambdaClient = process.env.NODE_ENV !== "development"
   ? new LambdaClient({
       region: process.env.APPSYNC_REGION || "ap-northeast-1",

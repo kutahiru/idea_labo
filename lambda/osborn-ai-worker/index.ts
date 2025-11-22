@@ -83,24 +83,46 @@ function getDb() {
 // ============================================
 async function publishEvent(channel: string, eventType: string) {
   try {
-    // IAM署名付きリクエストを作成
+    const appsyncUrl = process.env.APPSYNC_EVENTS_URL;
+
+    if (!appsyncUrl) {
+      console.error("❌ APPSYNC_EVENTS_URL環境変数が設定されていません");
+      return;
+    }
+
+    // チャンネル名にnamespaceを含める
+    const fullChannel = `osborn${channel}`;
+
+    // IAM署名付きリクエストを作成（リージョンを明示的に指定）
     const request = await PublishRequest.signed(
-      process.env.APPSYNC_EVENTS_URL!,
-      channel,
       {
-        namespace: "osborn",
-        data: { type: eventType },
-      }
+        url: appsyncUrl,
+        region: "ap-northeast-1",
+      },
+      fullChannel,
+      { type: eventType }  // dataのみを渡す
     );
 
     // fetchでリクエスト送信
     const response = await fetch(request);
 
     if (!response.ok) {
-      console.error("AppSync Events発行エラー:", await response.text());
+      const errorText = await response.text();
+      console.error("❌ AppSync Events発行エラー:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+      });
+    } else {
+      console.log("✅ AppSync Events発行成功");
     }
   } catch (error) {
-    console.error("AppSync Events発行エラー:", error);
+    console.error("❌ AppSync Events例外:", {
+      error,
+      errorName: error instanceof Error ? error.name : "Unknown",
+      errorMessage: error instanceof Error ? error.message : String(error),
+      errorStack: error instanceof Error ? error.stack : undefined,
+    });
   }
 }
 
@@ -146,14 +168,14 @@ interface FunctionUrlEvent {
 /**
  * HTTPリクエストかどうかを判定
  */
-function isFunctionUrlEvent(event: any): event is FunctionUrlEvent {
-  return event.headers !== undefined || event.requestContext !== undefined;
+function isFunctionUrlEvent(event: unknown): event is FunctionUrlEvent {
+  return typeof event === 'object' && event !== null && ('headers' in event || 'requestContext' in event);
 }
 
 /**
  * HTTPレスポンスを返す
  */
-function httpResponse(statusCode: number, body: any) {
+function httpResponse(statusCode: number, body: Record<string, unknown>) {
   return {
     statusCode,
     headers: {

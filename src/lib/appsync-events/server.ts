@@ -2,7 +2,6 @@
  * サーバー側 AppSync Events ユーティリティ
  * API Routeからイベントを発行するために使用
  */
-import { PublishRequest } from "ob-appsync-events-request";
 
 interface PublishEventParams {
   namespace: string;
@@ -11,41 +10,44 @@ interface PublishEventParams {
 }
 
 /**
- * AppSync Eventsにイベントを発行（IAM認証）
- * Amplify HostingのIAMロールを使用して署名
+ * AppSync Eventsにイベントを発行（API Key認証）
+ * サーバー側のイベント発行専用
+ * クライアント側のイベント購読はIAM認証を継続
  */
 export async function publishEvent({ namespace, channel, data }: PublishEventParams) {
   try {
     // channelにnamespaceを含める
     const fullChannel = `${namespace}${channel}`;
     const appsyncUrl = process.env.APPSYNC_EVENTS_URL;
-    const region = process.env.APPSYNC_REGION || "ap-northeast-1";
+    const apiKey = process.env.APPSYNC_API_KEY;
 
     console.log("📡 AppSync Events発行:", {
       fullChannel,
       data,
       appsyncUrl: appsyncUrl ? "✓" : "✗",
-      region,
+      apiKey: apiKey ? "✓" : "✗",
     });
 
     if (!appsyncUrl) {
       throw new Error("APPSYNC_EVENTS_URL is not set");
     }
 
-    // IAM署名付きリクエストを作成
-    // リージョンを明示的に指定してIAMロールの認証情報を使用
-    const request = await PublishRequest.signed(
-      {
-        url: appsyncUrl,
-        region: region,
+    if (!apiKey) {
+      throw new Error("APPSYNC_API_KEY is not set");
+    }
+
+    // API Key認証でリクエスト
+    const response = await fetch(appsyncUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
       },
-      fullChannel,
-      data
-    );
-
-    console.log("📤 AppSync Events発行リクエスト送信");
-
-    const response = await fetch(request);
+      body: JSON.stringify({
+        channel: fullChannel,
+        events: [JSON.stringify(data)],
+      }),
+    });
 
     if (!response.ok) {
       const error = await response.text();

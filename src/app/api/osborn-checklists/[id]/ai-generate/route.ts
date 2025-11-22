@@ -80,37 +80,37 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
           osbornChecklistId,
         });
 
-        try {
-          const response = await fetch(lambdaFunctionUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-secret": secretToken,
-            },
-            body: JSON.stringify({
-              generationId: aiGeneration.id,
-              osbornChecklistId,
-              userId,
-            }),
-          });
-
+        // Lambda Function URLを非同期で呼び出し（レスポンスを待たない）
+        fetch(lambdaFunctionUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-secret": secretToken,
+          },
+          body: JSON.stringify({
+            generationId: aiGeneration.id,
+            osbornChecklistId,
+            userId,
+          }),
+        }).then(response => {
           if (!response.ok) {
-            const errorText = await response.text();
-            console.error("❌ Lambda Function URL呼び出しエラー:", {
-              status: response.status,
-              statusText: response.statusText,
-              body: errorText,
+            response.text().then(errorText => {
+              console.error("❌ Lambda Function URL呼び出しエラー:", {
+                status: response.status,
+                statusText: response.statusText,
+                body: errorText,
+              });
             });
           } else {
             console.log("✅ Lambda Function URL呼び出し成功");
           }
-        } catch (error) {
+        }).catch(error => {
           console.error("❌ Lambda Function URL呼び出し例外:", {
             error,
             errorName: error instanceof Error ? error.name : "Unknown",
             errorMessage: error instanceof Error ? error.message : String(error),
           });
-        }
+        });
       }
     }
 

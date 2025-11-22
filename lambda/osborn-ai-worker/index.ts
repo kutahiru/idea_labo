@@ -6,9 +6,11 @@
  * - OPENAI_API_KEY: OpenAI APIキー
  * - OPENAI_MODEL: 使用するOpenAIモデル（例: gpt-5-nano）
  * - APPSYNC_EVENTS_URL: AppSync Events エンドポイント
+ * - LAMBDA_SECRET_TOKEN: HTTPリクエスト認証用の秘密トークン
  *
- * IAM認証:
- * - Lambda関数のIAMロールにAppSync Events発行権限が必要
+ * 呼び出し方法:
+ * 1. Lambda Function URL経由（HTTPリクエスト）
+ * 2. 直接Lambdaイベント（後方互換性）
  */
 
 import { Handler } from "aws-lambda";
@@ -132,14 +134,106 @@ interface AIGenerationResponse {
   ideas: Record<string, string>;
 }
 
-export const handler: Handler<LambdaEvent> = async (event) => {
+// Lambda Function URL用のイベント型
+interface FunctionUrlEvent {
+  headers?: Record<string, string>;
+  body?: string;
+  requestContext?: {
+    requestId: string;
+  };
+}
+
+/**
+ * HTTPリクエストかどうかを判定
+ */
+function isFunctionUrlEvent(event: any): event is FunctionUrlEvent {
+  return event.headers !== undefined || event.requestContext !== undefined;
+}
+
+/**
+ * HTTPレスポンスを返す
+ */
+function httpResponse(statusCode: number, body: any) {
+  return {
+    statusCode,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  };
+}
+
+export const handler: Handler = async (event) => {
   console.log("Lambda起動:", JSON.stringify(event));
 
-  const { generationId, osbornChecklistId, userId } = event;
+  // HTTPリクエスト（Function URL）からの呼び出しの場合
+  if (isFunctionUrlEvent(event)) {
+    console.log("📡 Function URL経由の呼び出し");
+
+    // 秘密トークン認証
+    const secretToken = event.headers?.["x-api-secret"] || event.headers?.["X-Api-Secret"];
+    const expectedToken = process.env.LAMBDA_SECRET_TOKEN;
+
+    if (!expectedToken) {
+      console.error("❌ LAMBDA_SECRET_TOKEN環境変数が設定されていません");
+      return httpResponse(500, { error: "Server configuration error" });
+    }
+
+    if (secretToken !== expectedToken) {
+      console.error("❌ 秘密トークンが一致しません");
+      return httpResponse(403, { error: "Forbidden" });
+    }
+
+    // ボディをパース
+    let payload: LambdaEvent;
+    try {
+      payload = JSON.parse(event.body || "{}");
+    } catch (error) {
+      console.error("❌ リクエストボディのパースエラー:", error);
+      return httpResponse(400, { error: "Invalid JSON body" });
+    }
+
+    const { generationId, osbornChecklistId, userId } = payload;
+
+    if (!generationId || !osbornChecklistId || !userId) {
+      console.error("❌ 必須パラメータが不足:", payload);
+      return httpResponse(400, {
+        error: "generationId, osbornChecklistId, userId are required",
+      });
+    }
+
+    // メイン処理を実行
+    try {
+      await processAIGeneration({ generationId, osbornChecklistId, userId });
+      return httpResponse(200, { success: true, message: "AI生成を開始しました" });
+    } catch (error) {
+      console.error("❌ AI生成処理エラー:", error);
+      return httpResponse(500, {
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }
+
+  // 従来のイベント形式（後方互換性）
+  console.log("📡 直接Lambda呼び出し");
+  const { generationId, osbornChecklistId, userId } = event as LambdaEvent;
 
   if (!generationId || !osbornChecklistId || !userId) {
     throw new Error("generationId, osbornChecklistId, userId are required");
   }
+
+  await processAIGeneration({ generationId, osbornChecklistId, userId });
+  return { success: true };
+};
+
+/**
+ * AI生成のメイン処理
+ */
+async function processAIGeneration({
+  generationId,
+  osbornChecklistId,
+  userId,
+}: LambdaEvent): Promise<void> {
 
   const db = getDb();
 
@@ -274,7 +368,7 @@ JSON形式で以下のように出力してください：
         "AI_GENERATION_FAILED"
       );
 
-      return { statusCode: 400, body: errorMsg };
+      throw new Error(errorMsg);
     }
 
     const ideas = result.ideas;
@@ -299,7 +393,7 @@ JSON形式で以下のように出力してください：
         "AI_GENERATION_FAILED"
       );
 
-      return { statusCode: 500, body: errorMsg };
+      throw new Error(errorMsg);
     }
 
     // データベースに保存（既存の入力が空でない場合はスキップ）
@@ -359,11 +453,6 @@ JSON形式で以下のように出力してください：
     );
 
     console.log("AI生成が正常に完了しました");
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true, ideas }),
-    };
   } catch (error) {
     console.error("AI生成ワーカーエラー:", error);
 

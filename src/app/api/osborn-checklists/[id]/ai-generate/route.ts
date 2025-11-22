@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
 import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 import {
   getOsbornChecklistById,
@@ -8,32 +7,12 @@ import {
 } from "@/lib/osborn-checklist";
 import { generateOsbornIdeas } from "@/lib/osborn-ai-worker";
 
-// 診断用：環境情報をログ出力
-console.log("🔍 [診断] Lambda環境情報:", {
+// Lambda Function URLの設定確認
+console.log("🔍 [診断] Lambda設定:", {
   NODE_ENV: process.env.NODE_ENV,
-  APPSYNC_REGION: process.env.APPSYNC_REGION,
-  LAMBDA_FUNCTION_NAME: process.env.LAMBDA_FUNCTION_NAME,
-  APPSYNC_EVENTS_URL: process.env.APPSYNC_EVENTS_URL ? "✓" : "✗",
-  // AWS環境変数（Amplifyで自動設定されるもの）
-  AWS_EXECUTION_ENV: process.env.AWS_EXECUTION_ENV,
-  AWS_LAMBDA_FUNCTION_NAME: process.env.AWS_LAMBDA_FUNCTION_NAME,
-  AWS_LAMBDA_FUNCTION_VERSION: process.env.AWS_LAMBDA_FUNCTION_VERSION,
+  LAMBDA_FUNCTION_URL: process.env.LAMBDA_FUNCTION_URL ? "✓" : "✗",
+  LAMBDA_SECRET_TOKEN: process.env.LAMBDA_SECRET_TOKEN ? "✓" : "✗",
 });
-
-// Lambda クライアントの初期化（本番環境のみ）
-// AWS SDKはデフォルトでIAMロールの認証情報を自動取得
-let lambdaClient: LambdaClient | null = null;
-if (process.env.NODE_ENV !== "development") {
-  try {
-    console.log("🔍 [診断] LambdaClient初期化開始");
-    lambdaClient = new LambdaClient({
-      region: process.env.APPSYNC_REGION || "ap-northeast-1",
-    });
-    console.log("✅ [診断] LambdaClient初期化成功");
-  } catch (error) {
-    console.error("❌ [診断] LambdaClient初期化エラー:", error);
-  }
-}
 
 export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -74,10 +53,9 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
     // AI生成レコードをDBに作成（status: pending）
     const aiGeneration = await createAIGeneration(osbornChecklistId);
 
-    // 開発環境ではローカルで実行、本番環境ではLambdaを起動
+    // 開発環境ではローカルで実行、本番環境ではLambda Function URLを呼び出し
     if (process.env.NODE_ENV === "development") {
       // ローカル環境での直接実行（非同期）
-      // バックグラウンドで実行（await しない）
       generateOsbornIdeas({
         generationId: aiGeneration.id,
         osbornChecklistId,
@@ -86,43 +64,53 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
         console.error("ローカルAI生成エラー:", error);
       });
     } else {
-      // 本番環境でのLambda起動
-      const lambdaFunctionName = process.env.LAMBDA_FUNCTION_NAME || "osborn-ai-worker";
+      // 本番環境でのLambda Function URL呼び出し
+      const lambdaFunctionUrl = process.env.LAMBDA_FUNCTION_URL;
+      const secretToken = process.env.LAMBDA_SECRET_TOKEN;
 
-      console.log("🔍 [診断] Lambda起動開始:", {
-        functionName: lambdaFunctionName,
-        generationId: aiGeneration.id,
-        osbornChecklistId,
-        lambdaClientExists: !!lambdaClient,
-      });
+      if (!lambdaFunctionUrl) {
+        console.error("❌ LAMBDA_FUNCTION_URL環境変数が設定されていません");
+        // 環境変数未設定でもユーザーにはエラーを返さない
+      } else if (!secretToken) {
+        console.error("❌ LAMBDA_SECRET_TOKEN環境変数が設定されていません");
+      } else {
+        console.log("🔍 Lambda Function URL呼び出し開始:", {
+          url: lambdaFunctionUrl,
+          generationId: aiGeneration.id,
+          osbornChecklistId,
+        });
 
-      try {
-        if (!lambdaClient) {
-          throw new Error("LambdaClientが初期化されていません");
+        try {
+          const response = await fetch(lambdaFunctionUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-secret": secretToken,
+            },
+            body: JSON.stringify({
+              generationId: aiGeneration.id,
+              osbornChecklistId,
+              userId,
+            }),
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error("❌ Lambda Function URL呼び出しエラー:", {
+              status: response.status,
+              statusText: response.statusText,
+              body: errorText,
+            });
+          } else {
+            console.log("✅ Lambda Function URL呼び出し成功");
+          }
+        } catch (error) {
+          console.error("❌ Lambda Function URL呼び出し例外:", {
+            error,
+            errorName: error instanceof Error ? error.name : "Unknown",
+            errorMessage: error instanceof Error ? error.message : String(error),
+          });
         }
-
-        const command = new InvokeCommand({
-          FunctionName: lambdaFunctionName,
-          InvocationType: "Event", // 非同期実行
-          Payload: JSON.stringify({
-            generationId: aiGeneration.id,
-            osbornChecklistId,
-            userId,
-          }),
-        });
-
-        console.log("🔍 [診断] Lambda InvokeCommand送信直前");
-        await lambdaClient.send(command);
-        console.log("✅ [診断] Lambda起動成功");
-      } catch (error) {
-        console.error("❌ [診断] Lambda起動エラー（詳細）:", {
-          error,
-          errorName: error instanceof Error ? error.name : "Unknown",
-          errorMessage: error instanceof Error ? error.message : String(error),
-          errorStack: error instanceof Error ? error.stack : undefined,
-        });
-        // Lambda起動に失敗してもユーザーにはエラーを返さず、ステータスはpendingのまま
-        // 後でリトライ可能にするため
       }
     }
 

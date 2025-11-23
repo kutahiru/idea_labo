@@ -6,6 +6,7 @@
  * - OPENAI_API_KEY: OpenAI APIキー
  * - OPENAI_MODEL: 使用するOpenAIモデル（例: gpt-5-nano）
  * - APPSYNC_EVENTS_URL: AppSync Events エンドポイント
+ * - APPSYNC_API_KEY: AppSync API Key（イベント発行用）
  * - LAMBDA_SECRET_TOKEN: HTTPリクエスト認証用の秘密トークン
  *
  * 呼び出し方法:
@@ -19,7 +20,7 @@ import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { pgTable, serial, integer, varchar, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { eq, and, sql } from "drizzle-orm";
-import { PublishRequest } from "ob-appsync-events-request";
+// PublishRequest（IAM認証）は不要になったため削除
 
 // ============================================
 // DB Schema定義
@@ -79,32 +80,45 @@ function getDb() {
 }
 
 // ============================================
-// AppSync Events通知
+// AppSync Events通知（API Key認証）
 // ============================================
 async function publishEvent(channel: string, eventType: string) {
   try {
     const appsyncUrl = process.env.APPSYNC_EVENTS_URL;
+    const apiKey = process.env.APPSYNC_API_KEY;
 
     if (!appsyncUrl) {
       console.error("❌ APPSYNC_EVENTS_URL環境変数が設定されていません");
       return;
     }
 
+    if (!apiKey) {
+      console.error("❌ APPSYNC_API_KEY環境変数が設定されていません");
+      return;
+    }
+
     // チャンネル名にnamespaceを含める
     const fullChannel = `osborn${channel}`;
 
-    // IAM署名付きリクエストを作成（リージョンを明示的に指定）
-    const request = await PublishRequest.signed(
-      {
-        url: appsyncUrl,
-        region: "ap-northeast-1",
-      },
+    console.log("📡 AppSync Events発行:", {
       fullChannel,
-      { type: eventType }  // dataのみを渡す
-    );
+      eventType,
+      appsyncUrl: appsyncUrl ? "✓" : "✗",
+      apiKey: apiKey ? "✓" : "✗",
+    });
 
-    // fetchでリクエスト送信
-    const response = await fetch(request);
+    // API Key認証でリクエスト
+    const response = await fetch(appsyncUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        channel: fullChannel,
+        events: [JSON.stringify({ type: eventType })],
+      }),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

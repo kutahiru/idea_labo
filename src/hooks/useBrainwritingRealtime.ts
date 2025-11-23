@@ -93,26 +93,20 @@ export function useBrainwritingRealtime({
 
     const connect = async () => {
       try {
-        console.log("🔌 ブレインライティング接続開始:", `brainwriting/brainwriting/${brainwritingId}`);
         // AWS Amplify Events でチャンネルを購読（IAM認証、名前空間指定）
         const channel = await events.connect(`brainwriting/brainwriting/${brainwritingId}`);
-        console.log("✅ ブレインライティング接続成功");
         setIsConnected(true);
 
         unsubscribe = channel.subscribe({
           next: (data: unknown) => {
-            console.log("🔔 ブレインライティングメッセージ受信:", data);
             try {
               const message = typeof data === "string" ? JSON.parse(data) : data;
-              console.log("🔔 パース後:", message);
 
               // AppSync Eventsのメッセージ構造に対応
               if (message.event && message.event.type) {
-                console.log("🔔 イベントタイプ:", message.event.type);
                 // イベントタイプに応じて処理
                 switch (message.event.type) {
                   case BRAINWRITING_EVENT_TYPES.USER_JOINED:
-                    console.log("👥 ユーザー参加イベント検知");
                     fetchLatestUsers();
                     break;
                   case BRAINWRITING_EVENT_TYPES.BRAINWRITING_STARTED:
@@ -121,8 +115,6 @@ export function useBrainwritingRealtime({
                     fetchLatestSheets();
                     break;
                 }
-              } else {
-                console.log("⚠️ メッセージ構造が不正:", message);
               }
             } catch (error) {
               console.error("イベントデータのパースエラー:", error);

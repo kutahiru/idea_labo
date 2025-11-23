@@ -37,13 +37,6 @@ export default function AmplifyProvider({ children }: { children: React.ReactNod
         }
 
         const credentials = await response.json();
-        console.log("Cognito認証情報を取得:", {
-          identityId: credentials.identityId,
-          hasAccessKey: !!credentials.accessKeyId,
-          hasSecretKey: !!credentials.secretAccessKey,
-          hasSessionToken: !!credentials.sessionToken,
-          expiration: credentials.expiration,
-        });
 
         // Amplifyを設定（IAM認証モード）
         Amplify.configure({

@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { auth } from "@/app/lib/auth";
 import { getBrainwritingDetailForBrainwritingUser } from "@/lib/brainwriting";
 import { notFound } from "next/navigation";
 import BrainwritingCompleteContent from "@/components/brainwritings/BrainwritingCompleteContent";
 import { LoginRequiredMessage } from "@/components/shared/Message";
+
+export const metadata: Metadata = {
+  title: "ブレインライティング完了",
+  description: "ブレインライティングのシート入力が完了しました",
+};
 
 interface BrainwritingCompletePageProps {
   params: Promise<{ sheetId: string }>;

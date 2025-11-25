@@ -24,11 +24,12 @@ vi.mock("@/lib/client-utils", () => ({
 }));
 
 describe("useOsbornChecklistAI", () => {
-  const mockOnInputChange = vi.fn();
+  const mockOnRefresh = vi.fn();
   const defaultProps = {
     osbornChecklistId: 1,
     currentInputs: [],
-    onInputChange: mockOnInputChange,
+    aiGeneration: null,
+    onRefresh: mockOnRefresh,
   };
 
   beforeEach(() => {
@@ -44,7 +45,7 @@ describe("useOsbornChecklistAI", () => {
 
   it("全ての項目が既に入力されている場合、エラートーストを表示し、API呼び出しをしない", async () => {
     const allChecklistTypes = Object.values(OSBORN_CHECKLIST_TYPES);
-    const filledInputs = allChecklistTypes.map((type) => ({
+    const filledInputs = allChecklistTypes.map(type => ({
       id: 1,
       osborn_checklist_id: 1,
       checklist_type: type,
@@ -66,25 +67,15 @@ describe("useOsbornChecklistAI", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("API呼び出しが成功した場合、アイデアを保存し成功トーストを表示", async () => {
-    const mockIdeas = {
-      transfer: "転用のアイデア",
-      apply: "応用のアイデア",
-      modify: "変更のアイデア",
-    };
-
+  it("API呼び出しが成功した場合、データを再取得する", async () => {
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ ideas: mockIdeas }),
+      json: async () => ({ generationId: 1, status: "pending" }),
     } as Response);
 
     const { result } = renderHook(() => useOsbornChecklistAI(defaultProps));
 
     await result.current.handleAIGenerate();
-
-    await waitFor(() => {
-      expect(result.current.isGenerating).toBe(false);
-    });
 
     expect(global.fetch).toHaveBeenCalledWith("/api/osborn-checklists/1/ai-generate", {
       method: "POST",
@@ -93,14 +84,8 @@ describe("useOsbornChecklistAI", () => {
       },
     });
 
-    expect(mockOnInputChange).toHaveBeenCalledTimes(3);
-    expect(mockOnInputChange).toHaveBeenCalledWith("transfer", "転用のアイデア", true);
-    expect(mockOnInputChange).toHaveBeenCalledWith("apply", "応用のアイデア", true);
-    expect(mockOnInputChange).toHaveBeenCalledWith("modify", "変更のアイデア", true);
-
-    expect(toast.loading).toHaveBeenCalledWith("AIでアイデアを生成中...");
-    expect(toast.success).toHaveBeenCalledWith("AIでアイデアを生成しました！");
-    expect(toast.dismiss).toHaveBeenCalledWith("loading-toast-id");
+    // データ再取得が呼ばれることを確認
+    expect(mockOnRefresh).toHaveBeenCalled();
   });
 
   it("API呼び出しが失敗した場合、エラートーストを表示", async () => {
@@ -124,8 +109,7 @@ describe("useOsbornChecklistAI", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith("テーマが適切ではありません");
-    expect(toast.dismiss).toHaveBeenCalledWith("loading-toast-id");
-    expect(mockOnInputChange).not.toHaveBeenCalled();
+    expect(mockOnRefresh).not.toHaveBeenCalled();
   });
 
   it("ネットワークエラーが発生した場合、エラートーストを表示", async () => {
@@ -139,68 +123,49 @@ describe("useOsbornChecklistAI", () => {
       expect(result.current.isGenerating).toBe(false);
     });
 
-    expect(toast.error).toHaveBeenCalledWith("AI生成中にエラーが発生しました");
-    expect(toast.dismiss).toHaveBeenCalledWith("loading-toast-id");
+    expect(toast.error).toHaveBeenCalledWith("AI生成の開始に失敗しました");
+    expect(mockOnRefresh).not.toHaveBeenCalled();
   });
 
-  it("生成中にisGeneratingがtrueになる", async () => {
-    let resolvePromise: (value: Response) => void;
-    const promise = new Promise<Response>((resolve) => {
-      resolvePromise = resolve;
-    });
-
-    vi.mocked(global.fetch).mockReturnValue(promise);
-
-    const { result } = renderHook(() => useOsbornChecklistAI(defaultProps));
-
-    const generatePromise = result.current.handleAIGenerate();
+  it("aiGeneration.statusがprocessingの場合、isGeneratingがtrueになる", async () => {
+    const { result, rerender } = renderHook(
+      (props) => useOsbornChecklistAI(props),
+      {
+        initialProps: {
+          ...defaultProps,
+          aiGeneration: { status: "processing", errorMessage: null },
+        },
+      }
+    );
 
     await waitFor(() => {
       expect(result.current.isGenerating).toBe(true);
     });
+    expect(toast.loading).toHaveBeenCalledWith("AIでアイデアの生成を開始しました");
 
-    // プロミスを解決
-    resolvePromise!({
-      ok: true,
-      json: async () => ({ ideas: {} }),
-    } as Response);
-
-    await generatePromise;
+    // ステータスをcompletedに変更
+    rerender({
+      ...defaultProps,
+      aiGeneration: { status: "completed", errorMessage: null },
+    });
 
     await waitFor(() => {
       expect(result.current.isGenerating).toBe(false);
     });
   });
 
-  it("生成中の場合、重複実行を防ぐ", async () => {
-    let resolvePromise: (value: Response) => void;
-    const promise = new Promise<Response>((resolve) => {
-      resolvePromise = resolve;
-    });
+  it("aiGeneration.statusがprocessingの場合、重複実行を防ぐ", async () => {
+    const { result } = renderHook(() =>
+      useOsbornChecklistAI({
+        ...defaultProps,
+        aiGeneration: { status: "processing", errorMessage: null },
+      })
+    );
 
-    vi.mocked(global.fetch).mockReturnValue(promise);
-
-    const { result } = renderHook(() => useOsbornChecklistAI(defaultProps));
-
-    // 1回目の実行
-    const firstCall = result.current.handleAIGenerate();
-
-    await waitFor(() => {
-      expect(result.current.isGenerating).toBe(true);
-    });
-
-    // 2回目の実行（生成中なので無視される）
     await result.current.handleAIGenerate();
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-
-    // プロミスを解決
-    resolvePromise!({
-      ok: true,
-      json: async () => ({ ideas: {} }),
-    } as Response);
-
-    await firstCall;
+    expect(toast.error).toHaveBeenCalledWith("AI生成は既に実行中です");
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it("一部の項目が入力されている場合、API呼び出しを実行", async () => {
@@ -217,7 +182,7 @@ describe("useOsbornChecklistAI", () => {
 
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ ideas: { apply: "新しいアイデア" } }),
+      json: async () => ({ generationId: 1, status: "pending" }),
     } as Response);
 
     const { result } = renderHook(() =>
@@ -229,12 +194,8 @@ describe("useOsbornChecklistAI", () => {
 
     await result.current.handleAIGenerate();
 
-    await waitFor(() => {
-      expect(result.current.isGenerating).toBe(false);
-    });
-
     expect(global.fetch).toHaveBeenCalled();
-    expect(toast.success).toHaveBeenCalledWith("AIでアイデアを生成しました！");
+    expect(mockOnRefresh).toHaveBeenCalled();
   });
 
   it("空白のみの入力は未入力として扱う", async () => {
@@ -251,7 +212,7 @@ describe("useOsbornChecklistAI", () => {
 
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ ideas: { transfer: "新しいアイデア" } }),
+      json: async () => ({ generationId: 1, status: "pending" }),
     } as Response);
 
     const { result } = renderHook(() =>
@@ -263,11 +224,8 @@ describe("useOsbornChecklistAI", () => {
 
     await result.current.handleAIGenerate();
 
-    await waitFor(() => {
-      expect(result.current.isGenerating).toBe(false);
-    });
-
     expect(global.fetch).toHaveBeenCalled();
     expect(toast.error).not.toHaveBeenCalledWith("全ての項目が既に入力されています");
+    expect(mockOnRefresh).toHaveBeenCalled();
   });
 });

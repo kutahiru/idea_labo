@@ -12,10 +12,16 @@ interface AddUserClientProps {
   redirectUrl: string;
 }
 
-export default function AddUserClient({
-  currentName,
-  redirectUrl,
-}: AddUserClientProps) {
+/**
+ * ユーザー名設定フォームのクライアントコンポーネント
+ *
+ * 初回ログイン時やユーザー名未設定時に表示され、ユーザー名の入力・設定を行います。
+ * バリデーション、API呼び出し、セッション更新、リダイレクトまで一連の処理を実行します。
+ *
+ * @param currentName - 現在のユーザー名（初期値として設定）
+ * @param redirectUrl - 設定完了後のリダイレクト先URL
+ */
+export default function AddUserClient({ currentName, redirectUrl }: AddUserClientProps) {
   const router = useRouter();
   const { update } = useSession();
   const [formData, setFormData] = useState<UserFormData>({
@@ -39,7 +45,7 @@ export default function AddUserClient({
     if (!result.success) {
       const newErrors: Partial<Record<keyof UserFormData, string>> = {};
 
-      result.error.issues.forEach((issue) => {
+      result.error.issues.forEach(issue => {
         const path = issue.path[0] as keyof UserFormData;
         if (path && !newErrors[path]) {
           newErrors[path] = issue.message;
@@ -86,9 +92,7 @@ export default function AddUserClient({
       router.push(redirectUrl);
     } catch (error) {
       console.error("ユーザー名更新エラー:", error);
-      toast.error(
-        error instanceof Error ? error.message : "ユーザー名の更新に失敗しました"
-      );
+      toast.error(error instanceof Error ? error.message : "ユーザー名の更新に失敗しました");
       setIsSubmitting(false);
     }
   };
@@ -96,25 +100,20 @@ export default function AddUserClient({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label
-          htmlFor="name"
-          className="mb-2 block text-sm font-medium text-gray-700"
-        >
+        <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700">
           ユーザー名 *
         </label>
         <input
           type="text"
           id="name"
           value={formData.name}
-          onChange={(e) => handleInputChange(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 bg-gray-50 outline-none focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/10 transition-all duration-200"
+          onChange={e => handleInputChange(e.target.value)}
+          className="focus:border-primary focus:ring-primary/10 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 transition-all duration-200 outline-none focus:bg-white focus:ring-2"
           placeholder="ユーザー名を入力"
           maxLength={50}
           disabled={isSubmitting}
         />
-        {errors.name && (
-          <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-        )}
+        {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
       </div>
 
       <button

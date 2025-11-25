@@ -17,6 +17,19 @@ interface BrainwritingSheetListProps {
   currentUserId: string;
 }
 
+/**
+ * ブレインライティングのシート一覧を表示するコンポーネント（チーム版用）
+ *
+ * 未完了の場合：各シートをカード形式で表示し、現在編集中のユーザーを表示します。
+ * 自分が編集可能なシートはリンクになり、クリックで入力ページに遷移できます。
+ *
+ * 全員完了の場合：タブ切り替えで全シートの結果を閲覧できる画面を表示します。
+ *
+ * @param sheets - シート一覧データ
+ * @param inputs - 全シートの入力データ
+ * @param users - 参加ユーザー一覧
+ * @param currentUserId - 現在ログイン中のユーザーID
+ */
 export default function BrainwritingSheetList({
   sheets,
   inputs,

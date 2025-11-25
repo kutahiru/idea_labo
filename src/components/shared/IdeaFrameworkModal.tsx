@@ -21,6 +21,23 @@ interface IdeaFrameworkModalProps<T extends BaseIdeaFormData> {
   children?: ReactNode | ((props: IdeaFrameworkModalChildrenProps<T>) => ReactNode); // フレームワーク固有のフィールド
 }
 
+/**
+ * アイデアフレームワークの作成・編集用共通モーダルコンポーネント
+ *
+ * ブレインライティング、マンダラート、オズボーンのチェックリストなど、
+ * 各フレームワークの作成・編集モーダルで使用される基底コンポーネントです。
+ *
+ * 共通フィールド（タイトル、テーマ、説明）を提供し、
+ * フレームワーク固有のフィールドはchildrenプロップスで拡張できます。
+ * Zodスキーマによるバリデーション、フェードイン・スケールアニメーション効果を持ちます。
+ *
+ * @param onClose - モーダルを閉じる際のコールバック関数
+ * @param onSubmit - フォーム送信時のコールバック関数（非同期）
+ * @param initialData - 編集対象のデータ（編集モード時）または初期値（作成モード時）
+ * @param mode - モーダルのモード（"create": 新規作成, "edit": 編集）
+ * @param schema - バリデーション用のZodスキーマ
+ * @param children - フレームワーク固有のフィールドを追加するためのReactNode（関数形式も可）
+ */
 export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
   onClose,
   onSubmit,
@@ -97,14 +114,14 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
       {/* オーバーレイ */}
       <div className="absolute inset-0 backdrop-blur-sm" onClick={onClose} />
 
-          {/* モーダル本体 */}
-          <motion.div
-            className="relative max-h-[90vh] w-[600px] overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-2xl"
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
+      {/* モーダル本体 */}
+      <motion.div
+        className="relative max-h-[90vh] w-[600px] overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-2xl"
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      >
         {/* ヘッダー */}
         <div className="bg-primary w-full rounded-t-2xl px-8 py-6">
           <div className="flex items-center justify-center">

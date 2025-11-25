@@ -13,6 +13,17 @@ interface InviteLinkCopyProps {
   isInviteActive: boolean;
 }
 
+/**
+ * ブレインライティングの招待リンク管理コンポーネント
+ *
+ * 招待リンクの表示、コピー、有効/無効の切り替え機能を提供します。
+ * トグルスイッチで招待リンクの有効/無効を切り替えでき、
+ * 無効時はコピーボタンとリンクが使用できなくなります。
+ *
+ * @param inviteToken - 招待トークン（URLに含まれる）
+ * @param brainwritingId - ブレインライティングのID
+ * @param isInviteActive - 招待リンクが有効かどうかの初期値
+ */
 export default function InviteLinkCopy({
   inviteToken,
   brainwritingId,

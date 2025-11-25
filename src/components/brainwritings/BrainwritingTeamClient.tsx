@@ -15,11 +15,27 @@ interface BrainwritingTeamClientProps {
   currentUserId: string;
 }
 
+/**
+ * ブレインライティングチーム版のメイン画面コンポーネント
+ *
+ * 開始前：参加者一覧を表示し、作成者は開始ボタンを表示、他のユーザーは待機画面を表示
+ * 開始後：各シートの進捗状況を表示し、自分が編集可能なシートへのリンクを提供
+ *
+ * AppSync Eventsによるリアルタイム更新で、参加者の追加やシートの進捗を自動反映します。
+ *
+ * @param brainwritingTeam - ブレインライティングの詳細情報
+ * @param currentUserId - 現在ログイン中のユーザーID
+ */
 export default function BrainwritingTeamClient({
   brainwritingTeam,
   currentUserId,
 }: BrainwritingTeamClientProps) {
-  const { sheets: initialSheets, inputs: initialInputs, users: initialUsers, ...brainwriting } = brainwritingTeam;
+  const {
+    sheets: initialSheets,
+    inputs: initialInputs,
+    users: initialUsers,
+    ...brainwriting
+  } = brainwritingTeam;
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // ブラウザの戻るボタンやタブ切り替えで戻った時に最新データを取得

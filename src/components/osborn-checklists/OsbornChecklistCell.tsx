@@ -13,6 +13,16 @@ interface OsbornChecklistCellProps {
   description: string;
 }
 
+/**
+ * オズボーンのチェックリストの各項目（9つの視点）を表示・編集するセルコンポーネント
+ * フォーカスアウト時の自動保存、テキストエリアの高さ自動調整、アニメーション効果を提供
+ * @param value - 入力値
+ * @param readOnly - 読み取り専用かどうか
+ * @param onChange - 値変更時のコールバック（フォーカスアウト時に呼ばれる）
+ * @param index - 表示順序（アニメーション遅延時間の計算に使用）
+ * @param title - 項目タイトル（例: 転用、応用など）
+ * @param description - 項目の説明（ホバー時にツールチップで表示）
+ */
 export default function OsbornChecklistCell({
   value = "",
   readOnly = false,
@@ -92,8 +102,8 @@ export default function OsbornChecklistCell({
           </h3>
           <div className="group relative">
             <HelpCircle className="text-primary/40 hover:text-primary mt-0.5 h-5 w-5 cursor-help transition-colors" />
-            <div className="invisible absolute top-7 left-0 z-10 w-max max-w-80 rounded-lg bg-primary p-3 text-sm text-white opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100 md:max-w-110">
-              <div className="absolute -top-1 left-3 h-2 w-2 rotate-45 bg-primary"></div>
+            <div className="bg-primary invisible absolute top-7 left-0 z-10 w-max max-w-80 rounded-lg p-3 text-sm text-white opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100 md:max-w-110">
+              <div className="bg-primary absolute -top-1 left-3 h-2 w-2 rotate-45"></div>
               <p className="whitespace-pre-line">{description}</p>
             </div>
           </div>

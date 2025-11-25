@@ -7,6 +7,18 @@ interface SearchBarProps {
   resultCount?: number;
 }
 
+/**
+ * 検索入力フィールドを提供する共通コンポーネント
+ *
+ * 検索アイコン、入力フィールド、クリアボタン（×）、検索結果件数表示で構成されます。
+ * 入力値がある場合はクリアボタンが表示され、ワンクリックで検索をリセットできます。
+ * 検索結果件数が指定されている場合は、件数を表示します。
+ *
+ * @param searchTerm - 現在の検索キーワード
+ * @param onSearchChange - 検索キーワード変更時のコールバック関数
+ * @param placeholder - 入力フィールドのプレースホルダー（デフォルト: "検索..."）
+ * @param resultCount - 検索結果の件数（指定時のみ件数を表示）
+ */
 export default function SearchBar({
   searchTerm,
   onSearchChange,

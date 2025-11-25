@@ -1,5 +1,3 @@
-// モーダルのアクションボタンコンポーネント
-
 interface ModalActionsProps {
   onClose: () => void;
   isSubmitting: boolean;
@@ -7,6 +5,17 @@ interface ModalActionsProps {
   submitLabel?: { create: string; edit: string };
 }
 
+/**
+ * モーダルのアクションボタン（キャンセル・送信）を提供する共通コンポーネント
+ *
+ * キャンセルボタンと送信ボタン（確定/更新）で構成されます。
+ * モードに応じて送信ボタンのラベルが変わります（作成: "確定", 編集: "更新"）。
+ *
+ * @param onClose - キャンセルボタンクリック時のコールバック関数
+ * @param isSubmitting - フォーム送信中かどうか
+ * @param mode - モーダルのモード（"create": 新規作成, "edit": 編集）
+ * @param submitLabel - 送信ボタンのカスタムラベル（デフォルト: { create: "確定", edit: "更新" }）
+ */
 export function ModalActions({
   onClose,
   isSubmitting,

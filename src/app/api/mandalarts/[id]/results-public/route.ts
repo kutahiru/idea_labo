@@ -2,9 +2,35 @@ import { updateMandalartIsResultsPublic } from "@/lib/mandalart";
 import { NextRequest, NextResponse } from "next/server";
 import { checkAuth, apiErrors } from "@/lib/api/utils";
 
+/**
+ * マンダラートの結果公開状態を更新するPATCH APIエンドポイント
+ *
+ * 指定されたマンダラートの結果を公開または非公開に設定します。
+ * 公開すると、ログインしていない外部ユーザーも結果を閲覧可能になります。
+ *
+ * エンドポイント: PATCH /api/mandalarts/[id]/results-public
+ *
+ * リクエストボディ:
+ * ```json
+ * {
+ *   "isResultsPublic": true | false
+ * }
+ * ```
+ *
+ * レスポンス例:
+ * ```json
+ * {
+ *   "success": true,
+ *   "isResultsPublic": true
+ * }
+ * ```
+ *
+ * @param request - Next.jsのRequestオブジェクト（ボディにisResultsPublicを含む）
+ * @param params - ルートパラメータ（id: マンダラートID）
+ * @returns 更新結果を含むJSONレスポンス、またはエラーレスポンス
+ */
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // 認証チェック
     const authResult = await checkAuth();
     if ("error" in authResult) {
       return authResult.error;

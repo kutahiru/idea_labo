@@ -1,6 +1,5 @@
 "use client";
 
-// アイデアカテゴリ一覧行コンポーネント
 import Link from "next/link";
 import { IdeaCategoryListItem } from "@/types/idea-category";
 import { motion } from "framer-motion";
@@ -22,6 +21,18 @@ const cardVariants = {
   }),
 };
 
+/**
+ * アイデアカテゴリ一覧の1行を表示するカードコンポーネント
+ *
+ * カテゴリ名、説明、アクションボタン（アイデア一覧、編集、削除）を含むカード形式で表示します。
+ *
+ * @param id - カテゴリID
+ * @param name - カテゴリ名
+ * @param description - カテゴリの説明
+ * @param onEdit - 編集ボタンクリック時のコールバック関数（オプション）
+ * @param onDelete - 削除ボタンクリック時のコールバック関数（オプション）
+ * @param index - 行のインデックス（アニメーション遅延時間の計算に使用）
+ */
 export default function IdeaCategoryIndexRow({
   id,
   name,

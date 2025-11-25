@@ -154,8 +154,7 @@ describe("POST /api/osborn-checklists/inputs", () => {
       1,
       "user-123",
       "substitute",
-      "",
-      false // skipIfNotEmpty
+      ""
     );
   });
 
@@ -196,8 +195,7 @@ describe("POST /api/osborn-checklists/inputs", () => {
       1,
       "user-123",
       "substitute",
-      "テスト入力",
-      false // skipIfNotEmpty
+      "テスト入力"
     );
   });
 
@@ -222,114 +220,5 @@ describe("POST /api/osborn-checklists/inputs", () => {
     expect(response).toBeDefined();
     if (!response) return;
     expect(response.status).toBe(500);
-  });
-
-  it("skipIfNotEmptyがtrueの場合、そのフラグがupsertOsbornChecklistInputに渡される", async () => {
-    const mockResult = {
-      id: 1,
-      osbornChecklistId: 1,
-      userId: "user-123",
-      checklistType: "substitute",
-      content: "新しい入力",
-      createdAt: "2024-01-01T00:00:00.000Z",
-    };
-
-    vi.mocked(checkAuth).mockResolvedValue({
-      userId: "user-123",
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(upsertOsbornChecklistInput).mockResolvedValue(mockResult as any);
-
-    const request = new NextRequest("http://localhost:3000/api/osborn-checklists/inputs", {
-      method: "POST",
-      body: JSON.stringify({
-        osbornChecklistId: 1,
-        checklistType: "substitute",
-        content: "新しい入力",
-        skipIfNotEmpty: true,
-      }),
-    });
-
-    const response = await POST(request);
-
-    expect(response).toBeDefined();
-    if (!response) return;
-    expect(response.status).toBe(200);
-    expect(upsertOsbornChecklistInput).toHaveBeenCalledWith(
-      1,
-      "user-123",
-      "substitute",
-      "新しい入力",
-      true // skipIfNotEmpty
-    );
-  });
-
-  it("skipIfNotEmptyがfalseの場合、そのフラグがupsertOsbornChecklistInputに渡される", async () => {
-    const mockResult = {
-      id: 1,
-      osbornChecklistId: 1,
-      userId: "user-123",
-      checklistType: "substitute",
-      content: "新しい入力",
-      createdAt: "2024-01-01T00:00:00.000Z",
-    };
-
-    vi.mocked(checkAuth).mockResolvedValue({
-      userId: "user-123",
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(upsertOsbornChecklistInput).mockResolvedValue(mockResult as any);
-
-    const request = new NextRequest("http://localhost:3000/api/osborn-checklists/inputs", {
-      method: "POST",
-      body: JSON.stringify({
-        osbornChecklistId: 1,
-        checklistType: "substitute",
-        content: "新しい入力",
-        skipIfNotEmpty: false,
-      }),
-    });
-
-    const response = await POST(request);
-
-    expect(response).toBeDefined();
-    if (!response) return;
-    expect(response.status).toBe(200);
-    expect(upsertOsbornChecklistInput).toHaveBeenCalledWith(
-      1,
-      "user-123",
-      "substitute",
-      "新しい入力",
-      false // skipIfNotEmpty
-    );
-  });
-
-  it("skipIfNotEmptyで結果がnullの場合、nullを返す", async () => {
-    vi.mocked(checkAuth).mockResolvedValue({
-      userId: "user-123",
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(upsertOsbornChecklistInput).mockResolvedValue(null as any);
-
-    const request = new NextRequest("http://localhost:3000/api/osborn-checklists/inputs", {
-      method: "POST",
-      body: JSON.stringify({
-        osbornChecklistId: 1,
-        checklistType: "substitute",
-        content: "新しい入力",
-        skipIfNotEmpty: true,
-      }),
-    });
-
-    const response = await POST(request);
-
-    expect(response).toBeDefined();
-    if (!response) return;
-    expect(response.status).toBe(200);
-    const data = await response.json();
-    expect(data).toBeNull();
   });
 });

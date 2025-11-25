@@ -16,6 +16,15 @@ interface BrainwritingPageClientProps {
   initialData: BrainwritingListItem[];
 }
 
+/**
+ * ブレインライティング一覧ページのクライアントコンポーネント
+ *
+ * ブレインライティングの一覧表示、新規作成、編集、削除機能を提供します。
+ * モーダルを使用してブレインライティングの作成・編集を行い、
+ * 一覧表示には共通のIdeaFrameworkIndexコンポーネントを利用します。
+ *
+ * @param initialData - サーバーから取得したブレインライティング一覧の初期データ
+ */
 export default function BrainwritingPageClient({ initialData }: BrainwritingPageClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<BrainwritingListItem | null>(null);

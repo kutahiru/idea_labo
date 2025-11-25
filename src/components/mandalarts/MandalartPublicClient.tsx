@@ -8,6 +8,14 @@ interface MandalartPublicClientProps {
   mandalartDetail: MandalartDetail;
 }
 
+/**
+ * マンダラート公開結果閲覧ページのクライアントコンポーネント
+ *
+ * 公開リンクからアクセスしたユーザーに対して、マンダラートの完成結果を
+ * 読み取り専用（readOnly）で表示します。
+ *
+ * @param mandalartDetail - マンダラートの詳細情報（テーマ名、入力データを含む）
+ */
 export default function MandalartPublicClient({ mandalartDetail }: MandalartPublicClientProps) {
   const { inputs, ...mandalart } = mandalartDetail;
 

@@ -7,9 +7,10 @@ import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import BrainwritingSheet from "@/components/brainwritings/BrainwritingSheet";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";
-import { convertToRowData, handleBrainwritingDataChange, USAGE_SCOPE } from "@/utils/brainwriting";
+import { convertToRowData, USAGE_SCOPE } from "@/utils/brainwriting";
 import { useAutoRefreshOnFocus } from "@/hooks/useAutoRefreshOnFocus";
 import { parseJsonSafe, parseJson } from "@/lib/client-utils";
+import { useBrainwritingDataChange } from "@/hooks/useBrainwritingDataChange";
 
 interface BrainwritingInputClientProps {
   brainwritingDetail: BrainwritingDetail;
@@ -17,6 +18,13 @@ interface BrainwritingInputClientProps {
   initialSecondsLeft: number | null;
 }
 
+/**
+ * ブレインライティングの入力画面を表示するクライアントコンポーネント
+ * シートの表示・編集、回答完了処理、時間切れ監視を提供
+ * @param brainwritingDetail - ブレインライティングの詳細情報（シート、入力データ、ユーザー情報を含む）
+ * @param currentUserId - 現在ログインしているユーザーのID
+ * @param initialSecondsLeft - ロック期限までの残り秒数（nullの場合は期限なし）
+ */
 export default function BrainwritingInputClient({
   brainwritingDetail,
   currentUserId,
@@ -100,31 +108,13 @@ export default function BrainwritingInputClient({
     sheet.current_user_id !== currentUserId ||
     (activeRowIndex === 0 && brainwriting.usageScope === USAGE_SCOPE.XPOST);
 
-  // アイデアコンポーネントに渡す関数を定義
-  const handleDataChange = async (
-    rowIndex: number,
-    ideaIndex: number,
-    value: string,
-    sheetId: number
-  ) => {
-    await handleBrainwritingDataChange(brainwritingDetail.id, rowIndex, ideaIndex, value, sheetId);
+  // データ変更処理
+  const { handleDataChange } = useBrainwritingDataChange(brainwritingDetail.id, setCurrentInputs);
 
-    // stateを更新
-    setCurrentInputs(prevInputs => {
-      return prevInputs.map(input => {
-        if (
-          input.brainwriting_sheet_id === sheetId &&
-          input.row_index === rowIndex &&
-          input.column_index === ideaIndex
-        ) {
-          return { ...input, content: value || null };
-        }
-        return input;
-      });
-    });
-  };
-
-  // 回答完了ボタンクリック時の関数を定義
+  /**
+   * 回答完了ボタンクリック時の処理
+   * 入力内容の検証を行い、全て入力済みなら確認モーダルを表示する
+   */
   const handleCompleteClick = async () => {
     // アクティブな要素からフォーカスを外す
     // BrainwritingCellのonBlurが発火し、未保存の入力データを確実に保存する
@@ -167,7 +157,10 @@ export default function BrainwritingInputClient({
     setIsConfirmModalOpen(true);
   };
 
-  // 回答完了処理の関数を定義
+  /**
+   * 回答完了処理を実行する
+   * APIを呼び出してシートのロックを解除し、次の画面へ遷移する
+   */
   const handleComplete = async () => {
     setIsConfirmModalOpen(false);
     setIsCompleting(true);

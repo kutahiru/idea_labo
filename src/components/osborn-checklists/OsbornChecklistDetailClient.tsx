@@ -18,6 +18,10 @@ interface OsbornChecklistDetailClientProps {
   osbornChecklistDetail: OsbornChecklistDetail;
 }
 
+/**
+ * オズボーンのチェックリスト詳細ページのクライアントコンポーネント
+ * @param props.osbornChecklistDetail - オズボーンのチェックリストの詳細情報
+ */
 export default function OsbornChecklistDetailClient({
   osbornChecklistDetail,
 }: OsbornChecklistDetailClientProps) {
@@ -37,7 +41,8 @@ export default function OsbornChecklistDetailClient({
     router.refresh();
   }, [router]);
 
-  const handleInputChange = async (checklistType: OsbornChecklistType, value: string, skipIfNotEmpty = false) => {
+  // 入力内容を保存
+  const handleInputChange = async (checklistType: OsbornChecklistType, value: string) => {
     try {
       const response = await fetch("/api/osborn-checklists/inputs", {
         method: "POST",
@@ -48,20 +53,12 @@ export default function OsbornChecklistDetailClient({
           osbornChecklistId: osbornChecklist.id,
           checklistType,
           content: value,
-          skipIfNotEmpty,
         }),
       });
 
       if (!response.ok) {
         const errorData = await parseJsonSafe(response, { error: "保存に失敗しました" });
         toast.error(errorData.error || "保存に失敗しました");
-        return;
-      }
-
-      const data = await response.json();
-
-      // nullが返された場合はスキップされたのでローカル状態を更新しない
-      if (data === null) {
         return;
       }
 
@@ -89,12 +86,12 @@ export default function OsbornChecklistDetailClient({
     onRefresh: handleRefresh,
   });
 
-  // X投稿ボタンのクリックハンドラー
+  // Xにチェックリストの結果を投稿
   const handleXPost = () => {
     postOsbornChecklistToX({ osbornChecklist });
   };
 
-  // 結果公開の有効無効更新
+  // 結果公開の有効/無効を切り替え
   const handleUpdateIsResultsPublic = async (newValue: boolean) => {
     if (isUpdating) return;
 
@@ -135,7 +132,9 @@ export default function OsbornChecklistDetailClient({
             onClick={handleAIGenerate}
             disabled={isGenerating}
             className={`inline-flex items-center rounded-md px-6 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 ${
-              isGenerating ? "cursor-not-allowed bg-gray-400" : "menu-link bg-primary hover:scale-105 hover:shadow-xl"
+              isGenerating
+                ? "cursor-not-allowed bg-gray-400"
+                : "menu-link bg-primary hover:scale-105 hover:shadow-xl"
             }`}
           >
             {isGenerating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -143,8 +142,8 @@ export default function OsbornChecklistDetailClient({
           </button>
           <div className="group relative">
             <HelpCircle className="text-primary/40 hover:text-primary mt-0.5 h-5 w-5 cursor-help transition-colors" />
-            <div className="invisible absolute top-7 left-0 z-10 w-max max-w-80 rounded-lg bg-primary p-3 text-sm text-white opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100 md:max-w-110">
-              <div className="absolute -top-1 left-3 h-2 w-2 rotate-45 bg-primary"></div>
+            <div className="bg-primary invisible absolute top-7 left-0 z-10 w-max max-w-80 rounded-lg p-3 text-sm text-white opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100 md:max-w-110">
+              <div className="bg-primary absolute -top-1 left-3 h-2 w-2 rotate-45"></div>
               <p className="whitespace-pre-line">
                 AIがテーマを元にアイデアを自動生成します。
                 {"\n"}

@@ -10,6 +10,21 @@ interface ConfirmModalProps {
   onCancel: () => void;
 }
 
+/**
+ * 確認ダイアログモーダルコンポーネント
+ *
+ * ユーザーに確認を求める際に使用するシンプルなモーダルダイアログです。
+ * タイトル、メッセージ、確認・キャンセルボタンで構成されます。
+ * オーバーレイクリックでキャンセル操作が実行されます。
+ *
+ * @param isOpen - モーダルの表示状態
+ * @param title - モーダルのタイトル
+ * @param message - 確認メッセージ（改行対応）
+ * @param confirmText - 確認ボタンのテキスト（デフォルト: "はい"）
+ * @param cancelText - キャンセルボタンのテキスト（デフォルト: "キャンセル"）
+ * @param onConfirm - 確認ボタンクリック時のコールバック関数
+ * @param onCancel - キャンセルボタン/オーバーレイクリック時のコールバック関数
+ */
 export default function ConfirmModal({
   isOpen,
   title,

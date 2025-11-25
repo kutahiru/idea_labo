@@ -9,7 +9,20 @@ interface UsageScopeSelectorProps {
   disabled?: boolean;
 }
 
-// ブレインライティング固有のフォーム要素なので、IdeaFrameworkModalには追加していない。
+/**
+ * ブレインライティングの利用方法選択コンポーネント
+ *
+ * X投稿版とチーム利用版の2つから選択できるラジオボタン形式のセレクターです。
+ * アイコン付きのカード型UIで直感的に選択できます。
+ * 編集時は変更できないようdisabled状態をサポートします。
+ *
+ * ブレインライティング固有のフォーム要素のため、IdeaFrameworkModalには追加していません。
+ *
+ * @param value - 現在選択されている利用方法
+ * @param onChange - 利用方法変更時のコールバック関数
+ * @param errors - バリデーションエラーメッセージ
+ * @param disabled - 選択を無効にするかどうか（編集時など）
+ */
 export default function UsageScopeSelector({
   value,
   onChange,

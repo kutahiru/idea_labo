@@ -50,7 +50,7 @@ describe("POST /api/brainwritings/input", () => {
     const response = await POST(request);
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(401);
+    expect(response!.status).toBe(401);
   });
 
   it("バリデーションエラーがある場合に400を返す - brainwritingIdが文字列", async () => {
@@ -72,7 +72,7 @@ describe("POST /api/brainwritings/input", () => {
     const response = await POST(request);
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(400);
+    expect(response!.status).toBe(400);
   });
 
   it("バリデーションエラーがある場合に400を返す - 必須フィールド欠落", async () => {
@@ -93,7 +93,7 @@ describe("POST /api/brainwritings/input", () => {
     const response = await POST(request);
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(400);
+    expect(response!.status).toBe(400);
   });
 
   it("参加していない場合に403を返す", async () => {
@@ -103,7 +103,14 @@ describe("POST /api/brainwritings/input", () => {
 
     vi.mocked(checkJoinStatus).mockResolvedValue({
       isJoined: false,
-      usageScope: null,
+      joinData: {
+        id: 0,
+        brainwriting_id: 0,
+        user_id: "",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      sheetId: null,
     });
 
     const request = new NextRequest("http://localhost:3000/api/brainwritings/input", {
@@ -120,8 +127,8 @@ describe("POST /api/brainwritings/input", () => {
     const response = await POST(request);
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(403);
-    const data = await response.json();
+    expect(response!.status).toBe(403);
+    const data = await response!.json();
     expect(data.error).toBe("このブレインライティングへのアクセス権限がありません");
   });
 
@@ -143,7 +150,14 @@ describe("POST /api/brainwritings/input", () => {
 
     vi.mocked(checkJoinStatus).mockResolvedValue({
       isJoined: true,
-      usageScope: "xpost",
+      joinData: {
+        id: 1,
+        brainwriting_id: 1,
+        user_id: "user-123",
+        created_at: new Date("2024-01-01"),
+        updated_at: new Date("2024-01-01"),
+      },
+      sheetId: 1,
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -163,8 +177,8 @@ describe("POST /api/brainwritings/input", () => {
     const response = await POST(request);
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(200);
-    const data = await response.json();
+    expect(response!.status).toBe(200);
+    const data = await response!.json();
     expect(data).toEqual(mockResult);
     expect(upsertBrainwritingInput).toHaveBeenCalledWith(
       1,
@@ -183,7 +197,14 @@ describe("POST /api/brainwritings/input", () => {
 
     vi.mocked(checkJoinStatus).mockResolvedValue({
       isJoined: true,
-      usageScope: "xpost",
+      joinData: {
+        id: 1,
+        brainwriting_id: 1,
+        user_id: "user-123",
+        created_at: new Date("2024-01-01"),
+        updated_at: new Date("2024-01-01"),
+      },
+      sheetId: 1,
     });
 
     vi.mocked(upsertBrainwritingInput).mockRejectedValue(new Error("Database error"));
@@ -202,6 +223,6 @@ describe("POST /api/brainwritings/input", () => {
     const response = await POST(request);
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(500);
+    expect(response!.status).toBe(500);
   });
 });

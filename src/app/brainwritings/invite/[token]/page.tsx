@@ -9,7 +9,21 @@ interface InvitePageProps {
   params: Promise<{ token: string }>;
 }
 
-// 動的メタデータを生成
+/**
+ * ブレインライティング招待ページの動的メタデータを生成する関数
+ *
+ * トークンからブレインライティング情報を取得し、SNSシェア用のOGPタグやTwitterカードを生成します。
+ * これにより、招待URLをSNSでシェアした際に、テーマ名や画像が適切に表示されます。
+ *
+ * 生成されるメタデータ：
+ * - ページタイトル（テーマ名を含む）
+ * - 説明文（テーマ名を含む）
+ * - Open Graphメタデータ（OGP画像: 1200x630px）
+ * - Twitterカードメタデータ
+ *
+ * @param params - ルートパラメータ（token: 招待トークン）
+ * @returns Next.jsメタデータオブジェクト
+ */
 export async function generateMetadata({ params }: InvitePageProps): Promise<Metadata> {
   const { token } = await params;
   const brainwritingData = await getBrainwritingByToken(token);
@@ -53,6 +67,26 @@ export async function generateMetadata({ params }: InvitePageProps): Promise<Met
   };
 }
 
+/**
+ * ブレインライティング招待ページコンポーネント
+ *
+ * 招待トークンを使用してブレインライティングへの参加を促すページです。
+ * ユーザーの状態（未ログイン、未参加、既参加）に応じて異なる表示・動作を行います。
+ *
+ * 動作フロー：
+ * 1. トークンからブレインライティング情報を取得
+ * 2. 招待が無効な場合: エラーメッセージを表示
+ * 3. 未ログインユーザー: 招待ページを表示（ログインへの誘導あり）
+ * 4. ログイン済み未参加ユーザー: 招待ページを表示（参加ボタンあり）
+ * 5. 既参加ユーザー: 利用範囲に応じて自動リダイレクト
+ *    - X投稿版: /brainwritings/sheet/[sheetId]/input へ
+ *    - チーム版: /brainwritings/[id]/team へ
+ *
+ * ルート: /brainwritings/invite/[token]
+ *
+ * @param params - ルートパラメータ（token: 招待トークン）
+ * @returns 招待ページ、エラーメッセージ、リダイレクト、または404ページ
+ */
 export default async function InvitePage({ params }: InvitePageProps) {
   const { token } = await params;
 

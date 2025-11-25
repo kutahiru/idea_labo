@@ -17,6 +17,18 @@ interface MandalartGridProps {
   readOnly?: boolean;
 }
 
+/**
+ * マンダラートの9×9グリッド全体を表示するコンポーネント
+ *
+ * 3×3のセクションを9個配置し、合計81個のセルで構成される9×9グリッドを形成します。
+ * 入力データをMapで管理し、セルの変更を効率的に処理します。
+ * 各セクションはMandalartSectionコンポーネントで構成されます。
+ *
+ * @param themeName - マンダラートのテーマ名（中心セルに表示）
+ * @param inputs - 全セルの入力データ配列
+ * @param onInputChange - セルの値変更時のコールバック関数
+ * @param readOnly - 読み取り専用モード（結果閲覧時など）
+ */
 export default function MandalartGrid({
   themeName,
   inputs,

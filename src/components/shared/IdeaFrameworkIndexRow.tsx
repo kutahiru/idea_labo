@@ -31,6 +31,23 @@ const cardVariants = {
   }),
 };
 
+/**
+ * アイデアフレームワーク一覧の1行を表示するカードコンポーネント
+ *
+ * タイトル、テーマ名、説明、作成日時、アクションボタン（詳細、編集、削除）を含むカード形式で表示します。
+ * ブレインライティングの場合は利用範囲ラベル（X投稿版/チーム利用版）も表示されます。
+ *
+ * @param frameworkType - フレームワークのタイプ（BRAINWRITING, MANDALART, OSBORN_CHECKLIST）
+ * @param id - フレームワークのID
+ * @param title - タイトル
+ * @param themeName - テーマ名
+ * @param description - 説明
+ * @param createdAt - 作成日時
+ * @param usageScopeLabel - 利用範囲ラベル（ブレインライティングのみ表示）
+ * @param onEdit - 編集ボタンクリック時のコールバック関数（オプション）
+ * @param onDelete - 削除ボタンクリック時のコールバック関数（オプション）
+ * @param index - 行のインデックス（アニメーション遅延時間の計算に使用）
+ */
 export default function IdeaFrameworkIndexRow({
   frameworkType,
   id,
@@ -99,7 +116,9 @@ export default function IdeaFrameworkIndexRow({
                 {usageScopeLabel}
               </span>
             )}
-            <time className={`flex items-center text-sm text-gray-500 ${usageScopeLabel ? "" : "ml-auto"}`}>
+            <time
+              className={`flex items-center text-sm text-gray-500 ${usageScopeLabel ? "" : "ml-auto"}`}
+            >
               <Clock className="mr-1.5 h-3 w-3" />
               {formatDate(createdAt)}
             </time>

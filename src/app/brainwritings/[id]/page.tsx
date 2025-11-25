@@ -8,6 +8,22 @@ interface BrainwritingDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+/**
+ * ブレインライティングの詳細ページコンポーネント
+ *
+ * 認証済みユーザーが自分のブレインライティングを管理・実行するためのページです。
+ * X投稿版では、1人で複数のシートを順番に記入していくソロモードのブレインライティングを行います。
+ * シート情報、入力データ、進捗状況などを表示し、ユーザーがアイデアを入力できます。
+ *
+ * アクセス制限：
+ * - 未ログインユーザー: ログイン要求メッセージを表示
+ * - 他ユーザーのブレインライティング: 404エラー
+ *
+ * ルート: /brainwritings/[id]
+ *
+ * @param params - ルートパラメータ（id: ブレインライティングID）
+ * @returns ブレインライティング詳細クライアントコンポーネント、ログイン要求メッセージ、または404ページ
+ */
 export default async function BrainwritingDetailPage({ params }: BrainwritingDetailPageProps) {
   const session = await auth();
 

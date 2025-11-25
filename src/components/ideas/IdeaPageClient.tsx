@@ -15,6 +15,17 @@ interface IdeaPageClientProps {
   categoryId: number;
 }
 
+/**
+ * 特定カテゴリのアイデア一覧ページのクライアントコンポーネント
+ *
+ * 指定されたカテゴリに属するアイデアの一覧表示、新規作成、編集、削除機能を提供します。
+ * モーダルを使用してアイデアの作成・編集を行い、カテゴリIDは固定されているため
+ * カテゴリ選択フィールドは表示されません。
+ * 一覧表示には検索、ソート、無限スクロール機能を持つIdeaIndexコンポーネントを利用します。
+ *
+ * @param initialData - サーバーから取得したアイデア一覧の初期データ
+ * @param categoryId - 固定されたカテゴリID（新規作成時に自動設定される）
+ */
 export default function IdeaPageClient({ initialData, categoryId }: IdeaPageClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<IdeaListItem | null>(null);

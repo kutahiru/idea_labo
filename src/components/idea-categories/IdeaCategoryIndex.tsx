@@ -13,6 +13,14 @@ interface IdeaCategoryIndexProps {
   onDelete?: (item: IdeaCategoryListItem) => void;
 }
 
+/**
+ * アイデアカテゴリの一覧表示コンポーネント
+ *
+ * カテゴリ名での検索機能と無限スクロールによる段階的なデータ読み込みを提供します。
+ * @param initialData - サーバーから取得したアイデアカテゴリ一覧の初期データ
+ * @param onEdit - カテゴリ編集時のコールバック関数（オプション）
+ * @param onDelete - カテゴリ削除時のコールバック関数（オプション）
+ */
 export default function IdeaCategoryIndex({
   initialData,
   onEdit,

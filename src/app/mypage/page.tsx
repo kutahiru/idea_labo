@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import MyPageClient from "@/components/mypage/MyPageClient";
 import { auth } from "@/app/lib/auth";
 import { getUserById } from "@/lib/user";
 import { LoginRequiredMessage } from "@/components/shared/Message";
+
+export const metadata: Metadata = {
+  title: "マイページ",
+  description: "プロフィール情報の確認と編集",
+};
 
 /**
  * マイページコンポーネント

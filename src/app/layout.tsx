@@ -40,8 +40,11 @@ const wdxlLubrifontJpN = WDXL_Lubrifont_JP_N({
 const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "アイデア研究所",
-  description: "アイデア発想・管理アプリケーション",
+  title: {
+    default: "アイデア研究所 | ブレインライティング・マンダラート・オズボーンのチェックリスト",
+    template: "%s | アイデア研究所",
+  },
+  description: "発想を抽出しアイデアを結晶化する。ブレインライティング、マンダラート、オズボーンのチェックリストの3つの発想法でアイデアを創出・整理・管理できる無料ツール。",
   metadataBase: new URL(siteUrl),
   openGraph: {
     title: "アイデア研究所",

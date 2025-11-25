@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getMandalartDetailByToken } from "@/lib/mandalart";
 import MandalartPublicClient from "@/components/mandalarts/MandalartPublicClient";
@@ -5,6 +6,11 @@ import MandalartPublicClient from "@/components/mandalarts/MandalartPublicClient
 interface MandalartPublicPageProps {
   params: Promise<{ token: string }>;
 }
+
+export const metadata: Metadata = {
+  title: "マンダラート",
+  description: "9×9のグリッドでアイデアを整理するマンダラート",
+};
 
 /**
  * マンダラート公開ページコンポーネント

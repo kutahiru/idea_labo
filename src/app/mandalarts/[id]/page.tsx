@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LoginRequiredMessage } from "@/components/shared/Message";
 import { auth } from "@/app/lib/auth";
@@ -7,6 +8,11 @@ import MandalartDetailClient from "@/components/mandalarts/MandalartDetailClient
 interface MandalartDetailPageProps {
   params: Promise<{ id: string }>;
 }
+
+export const metadata: Metadata = {
+  title: "マンダラート",
+  description: "9×9のグリッドでアイデアを整理するマンダラート",
+};
 
 /**
  * マンダラート詳細ページコンポーネント

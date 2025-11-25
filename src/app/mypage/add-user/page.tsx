@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/app/lib/auth";
 import AddUserClient from "@/components/mypage/AddUserClient";
+
+export const metadata: Metadata = {
+  title: "ユーザー名設定",
+  description: "アイデア研究所で使用するユーザー名を設定します",
+};
 
 interface PageProps {
   searchParams: Promise<{ redirect?: string }>;

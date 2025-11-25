@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BrainwritingResultsClient from "@/components/brainwritings/BrainwritingResultsClient";
 import { getBrainwritingResultsById } from "@/lib/brainwriting";
+
+export const metadata: Metadata = {
+  title: "ブレインライティング結果",
+  description: "ブレインライティングの結果を確認します",
+};
 
 interface PageProps {
   params: Promise<{ id: string }>;

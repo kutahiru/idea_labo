@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { auth } from "@/app/lib/auth";
 import { getBrainwritingTeamByBrainwritingId, checkJoinStatus } from "@/lib/brainwriting";
 import { notFound } from "next/navigation";
 import BrainwritingTeamClient from "@/components/brainwritings/BrainwritingTeamClient";
 import { LoginRequiredMessage } from "@/components/shared/Message";
+
+export const metadata: Metadata = {
+  title: "ブレインライティング（チーム）",
+  description: "チームでアイデアを出し合うブレインライティングセッション",
+};
 
 interface BrainwritingTeamPageProps {
   params: Promise<{ id: string }>;

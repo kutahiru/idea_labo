@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { auth } from "@/app/lib/auth";
 import { LoginRequiredMessage } from "@/components/shared/Message";
 import { getOsbornChecklistsByUserId } from "@/lib/osborn-checklist";
 import OsbornChecklistPageClient from "@/components/osborn-checklists/OsbornChecklistPageClient";
+
+export const metadata: Metadata = {
+  title: "オズボーンのチェックリスト",
+  description: "9つの視点（代用・組み合わせ・応用・変更・他の使い道・削除・並び替え・逆転・拡大）から既存のアイデアを発展させるオズボーンのチェックリスト",
+};
 
 /**
  * オズボーンのチェックリスト一覧ページコンポーネント

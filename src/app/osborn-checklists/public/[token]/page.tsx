@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getOsbornChecklistDetailByToken } from "@/lib/osborn-checklist";
 import OsbornChecklistPublicClient from "@/components/osborn-checklists/OsbornChecklistPublicClient";
+
+export const metadata: Metadata = {
+  title: "オズボーンのチェックリスト",
+  description: "9つの視点からアイデアを発展させるオズボーンのチェックリスト",
+};
 
 interface OsbornChecklistPublicPageProps {
   params: Promise<{ token: string }>;

@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { auth } from "@/app/lib/auth";
 import { getIdeasByCategoryId } from "@/lib/idea";
 import { checkCategoryOwnership } from "@/lib/idea-category";
 import IdeaPageClient from "@/components/ideas/IdeaPageClient";
 import { LoginRequiredMessage } from "@/components/shared/Message";
+
+export const metadata: Metadata = {
+  title: "アイデア一覧",
+  description: "カテゴリに分類されたアイデアの一覧",
+};
 
 /**
  * アイデアカテゴリ詳細ページコンポーネント

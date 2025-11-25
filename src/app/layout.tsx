@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono, Zen_Kaku_Gothic_New, Lora, WDXL_Lubrifont_JP_N } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
@@ -82,6 +83,20 @@ export default async function RootLayout({
 
   return (
     <html lang="ja" className="h-full">
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-JS3VRE35KQ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-JS3VRE35KQ');
+          `}
+        </Script>
+      </head>
       <body className={`${fontVariables} flex min-h-full flex-col antialiased`}>
         <SessionProvider session={session}>
           <AmplifyProvider>

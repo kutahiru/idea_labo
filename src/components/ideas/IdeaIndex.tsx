@@ -23,6 +23,16 @@ const priorityOrder = {
   low: 1,
 };
 
+/**
+ * アイデア一覧をテーブル形式で表示するコンポーネント
+ *
+ * アイデア名での検索、重要度によるソート、無限スクロールによる段階的なデータ読み込みを提供します。
+ * 重要度カラムのヘッダーをクリックすることで、降順・昇順・ソート解除の3状態を切り替えられます。
+ *
+ * @param initialData - サーバーから取得したアイデア一覧の初期データ
+ * @param onEdit - アイデア編集時のコールバック関数（オプション）
+ * @param onDelete - アイデア削除時のコールバック関数（オプション）
+ */
 export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexProps) {
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
 
@@ -112,7 +122,7 @@ export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexPr
                 <th className="w-24 px-3 py-3 text-center text-sm font-medium tracking-wider uppercase">
                   <button
                     onClick={handleSortToggle}
-                    className="flex items-center justify-center gap-1 w-full hover:text-gray-200 transition-colors"
+                    className="flex w-full items-center justify-center gap-1 transition-colors hover:text-gray-200"
                   >
                     重要度
                     {sortOrder === "desc" && <span>▼</span>}
@@ -132,7 +142,7 @@ export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexPr
               </tr>
             </thead>
             <tbody className="divide-y-2 divide-gray-400 bg-white">
-              {filteredIdeas.map((idea) => (
+              {filteredIdeas.map(idea => (
                 <IdeaIndexRow
                   key={idea.id}
                   {...idea}

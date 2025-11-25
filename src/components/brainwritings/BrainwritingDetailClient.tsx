@@ -8,19 +8,21 @@ import { XPostButton } from "@/components/shared/Button";
 import InviteLinkCopy from "./InviteLinkCopy";
 import ToggleSwitch from "@/components/shared/ToggleSwitch";
 import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting";
-import {
-  USAGE_SCOPE,
-  convertToRowData,
-  handleBrainwritingDataChange,
-  sortUsersByFirstRow,
-} from "@/utils/brainwriting";
+import { USAGE_SCOPE, convertToRowData, sortUsersByFirstRow } from "@/utils/brainwriting";
 import { postBrainwritingToX } from "@/lib/x-post";
+import { useBrainwritingDataChange } from "@/hooks/useBrainwritingDataChange";
 
 interface BrainwritingDetailClientProps {
   brainwritingDetail: BrainwritingDetail;
   currentUserId: string;
 }
 
+/**
+ * ブレインライティングの詳細画面を表示するクライアントコンポーネント
+ * シートの表示・編集、X投稿、招待リンクコピー、シート切り替え、共有設定を提供
+ * @param brainwritingDetail - ブレインライティングの詳細情報（シート、入力データ、ユーザー情報を含む）
+ * @param currentUserId - 現在ログインしているユーザーのID
+ */
 export default function BrainwritingDetailClient({
   brainwritingDetail,
   currentUserId,
@@ -32,35 +34,15 @@ export default function BrainwritingDetailClient({
   const [isResultsPublic, setIsResultsPublic] = useState(brainwriting.isResultsPublic ?? false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // シートIDに対応する入力データを取得する関数を定義
+  // データ変更処理
+  const { handleDataChange } = useBrainwritingDataChange(brainwriting.id, setCurrentInputs);
+
+  /** シートIDに対応する入力データを取得する関数を定義 */
   const getInputsForSheet = (sheetId: number) => {
     return currentInputs?.filter(input => input.brainwriting_sheet_id === sheetId) || [];
   };
 
-  const handleDataChange = async (
-    rowIndex: number,
-    ideaIndex: number,
-    value: string,
-    sheetId: number
-  ) => {
-    await handleBrainwritingDataChange(brainwriting.id, rowIndex, ideaIndex, value, sheetId);
-
-    // stateを更新
-    setCurrentInputs(prevInputs => {
-      return prevInputs.map(input => {
-        if (
-          input.brainwriting_sheet_id === sheetId &&
-          input.row_index === rowIndex &&
-          input.column_index === ideaIndex
-        ) {
-          return { ...input, content: value || null };
-        }
-        return input;
-      });
-    });
-  };
-
-  // X投稿ボタンのクリックハンドラー
+  /**  X投稿ボタンのクリックハンドラー */
   const handleXPost = async () => {
     // アクティブな要素からフォーカスを外す
     // BrainwritingCellのonBlurが発火し、未保存の入力データを確実に保存する
@@ -183,7 +165,9 @@ export default function BrainwritingDetailClient({
             <div className="bg-primary invisible absolute top-full left-1/2 z-10 mt-2 w-max max-w-80 -translate-x-1/2 rounded-lg p-3 text-sm text-white opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100">
               <div className="bg-primary absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45"></div>
               <p className="whitespace-pre-line">
-                結果を公開すると、<br />共有リンクから誰でも結果を閲覧できます
+                結果を公開すると、
+                <br />
+                共有リンクから誰でも結果を閲覧できます
               </p>
             </div>
           </div>

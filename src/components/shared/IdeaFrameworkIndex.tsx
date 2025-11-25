@@ -23,6 +23,20 @@ interface IdeaFrameworkIndexProps<T extends BaseListItem> {
   getUsageScopeLabel?: (item: T) => string | undefined;
 }
 
+/**
+ * アイデアフレームワーク（ブレインライティング、マンダラート、オズボーンのチェックリスト）の
+ * 共通一覧表示コンポーネント
+ *
+ * タイトル/テーマでの検索機能と無限スクロールによる段階的なデータ読み込みを提供します。
+ * ジェネリック型を使用し、各フレームワークに対応した一覧表示を実現します。
+ * 検索時は全データから即座に検索結果を表示し、通常時は10件ずつ段階的に読み込みます。
+ *
+ * @param frameworkType - 表示するフレームワークのタイプ（BRAINWRITING, MANDALART, OSBORN_CHECKLIST）
+ * @param initialData - サーバーから取得したフレームワーク一覧の初期データ
+ * @param onEdit - 編集時のコールバック関数（オプション）
+ * @param onDelete - 削除時のコールバック関数（オプション）
+ * @param getUsageScopeLabel - 利用範囲ラベルを取得する関数（ブレインライティング用、オプション）
+ */
 export default function IdeaFrameworkIndex<T extends BaseListItem>({
   frameworkType,
   initialData,

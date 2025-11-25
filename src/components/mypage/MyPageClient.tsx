@@ -15,6 +15,14 @@ interface MyPageClientProps {
   initialData: UserProfile;
 }
 
+/**
+ * マイページのクライアントコンポーネント
+ *
+ * ユーザーのプロフィール情報（名前）を表示し、編集機能を提供します。
+ * モーダルを使用してユーザー名を編集でき、更新後はセッション情報も同期されます。
+ *
+ * @param initialData - サーバーから取得したユーザープロフィールの初期データ
+ */
 export default function MyPageClient({ initialData }: MyPageClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<UserProfile>(initialData);

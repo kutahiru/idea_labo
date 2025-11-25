@@ -15,6 +15,17 @@ interface BrainwritingSheetProps {
   onDataChange?: (rowIndex: number, ideaIndex: number, value: string) => void;
 }
 
+/**
+ * ブレインライティングのシート全体を表示するコンポーネント
+ *
+ * 参加者とアイデアのグリッド表示を行います。
+ * 編集モードでは特定の行のみ編集可能にし、他の行は読み取り専用になります。
+ *
+ * @param brainwritingRows - 各行のデータ（参加者名とアイデア配列）
+ * @param isAllReadOnly - 全ての行を読み取り専用にするか（結果閲覧時など）
+ * @param activeRowIndex - 編集中の行のインデックス（指定された行のみ編集可能）
+ * @param onDataChange - データ変更時のコールバック関数
+ */
 export default function BrainwritingSheet({
   brainwritingRows = [],
   isAllReadOnly = false,

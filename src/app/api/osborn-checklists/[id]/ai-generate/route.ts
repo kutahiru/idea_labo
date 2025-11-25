@@ -14,6 +14,45 @@ console.log("🔍 [診断] Lambda設定:", {
   LAMBDA_SECRET_TOKEN: process.env.LAMBDA_SECRET_TOKEN ? "✓" : "✗",
 });
 
+/**
+ * オズボーンのチェックリストのAI生成を開始するPOST APIエンドポイント
+ *
+ * OpenAI APIを使用して、オズボーンの9つの視点からアイデアを自動生成します。
+ * バックグラウンドで非同期処理を実行し、即座にレスポンスを返します。
+ *
+ * エンドポイント: POST /api/osborn-checklists/[id]/ai-generate
+ *
+ * 実行環境による動作の違い：
+ * - 開発環境（development）: ローカルで直接AI生成関数を実行
+ * - 本番環境（production）: AWS Lambda Function URLを呼び出し
+ *
+ * 処理フロー：
+ * 1. オズボーンのチェックリストの存在確認
+ * 2. 既存のAI生成レコード確認（処理中/完了の場合は409エラー）
+ * 3. AI生成レコードをDBに作成（status: pending）
+ * 4. バックグラウンドでAI生成を開始（非同期）
+ * 5. 即座にレスポンスを返す
+ *
+ * レスポンス例（成功時）:
+ * ```json
+ * {
+ *   "generationId": 789,
+ *   "status": "pending",
+ *   "message": "AI生成を開始しました"
+ * }
+ * ```
+ *
+ * レスポンス例（既に処理中の場合）:
+ * ```json
+ * {
+ *   "error": "AI生成は既に実行中です"
+ * }
+ * ```
+ *
+ * @param _request - Next.jsのRequestオブジェクト（未使用）
+ * @param params - ルートパラメータ（id: オズボーンのチェックリストID）
+ * @returns AI生成開始結果を含むJSONレスポンス、またはエラーレスポンス（409: 処理中/完了済み）
+ */
 export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // OpenAIモデルの環境変数チェック
@@ -21,7 +60,6 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
       throw new Error("OPENAI_MODEL environment variable is not set");
     }
 
-    // 認証チェックとIDバリデーション
     const validateResult = await validateIdRequest(params);
     if ("error" in validateResult) {
       return validateResult.error;

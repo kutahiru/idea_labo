@@ -15,6 +15,15 @@ interface MandalartPageClientProps {
   initialData: MandalartListItem[];
 }
 
+/**
+ * マンダラート一覧ページのクライアントコンポーネント
+ *
+ * マンダラートの一覧表示、新規作成、編集、削除機能を提供します。
+ * モーダルを使用してマンダラートの作成・編集を行い、
+ * 一覧表示には共通のIdeaFrameworkIndexコンポーネントを利用します。
+ *
+ * @param initialData - サーバーから取得したマンダラート一覧の初期データ
+ */
 export default function MandalartPageClient({ initialData }: MandalartPageClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<MandalartListItem | null>(null);

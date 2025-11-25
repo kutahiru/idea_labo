@@ -6,6 +6,24 @@ interface PageProps {
   searchParams: Promise<{ redirect?: string }>;
 }
 
+/**
+ * ユーザー名設定ページコンポーネント
+ *
+ * 初回ログイン時やユーザー名が未設定の場合に表示されるページです。
+ * ユーザーにユーザー名の入力を促し、設定完了後は元のページへリダイレクトします。
+ *
+ * リダイレクト機能：
+ * - クエリパラメータ `redirect` で設定完了後の遷移先を指定可能
+ * - デフォルトのリダイレクト先: `/`（ホーム）
+ *
+ * アクセス制限：
+ * - 未ログインユーザー: サインインページへリダイレクト
+ *
+ * ルート: /mypage/add-user?redirect=/path
+ *
+ * @param searchParams - クエリパラメータ（redirect: リダイレクト先URL）
+ * @returns ユーザー名設定クライアントコンポーネント、またはリダイレクト
+ */
 export default async function AddUserPage({ searchParams }: PageProps) {
   const session = await auth();
   const params = await searchParams;

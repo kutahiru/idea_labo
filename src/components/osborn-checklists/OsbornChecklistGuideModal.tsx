@@ -8,6 +8,11 @@ interface OsbornChecklistGuideModalProps {
   onClose: () => void;
 }
 
+/**
+ * オズボーンのチェックリストの使い方ガイドを表示するモーダル
+ * @param props.isOpen - モーダルの表示状態
+ * @param props.onClose - モーダルを閉じる関数
+ */
 export default function OsbornChecklistGuideModal({
   isOpen,
   onClose,
@@ -121,9 +126,7 @@ export default function OsbornChecklistGuideModal({
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">
-                  効果的な使い方のコツ
-                </h3>
+                <h3 className="mb-3 text-lg font-semibold text-gray-800">効果的な使い方のコツ</h3>
                 <ul className="list-disc space-y-2 pl-6 text-gray-700">
                   <li>各視点の?アイコンをホバーすると、具体的な例が表示されます</li>
                   <li>すべての項目を埋める必要はありません。思いつくものから記入しましょう</li>

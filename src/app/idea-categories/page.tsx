@@ -3,6 +3,21 @@ import { auth } from "@/app/lib/auth";
 import { getIdeaCategoriesByUserId } from "@/lib/idea-category";
 import { LoginRequiredMessage } from "@/components/shared/Message";
 
+/**
+ * アイデアカテゴリ一覧ページコンポーネント
+ *
+ * 認証済みユーザーが作成したアイデアカテゴリの一覧を表示するページです。
+ * ユーザーはカテゴリを作成・編集・削除でき、各カテゴリに分類されたアイデアを管理できます。
+ * ブレインライティング、マンダラート、オズボーンのチェックリストなどで生成されたアイデアを
+ * カテゴリごとに整理・保存するための機能を提供します。
+ *
+ * アクセス制限：
+ * - 未ログインユーザー: ログイン要求メッセージを表示
+ *
+ * ルート: /idea-categories
+ *
+ * @returns アイデアカテゴリ一覧クライアントコンポーネント、またはログイン要求メッセージ
+ */
 export default async function IdeaCategoryPage() {
   const session = await auth();
 

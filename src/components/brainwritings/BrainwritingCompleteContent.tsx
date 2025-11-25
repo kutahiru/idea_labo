@@ -8,10 +8,15 @@ import { useRouter } from "next/navigation";
 
 interface BrainwritingCompleteContentProps {
   brainwriting: BrainwritingListItem;
-  /** 残りの回答者数 */
   remainingUserCount: number;
 }
 
+/**
+ * ブレインライティングの回答完了画面を表示するコンポーネント
+ * 回答完了メッセージ、Xへの共有ボタン、トップページへの戻るボタンを提供
+ * @param brainwriting - ブレインライティングの情報
+ * @param remainingUserCount - 残りの回答者数
+ */
 export default function BrainwritingCompleteContent({
   brainwriting,
   remainingUserCount,

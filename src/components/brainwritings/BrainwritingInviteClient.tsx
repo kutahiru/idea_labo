@@ -1,19 +1,27 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useSession, signIn } from "next-auth/react";
-import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 import IdeaFrameworkInfo from "@/components/shared/IdeaFrameworkInfo";
 import { BrainwritingListItem } from "@/types/brainwriting";
-import { USAGE_SCOPE } from "@/utils/brainwriting";
-import { parseJsonSafe, parseJson } from "@/lib/client-utils";
+import { useBrainwritingJoinStatus } from "@/hooks/useBrainwritingJoinStatus";
+import { useBrainwritingJoin } from "@/hooks/useBrainwritingJoin";
 
 interface BrainwritingInviteClientProps {
   brainwriting: BrainwritingListItem;
   token: string;
 }
 
+/**
+ * ブレインライティング招待ページのクライアントコンポーネント
+ *
+ * 招待リンクからアクセスしたユーザーに対して、ブレインライティングの説明と
+ * 参加ボタンを表示します。参加状況（ロック状態、参加人数、満員状態）を
+ * 10秒ごとにポーリングしてリアルタイムで更新します。
+ *
+ * @param brainwriting - ブレインライティングの情報
+ * @param token - 招待トークン
+ */
 export default function BrainwritingInviteClient({
   brainwriting,
   token,
@@ -21,142 +29,16 @@ export default function BrainwritingInviteClient({
   const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
   const isLoggedIn = Boolean(session?.user);
-  const [status, setStatus] = useState<{
-    isLocked?: boolean;
-    lockExpiresAt?: Date | null;
-    currentCount: number;
-    maxCount: number;
-    isFull: boolean;
-    canJoin?: boolean;
-  } | null>(null);
-  const errorCountRef = useRef(0);
 
-  // ログイン後にロック状態をチェック（定期的に更新）
-  useEffect(() => {
-    const MAX_ERRORS = 3;
-    let intervalId: NodeJS.Timeout | null = null;
+  // 参加状況のポーリング処理
+  const { status } = useBrainwritingJoinStatus(
+    brainwriting.id,
+    brainwriting.usageScope,
+    isLoggedIn
+  );
 
-    const checkLockStatus = async () => {
-      if (isLoggedIn && brainwriting.id) {
-        try {
-          const response = await fetch(
-            `/api/brainwritings/${brainwriting.id}/join-status?usageScope=${brainwriting.usageScope}`
-          );
-
-          if (!response.ok) {
-            throw new Error("参加状況の取得に失敗しました");
-          }
-
-          const data = await parseJson<{
-            isLocked?: boolean;
-            lockExpiresAt?: string | null;
-            currentCount: number;
-            maxCount: number;
-            isFull: boolean;
-            canJoin?: boolean;
-          }>(response, "参加状況の読み込みに失敗しました");
-
-          // 成功時はエラーカウンターをリセット
-          errorCountRef.current = 0;
-
-          // X投稿版の場合はロック情報も含める
-          if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
-            setStatus({
-              isLocked: data.isLocked || false,
-              lockExpiresAt: data.lockExpiresAt ? new Date(data.lockExpiresAt) : null,
-              currentCount: data.currentCount || 0,
-              maxCount: data.maxCount || 6,
-              isFull: data.isFull || false,
-            });
-          } else {
-            // チーム版の場合はロック情報なし
-            setStatus({
-              currentCount: data.currentCount || 0,
-              maxCount: data.maxCount || 6,
-              isFull: data.isFull || false,
-              canJoin: data.canJoin !== false,
-            });
-          }
-        } catch (error) {
-          console.error("ロック状態チェックエラー:", error);
-          errorCountRef.current += 1;
-          if (errorCountRef.current >= MAX_ERRORS) {
-            // 最大エラー回数に達したらポーリングを停止
-            if (intervalId) {
-              clearInterval(intervalId);
-            }
-            toast.error("参加状況の取得に失敗しました。ページを再読み込みしてください。");
-          }
-        }
-      }
-    };
-
-    checkLockStatus(); // 初回実行
-
-    // 10秒ごとに定期的にチェック
-    intervalId = setInterval(checkLockStatus, 10000);
-
-    // クリーンアップ関数
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [isLoggedIn, brainwriting.id, brainwriting.usageScope]);
-
-  const handleJoinBrainwriting = async () => {
-    if (!isLoggedIn) {
-      // 未ログイン時はログインページへ（中間ページ経由で現在のページに戻る）
-      const redirectUrl = encodeURIComponent(`/brainwritings/invite/${token}`);
-      await signIn("google", {
-        callbackUrl: `/auth/callback?redirect=${redirectUrl}`,
-      });
-      return;
-    }
-
-    // ログイン済み時は参加処理
-    try {
-      const response = await fetch("/api/brainwritings/join", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          brainwritingId: brainwriting.id,
-          usageScope: brainwriting.usageScope,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await parseJsonSafe(response, {
-          error: "参加に失敗しました",
-        });
-        toast.error(errorData.error || "参加に失敗しました");
-        return;
-      }
-
-      const data = await parseJson<{ sheetId: number }>(response, "参加データの読み込みに失敗しました");
-
-      if (brainwriting.usageScope === USAGE_SCOPE.XPOST) {
-        // X投稿版の場合
-        const lockDurationMinutes =
-          Number(process.env.NEXT_PUBLIC_BRAINWRITING_LOCK_DURATION_MINUTES) || 10;
-        toast.success(`参加しました\n回答時間は${lockDurationMinutes}分です`, {
-          duration: 5000,
-        });
-        router.push(`/brainwritings/sheet/${data.sheetId}/input`);
-      } else if (brainwriting.usageScope === USAGE_SCOPE.TEAM) {
-        // チーム利用版の場合
-        toast.success("参加しました", {
-          duration: 5000,
-        });
-        router.push(`/brainwritings/${brainwriting.id}/team`);
-      }
-    } catch (error) {
-      console.error("参加処理エラー:", error);
-      toast.error("参加処理中にエラーが発生しました");
-    }
-  };
+  // 参加処理
+  const { handleJoin } = useBrainwritingJoin(brainwriting, token, isLoggedIn);
 
   if (sessionStatus === "loading") {
     return (
@@ -286,7 +168,7 @@ export default function BrainwritingInviteClient({
                 </div>
               )}
               <button
-                onClick={handleJoinBrainwriting}
+                onClick={handleJoin}
                 className="menu-link group bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
                 {isLoggedIn ? "参加する" : "ログインして参加する"}

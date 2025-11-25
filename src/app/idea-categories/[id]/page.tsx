@@ -4,6 +4,23 @@ import { checkCategoryOwnership } from "@/lib/idea-category";
 import IdeaPageClient from "@/components/ideas/IdeaPageClient";
 import { LoginRequiredMessage } from "@/components/shared/Message";
 
+/**
+ * アイデアカテゴリ詳細ページコンポーネント
+ *
+ * 指定されたカテゴリに属するアイデア一覧を表示するページです。
+ * カテゴリの所有者のみがアクセスでき、アイデアの作成、編集、削除などの操作が可能です。
+ * ブレインライティング、マンダラート、オズボーンのチェックリストなどから
+ * 保存されたアイデアがこのカテゴリに分類されます。
+ *
+ * アクセス制限：
+ * - 未ログインユーザー: ログイン要求メッセージを表示
+ * - カテゴリの所有者でないユーザー: エラーメッセージを表示
+ *
+ * ルート: /idea-categories/[id]
+ *
+ * @param params - ルートパラメータ（id: アイデアカテゴリID）
+ * @returns アイデア一覧クライアントコンポーネント、ログイン要求メッセージ、またはエラーメッセージ
+ */
 export default async function IdeaCategoryDetailPage({
   params,
 }: {

@@ -1,5 +1,4 @@
 "use client";
-// アイデアカテゴリ一覧のクライアントコンポーネント
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -15,6 +14,15 @@ interface IdeaCategoryPageClientProps {
   initialData: IdeaCategoryListItem[];
 }
 
+/**
+ * アイデアカテゴリ一覧ページのクライアントコンポーネント
+ *
+ * アイデアカテゴリの一覧表示、新規作成、編集、削除機能を提供します。
+ * モーダルを使用してカテゴリの作成・編集を行い、
+ * 一覧表示には検索と無限スクロール機能を持つIdeaCategoryIndexコンポーネントを利用します。
+ *
+ * @param initialData - サーバーから取得したアイデアカテゴリ一覧の初期データ
+ */
 export default function IdeaCategoryPageClient({ initialData }: IdeaCategoryPageClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<IdeaCategoryListItem | null>(null);

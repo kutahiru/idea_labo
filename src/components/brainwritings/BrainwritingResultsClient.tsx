@@ -10,6 +10,14 @@ interface BrainwritingResultsClientProps {
   brainwritingDetail: BrainwritingDetail;
 }
 
+/**
+ * ブレインライティング結果閲覧ページのクライアントコンポーネント
+ *
+ * 完了したブレインライティングの全シートを閲覧専用で表示します。
+ * 複数シートがある場合はタブで切り替えが可能です。
+ *
+ * @param brainwritingDetail - ブレインライティングの詳細情報（シート、入力、ユーザー情報を含む）
+ */
 export default function BrainwritingResultsClient({
   brainwritingDetail,
 }: BrainwritingResultsClientProps) {

@@ -13,6 +13,26 @@ interface MandalartCellProps {
   colIndex?: number;
 }
 
+/**
+ * マンダラートの1つのセルを表示するコンポーネント
+ *
+ * 9×9のマンダラートグリッドの各セルで、テキスト入力、表示、アニメーション効果を提供します。
+ * メインテーマセル、セクション中央セル、通常セルで異なるスタイルを適用します。
+ * テキスト長に応じてフォントサイズを自動調整し、Enterキーで次のセルにフォーカス移動できます。
+ *
+ * セルの種類：
+ * - メインテーマセル（全体の中心）：強調表示（アクセントカラー）
+ * - セクション中央セル/中央セクションの周囲：中程度の強調（プライマリカラー）
+ * - 通常セル：標準表示
+ *
+ * @param value - セルの値
+ * @param isCenter - セクション内の中心セルかどうか
+ * @param isSectionCenter - 中央セクション（3×3のセクション）かどうか
+ * @param readOnly - 読み取り専用モード
+ * @param onChange - 値変更時のコールバック関数（blurまたはEnter時に発火）
+ * @param rowIndex - 行インデックス（アニメーション計算用）
+ * @param colIndex - 列インデックス（アニメーション計算用）
+ */
 export default function MandalartCell({
   value = "",
   isCenter = false,

@@ -17,6 +17,23 @@ interface MandalartSectionProps {
   readOnly?: boolean;
 }
 
+/**
+ * マンダラートの3×3セクションを表示するコンポーネント
+ *
+ * 9×9のマンダラートグリッドを構成する3×3のセクション（9個のセル）を表示します。
+ *
+ * セル値の特別な処理：
+ * - 中央セクション（1,1）の中央セル：マンダラートのテーマ名を表示（常に読み取り専用）
+ * - 各セクションの中央セル：中央セクションの対応位置の値を自動表示（常に読み取り専用）
+ * - その他のセル：通常の入力セル
+ *
+ * @param sectionRowIndex - セクションの行インデックス（0-2）
+ * @param sectionColumnIndex - セクションの列インデックス（0-2）
+ * @param inputs - 全セルの入力データを格納したMap
+ * @param onCellChange - セルの値変更時のコールバック関数
+ * @param mandalartTheme - マンダラートのテーマ名
+ * @param readOnly - 読み取り専用モード（全セルに適用）
+ */
 export default function MandalartSection({
   sectionRowIndex,
   sectionColumnIndex,

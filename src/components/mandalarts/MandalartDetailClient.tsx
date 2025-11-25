@@ -14,6 +14,21 @@ interface MandalartDetailClientProps {
   mandalartDetail: MandalartDetail;
 }
 
+/**
+ * マンダラート詳細・編集画面のクライアントコンポーネント
+ *
+ * 9×9のマンダラートグリッドを表示し、各セルの編集、自動保存機能を提供します。
+ * X投稿機能と結果公開/非公開の切り替え機能を持ちます。
+ * 結果が公開状態のときのみX投稿が可能です。
+ *
+ * 主な機能：
+ * - マンダラートグリッドの表示と編集
+ * - セルの入力内容を自動保存（blur/Enter時）
+ * - X（旧Twitter）への投稿
+ * - 結果の公開/非公開トグル
+ *
+ * @param mandalartDetail - マンダラートの詳細情報（テーマ名、入力データを含む）
+ */
 export default function MandalartDetailClient({ mandalartDetail }: MandalartDetailClientProps) {
   const { inputs, ...mandalart } = mandalartDetail;
   const [isResultsPublic, setIsResultsPublic] = useState(mandalart.isResultsPublic ?? false);

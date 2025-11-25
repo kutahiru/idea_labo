@@ -7,6 +7,18 @@ interface ToggleSwitchProps {
   disabled?: boolean;
 }
 
+/**
+ * トグルスイッチコンポーネント
+ *
+ * ON/OFF状態を切り替えるためのトグルスイッチUIを提供します。
+ * ラベル、スイッチ本体、状態表示（有効/無効）で構成されます。
+ * スイッチの色と位置がアニメーションで切り替わり、無効状態もサポートします。
+ *
+ * @param label - スイッチのラベルテキスト
+ * @param checked - 現在のON/OFF状態（true: ON, false: OFF）
+ * @param onChange - 状態変更時のコールバック関数
+ * @param disabled - スイッチを無効にするかどうか
+ */
 export default function ToggleSwitch({
   label,
   checked,

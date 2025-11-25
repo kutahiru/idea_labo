@@ -8,6 +8,29 @@ interface OsbornChecklistDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+/**
+ * オズボーンのチェックリスト詳細ページコンポーネント
+ *
+ * 認証済みユーザーが自分のオズボーンのチェックリストを管理・実行するためのページです。
+ *
+ * 主な機能：
+ * - 9つの各視点に対するアイデア入力
+ * - AI機能による自動アイデア生成（OpenAI API使用）
+ * - 入力済みアイデアの編集・削除
+ * - 結果の公開設定
+ *
+ * 入力データを含むオズボーンのチェックリスト情報を取得し、クライアント側で
+ * 各視点のアイデア入力とAI生成機能を提供します。
+ *
+ * アクセス制限：
+ * - 未ログインユーザー: ログイン要求メッセージを表示
+ * - 他ユーザーのチェックリスト: 404エラー
+ *
+ * ルート: /osborn-checklists/[id]
+ *
+ * @param params - ルートパラメータ（id: オズボーンのチェックリストID）
+ * @returns オズボーンのチェックリスト詳細クライアントコンポーネント、ログイン要求メッセージ、または404ページ
+ */
 export default async function OsbornChecklistDetailPage({
   params,
 }: OsbornChecklistDetailPageProps) {
@@ -32,9 +55,5 @@ export default async function OsbornChecklistDetailPage({
     notFound();
   }
 
-  return (
-    <OsbornChecklistDetailClient
-      osbornChecklistDetail={OsbornChecklistDetail}
-    />
-  );
+  return <OsbornChecklistDetailClient osbornChecklistDetail={OsbornChecklistDetail} />;
 }

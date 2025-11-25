@@ -13,6 +13,16 @@ interface BrainwritingCellProps {
   colIndex?: number;
 }
 
+/**
+ * ブレインライティングシートの各セル（3x3グリッドの1マス）を表示・編集するコンポーネント
+ * 自分のターンのセルをハイライト表示し、フォーカスアウト時の自動保存を提供
+ * @param value - 入力値
+ * @param isHighlighted - ハイライト表示するかどうか（自分のターンの場合）
+ * @param readOnly - 読み取り専用かどうか（他人のターンやロック中の場合）
+ * @param onChange - 値変更時のコールバック（フォーカスアウト時に呼ばれる）
+ * @param rowIndex - 行インデックス（アニメーション効果の計算に使用）
+ * @param colIndex - 列インデックス（アニメーション効果の計算に使用）
+ */
 export default function BrainwritingCell({
   value = "",
   isHighlighted = false,

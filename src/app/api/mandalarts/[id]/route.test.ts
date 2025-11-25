@@ -44,7 +44,7 @@ describe("GET /api/mandalarts/[id]", () => {
     const response = await GET(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(401);
+    expect(response!.status).toBe(401);
   });
 
   it("無効なIDの場合に400を返す", async () => {
@@ -59,7 +59,7 @@ describe("GET /api/mandalarts/[id]", () => {
     const response = await GET(request, { params: Promise.resolve({ id: "invalid" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(400);
+    expect(response!.status).toBe(400);
   });
 
   it("マンダラートが存在しない場合に404を返す", async () => {
@@ -78,7 +78,7 @@ describe("GET /api/mandalarts/[id]", () => {
     const response = await GET(request, { params: Promise.resolve({ id: "999" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(404);
+    expect(response!.status).toBe(404);
   });
 
   it("正常にマンダラート詳細を取得できる", async () => {
@@ -109,8 +109,8 @@ describe("GET /api/mandalarts/[id]", () => {
     const response = await GET(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(200);
-    const data = await response.json();
+    expect(response!.status).toBe(200);
+    const data = await response!.json();
     expect(data).toEqual(mockDetail);
     expect(getMandalartDetailById).toHaveBeenCalledWith(1, "user-123");
   });
@@ -130,7 +130,7 @@ describe("GET /api/mandalarts/[id]", () => {
     const response = await GET(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(500);
+    expect(response!.status).toBe(500);
   });
 });
 
@@ -156,7 +156,7 @@ describe("PUT /api/mandalarts/[id]", () => {
     const response = await PUT(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(401);
+    expect(response!.status).toBe(401);
   });
 
   it("無効なIDの場合に400を返す", async () => {
@@ -176,7 +176,7 @@ describe("PUT /api/mandalarts/[id]", () => {
     const response = await PUT(request, { params: Promise.resolve({ id: "invalid" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(400);
+    expect(response!.status).toBe(400);
   });
 
   it("バリデーションエラーがある場合に400を返す", async () => {
@@ -197,7 +197,7 @@ describe("PUT /api/mandalarts/[id]", () => {
     const response = await PUT(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(400);
+    expect(response!.status).toBe(400);
   });
 
   it("マンダラートが存在しない場合に404を返す", async () => {
@@ -221,7 +221,7 @@ describe("PUT /api/mandalarts/[id]", () => {
     const response = await PUT(request, { params: Promise.resolve({ id: "999" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(404);
+    expect(response!.status).toBe(404);
   });
 
   it("正常にマンダラートを更新できる", async () => {
@@ -256,8 +256,8 @@ describe("PUT /api/mandalarts/[id]", () => {
     const response = await PUT(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(200);
-    const data = await response.json();
+    expect(response!.status).toBe(200);
+    const data = await response!.json();
     expect(data).toEqual(mockUpdated);
     expect(updateMandalart).toHaveBeenCalledWith(1, "user-123", {
       title: "更新されたマンダラート",
@@ -286,7 +286,7 @@ describe("PUT /api/mandalarts/[id]", () => {
     const response = await PUT(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(500);
+    expect(response!.status).toBe(500);
   });
 });
 
@@ -307,7 +307,7 @@ describe("DELETE /api/mandalarts/[id]", () => {
     const response = await DELETE(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(401);
+    expect(response!.status).toBe(401);
   });
 
   it("無効なIDの場合に400を返す", async () => {
@@ -322,7 +322,7 @@ describe("DELETE /api/mandalarts/[id]", () => {
     const response = await DELETE(request, { params: Promise.resolve({ id: "invalid" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(400);
+    expect(response!.status).toBe(400);
   });
 
   it("マンダラートが存在しない場合に404を返す", async () => {
@@ -341,7 +341,7 @@ describe("DELETE /api/mandalarts/[id]", () => {
     const response = await DELETE(request, { params: Promise.resolve({ id: "999" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(404);
+    expect(response!.status).toBe(404);
   });
 
   it("正常にマンダラートを削除できる", async () => {
@@ -359,8 +359,8 @@ describe("DELETE /api/mandalarts/[id]", () => {
     const response = await DELETE(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(200);
-    const data = await response.json();
+    expect(response!.status).toBe(200);
+    const data = await response!.json();
     expect(data.message).toBe("削除が完了しました");
     expect(data.id).toBe(1);
     expect(deleteMandalart).toHaveBeenCalledWith(1, "user-123");
@@ -381,6 +381,6 @@ describe("DELETE /api/mandalarts/[id]", () => {
     const response = await DELETE(request, { params: Promise.resolve({ id: "1" }) });
 
     expect(response).toBeDefined();
-    expect(response.status).toBe(500);
+    expect(response!.status).toBe(500);
   });
 });

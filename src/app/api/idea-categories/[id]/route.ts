@@ -6,7 +6,6 @@ import { checkAuth, apiErrors } from "@/lib/api/utils";
 /** 更新 */
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // 認証チェック
     const authResult = await checkAuth();
     if ("error" in authResult) {
       return authResult.error;
@@ -45,7 +44,6 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 認証チェック
     const authResult = await checkAuth();
     if ("error" in authResult) {
       return authResult.error;

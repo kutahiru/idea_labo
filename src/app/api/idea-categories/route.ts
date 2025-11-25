@@ -23,7 +23,6 @@ export async function GET() {
 /** 新規作成 */
 export async function POST(request: NextRequest) {
   try {
-    // 認証チェック
     const authResult = await checkAuth();
     if ("error" in authResult) {
       return authResult.error;

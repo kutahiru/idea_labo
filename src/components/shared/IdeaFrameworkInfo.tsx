@@ -4,6 +4,15 @@ interface IdeaFrameworkInfoProps {
   ideaFramework: BaseIdeaListItem;
 }
 
+/**
+ * アイデアフレームワークの基本情報を表示するコンポーネント
+ *
+ * ブレインライティング、マンダラート、オズボーンのチェックリストなど、
+ * 各フレームワークの詳細ページの上部に共通して表示される情報ブロックです。
+ * タイトル、テーマ名（強調表示）、説明（任意）で構成されます。
+ *
+ * @param ideaFramework - 表示するアイデアフレームワークの基本情報
+ */
 export default function IdeaFrameworkInfo({ ideaFramework }: IdeaFrameworkInfoProps) {
   return (
     <>

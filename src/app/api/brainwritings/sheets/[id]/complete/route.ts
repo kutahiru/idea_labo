@@ -13,7 +13,34 @@ interface CompleteParams {
   params: Promise<{ id: string }>;
 }
 
-// シートの完了処理（X投稿版はロック解除、チーム版は次のユーザーに交代）
+/**
+ * ブレインライティングのシート完了処理を行うPOST APIエンドポイント
+ *
+ * ユーザーがシートへの入力を完了した際に呼び出されます。
+ * usageScope（X投稿版/チーム版）によって動作が異なります。
+ *
+ * エンドポイント: POST /api/brainwritings/sheets/[id]/complete
+ *
+ * X投稿版（usageScope: "xpost"）の場合：
+ * - シートのロックを解除（current_user_id を NULL に設定）
+ * - 他のユーザーがそのシートを使えるようになる
+ *
+ * チーム版（usageScope: "team"）の場合：
+ * - シートを次のユーザーにローテーション（current_user_id を次の参加者に変更）
+ * - AppSync Eventsで SHEET_ROTATED イベントを発行
+ * - 全参加者のクライアントがシート情報を再取得
+ *
+ * レスポンス例:
+ * ```json
+ * {
+ *   "success": true
+ * }
+ * ```
+ *
+ * @param request - Next.jsのRequestオブジェクト（未使用）
+ * @param params - ルートパラメータ（id: ブレインライティングシートID）
+ * @returns 成功結果を含むJSONレスポンス、またはエラーレスポンス
+ */
 export async function POST(request: NextRequest, { params }: CompleteParams) {
   try {
     const validateResult = await validateIdRequest(params);

@@ -8,8 +8,13 @@ interface OsbornChecklistPublicClientProps {
   osbornChecklistDetail: OsbornChecklistDetail;
 }
 
-export default function OsbornChecklistPublicClient({ 
-  osbornChecklistDetail 
+/**
+ * オズボーンのチェックリストの公開用
+ * 編集不可で表示のみの簡易なView
+ * @param props.osbornChecklistDetail
+ */
+export default function OsbornChecklistPublicClient({
+  osbornChecklistDetail,
 }: OsbornChecklistPublicClientProps) {
   const { inputs, ...osbornChecklist } = osbornChecklistDetail;
 

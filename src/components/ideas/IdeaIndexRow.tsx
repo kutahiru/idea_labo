@@ -1,4 +1,3 @@
-// アイデア一覧行コンポーネント
 "use client";
 
 import { IdeaListItem } from "@/types/idea";
@@ -20,6 +19,18 @@ const priorityLabels = {
   low: "低",
 };
 
+/**
+ * アイデア一覧テーブルの1行を表示するコンポーネント
+ *
+ * アイデアの重要度を色付きバッジで表示し（高：赤、中：黄、低：緑）、
+ * アイデア名、説明、操作ボタン（編集・削除）を含むテーブル行を構成します。
+ *
+ * @param name - アイデア名
+ * @param description - アイデアの説明
+ * @param priority - 重要度（high, medium, low）
+ * @param onEdit - 編集ボタンクリック時のコールバック関数（オプション）
+ * @param onDelete - 削除ボタンクリック時のコールバック関数（オプション）
+ */
 export default function IdeaIndexRow({
   name,
   description,

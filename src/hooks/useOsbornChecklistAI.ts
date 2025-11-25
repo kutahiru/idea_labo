@@ -17,6 +17,15 @@ interface UseOsbornChecklistAIOptions {
   onRefresh: () => Promise<void>;
 }
 
+/**
+ * オズボーンのチェックリストAI自動生成機能を管理するカスタムフック
+ * AI生成の実行、生成状態の管理、AppSync Eventsによるリアルタイム更新を提供
+ * @param options.osbornChecklistId - オズボーンのチェックリストID
+ * @param options.currentInputs - 現在の入力データ一覧
+ * @param options.aiGeneration - AI生成の状態情報
+ * @param options.onRefresh - データ再取得関数
+ * @returns isGenerating - AI生成中かどうか, handleAIGenerate - AI生成を開始する関数
+ */
 export function useOsbornChecklistAI({
   osbornChecklistId,
   currentInputs,
@@ -32,7 +41,7 @@ export function useOsbornChecklistAI({
     if (aiGeneration?.status === "processing" || aiGeneration?.status === "pending") {
       setIsGenerating(true);
       if (!loadingToastId) {
-        const toastId = toast.loading("AIでアイデアを生成中...");
+        const toastId = toast.loading("AIでアイデアの生成を開始しました");
         setLoadingToastId(toastId);
       }
     } else {
@@ -44,7 +53,7 @@ export function useOsbornChecklistAI({
     }
   }, [aiGeneration?.status, loadingToastId]);
 
-  // AppSync Eventsでリアルタイム更新を購読（IAM認証）
+  // 最新データを再取得する関数（AppSync Eventsのイベント受信時に呼び出される）
   const fetchLatestData = useCallback(async () => {
     try {
       await onRefresh();
@@ -53,6 +62,7 @@ export function useOsbornChecklistAI({
     }
   }, [onRefresh]);
 
+  // AppSync Eventsに接続してAI生成の完了/失敗イベントを購読
   useEffect(() => {
     // Amplify設定が完了するまで待機
     if (!isConfigured) {
@@ -71,7 +81,6 @@ export function useOsbornChecklistAI({
             try {
               const message = typeof data === "string" ? JSON.parse(data) : data;
 
-              // AppSync Eventsのメッセージ構造に対応
               if (message.event && message.event.type) {
                 // イベントタイプに応じて処理
                 switch (message.event.type) {
@@ -108,9 +117,12 @@ export function useOsbornChecklistAI({
     };
   }, [isConfigured, osbornChecklistId, fetchLatestData]);
 
+  /**
+   * AI自動生成を開始する
+   * バリデーション後、API経由でLambda関数を呼び出してAI生成ジョブを作成
+   * 生成完了はAppSync Eventsで通知される
+   */
   const handleAIGenerate = async () => {
-    if (isGenerating) return;
-
     // 全ての項目が既に入力されているかチェック
     const allChecklistTypes = Object.values(OSBORN_CHECKLIST_TYPES);
     const filledInputs = currentInputs.filter(
@@ -122,11 +134,11 @@ export function useOsbornChecklistAI({
       return;
     }
 
-    // AI生成中または完了済みの場合はエラー
     if (aiGeneration?.status === "processing" || aiGeneration?.status === "pending") {
       toast.error("AI生成は既に実行中です");
       return;
     }
+
     if (aiGeneration?.status === "completed") {
       toast.error("AI生成は既に完了しています");
       return;

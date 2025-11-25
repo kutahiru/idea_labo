@@ -15,10 +15,14 @@ vi.mock("@/lib/api/utils", () => ({
   },
 }));
 
-vi.mock("@/db", () => ({
-  db: {
-    select: vi.fn(),
-  },
+vi.mock("@/lib/osborn-checklist", () => ({
+  getOsbornChecklistById: vi.fn(),
+  getAIGenerationByOsbornChecklistId: vi.fn(),
+  createAIGeneration: vi.fn(),
+}));
+
+vi.mock("@/lib/osborn-ai-worker", () => ({
+  generateOsbornIdeas: vi.fn(),
 }));
 
 vi.mock("openai", () => {
@@ -48,7 +52,7 @@ vi.mock("@/schemas/osborn-checklist", () => ({
 }));
 
 import { validateIdRequest } from "@/lib/api/utils";
-import { db } from "@/db";
+import { getOsbornChecklistById } from "@/lib/osborn-checklist";
 
 describe("POST /api/osborn-checklists/[id]/ai-generate", () => {
   beforeEach(() => {
@@ -98,13 +102,9 @@ describe("POST /api/osborn-checklists/[id]/ai-generate", () => {
       id: 999,
     });
 
-    const mockChain = {
-      from: vi.fn().mockReturnThis(),
-      where: vi.fn().mockResolvedValue([]), // 空配列を返す
-    };
-
+    // getOsbornChecklistByIdがnullを返すようモック
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(db.select).mockReturnValue(mockChain as any);
+    vi.mocked(getOsbornChecklistById).mockResolvedValue(null as any);
 
     const request = new NextRequest("http://localhost:3000/api/osborn-checklists/999/ai-generate", {
       method: "POST",

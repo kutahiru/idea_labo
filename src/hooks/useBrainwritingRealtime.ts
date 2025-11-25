@@ -1,7 +1,3 @@
-/**
- * ブレインライティングのリアルタイム監視フック（IAM認証）
- * 参加者、シート情報、入力データをリアルタイムで更新
- */
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -21,6 +17,25 @@ interface UseBrainwritingRealtimeProps {
   initialInputs: BrainwritingInputData[];
 }
 
+/**
+ * ブレインライティングのリアルタイム更新を管理するカスタムフック
+ *
+ * AWS Amplify Events（IAM認証）を使用して、ブレインライティングの状態変更を
+ * リアルタイムで監視し、参加者・シート・入力データを自動更新します。
+ *
+ * 監視するイベント：
+ * - USER_JOINED: 参加者が追加された時 → 参加者一覧を再取得
+ * - BRAINWRITING_STARTED: ブレインライティングが開始された時 → シート情報を再取得
+ * - SHEET_ROTATED: シートがローテーションされた時 → シート情報を再取得
+ *
+ * 全員完了時は自動で入力データも取得します。
+ *
+ * @param brainwritingId - ブレインライティングのID
+ * @param initialUsers - 参加者一覧の初期データ
+ * @param initialSheets - シート情報の初期データ
+ * @param initialInputs - 入力データの初期データ
+ * @returns users - 最新の参加者一覧, sheets - 最新のシート情報, inputs - 最新の入力データ, isConnected - 接続状態
+ */
 export function useBrainwritingRealtime({
   brainwritingId,
   initialUsers,

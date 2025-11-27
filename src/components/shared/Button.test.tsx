@@ -105,7 +105,7 @@ describe("Button", () => {
       render(<XPostButton buttonName="ポストする" onClick={vi.fn()} disabled={true} />);
 
       const button = screen.getByRole("button", { name: /ポストする/i });
-      expect(button).toHaveClass("bg-gray-400");
+      expect(button).toHaveClass("bg-muted-foreground");
     });
 
     it("disabledがfalseの時、黒の背景色が適用される", () => {

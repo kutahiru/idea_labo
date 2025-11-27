@@ -71,8 +71,9 @@ describe("IdeaPageClient", () => {
     it("アイデア一覧が表示される", () => {
       render(<IdeaPageClient initialData={mockIdeas} categoryId={1} />);
 
-      expect(screen.getByText("アイデア1")).toBeInTheDocument();
-      expect(screen.getByText("アイデア2")).toBeInTheDocument();
+      // モバイル用カードとPC用テーブルの両方に表示されるため、getAllByTextを使用
+      expect(screen.getAllByText("アイデア1").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("アイデア2").length).toBeGreaterThan(0);
     });
   });
 

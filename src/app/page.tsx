@@ -105,6 +105,7 @@ const logoItem = {
 export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean | null>(null);
   const [showContent, setShowContent] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const topRef = useRef<HTMLDivElement | null>(null);
   const brainwritingRef = useRef<HTMLElement | null>(null);
   const mandalartRef = useRef<HTMLElement | null>(null);
@@ -113,6 +114,14 @@ export default function Home() {
   const isBrainwritingNavActive = useInView(brainwritingRef, { once: false, amount: 0.3 });
   const isMandalartNavActive = useInView(mandalartRef, { once: false, amount: 0.3 });
   const isOsbornNavActive = useInView(osbornRef, { once: false, amount: 0.3 });
+
+  // スマホサイズ判定
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     // sessionStorageで初回アクセスかチェック
@@ -226,7 +235,7 @@ export default function Home() {
         <div className="relative container mx-auto px-4">
           <motion.div
             ref={topRef}
-            className="mt-8 text-center md:mb-8"
+            className="mt-4 text-center sm:mt-8 md:mb-8"
             initial="hidden"
             animate="show"
             variants={container}
@@ -384,10 +393,10 @@ export default function Home() {
           <motion.section
             ref={brainwritingRef}
             className="mt-16 mb-12 md:mt-24 md:mb-16 lg:mt-32 lg:mb-20"
-            initial={{ opacity: 0, y: 80 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            initial={isMobile ? false : { opacity: 0, y: 80 }}
+            whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
+            viewport={isMobile ? undefined : { once: true, amount: 0.2 }}
+            transition={isMobile ? undefined : { duration: 0.8, ease: "easeOut" }}
           >
             {/* タイトル */}
             <div className="mb-8 text-center md:mb-12">
@@ -482,10 +491,10 @@ export default function Home() {
           <motion.section
             ref={mandalartRef}
             className="mt-16 mb-12 md:mt-24 md:mb-16 lg:mt-32 lg:mb-20"
-            initial={{ opacity: 0, y: 80 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            initial={isMobile ? false : { opacity: 0, y: 80 }}
+            whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
+            viewport={isMobile ? undefined : { once: true, amount: 0.2 }}
+            transition={isMobile ? undefined : { duration: 0.8, ease: "easeOut" }}
           >
             {/* タイトル */}
             <div className="mb-8 text-center md:mb-12">
@@ -578,10 +587,10 @@ export default function Home() {
           <motion.section
             ref={osbornRef}
             className="mt-16 mb-12 md:mt-24 md:mb-16 lg:mt-32 lg:mb-20"
-            initial={{ opacity: 0, y: 80 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            initial={isMobile ? false : { opacity: 0, y: 80 }}
+            whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
+            viewport={isMobile ? undefined : { once: true, amount: 0.2 }}
+            transition={isMobile ? undefined : { duration: 0.8, ease: "easeOut" }}
           >
             {/* タイトル */}
             <div className="mb-8 text-center md:mb-12">

@@ -39,9 +39,10 @@ describe("IdeaIndex", () => {
     it("アイデア一覧が表示される", () => {
       render(<IdeaIndex initialData={mockIdeas} />);
 
-      expect(screen.getByText("アイデア1")).toBeInTheDocument();
-      expect(screen.getByText("アイデア2")).toBeInTheDocument();
-      expect(screen.getByText("アイデア3")).toBeInTheDocument();
+      // モバイル用カードとPC用テーブルの両方に表示されるため、getAllByTextを使用
+      expect(screen.getAllByText("アイデア1").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("アイデア2").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("アイデア3").length).toBeGreaterThan(0);
     });
 
     it("データが空の場合、メッセージが表示される", () => {
@@ -62,10 +63,10 @@ describe("IdeaIndex", () => {
       const searchInput = screen.getByPlaceholderText("アイデア名で検索...");
       await user.type(searchInput, "アイデア1");
 
-      // アイデア1のみ表示される
-      expect(screen.getByText("アイデア1")).toBeInTheDocument();
-      expect(screen.queryByText("アイデア2")).not.toBeInTheDocument();
-      expect(screen.queryByText("アイデア3")).not.toBeInTheDocument();
+      // アイデア1のみ表示される（モバイル用カードとPC用テーブルの両方に表示されるため、getAllByTextを使用）
+      expect(screen.getAllByText("アイデア1").length).toBeGreaterThan(0);
+      expect(screen.queryAllByText("アイデア2")).toHaveLength(0);
+      expect(screen.queryAllByText("アイデア3")).toHaveLength(0);
     });
 
     it("検索結果が0件の場合、メッセージが表示される", async () => {
@@ -219,10 +220,10 @@ describe("IdeaIndex", () => {
 
       render(<IdeaIndex initialData={largeData} />);
 
-      // 最初は20件だけ表示される
-      expect(screen.getByText("アイデア1")).toBeInTheDocument();
-      expect(screen.getByText("アイデア20")).toBeInTheDocument();
-      expect(screen.queryByText("アイデア21")).not.toBeInTheDocument();
+      // 最初は20件だけ表示される（モバイル用カードとPC用テーブルの両方に表示されるため、getAllByTextを使用）
+      expect(screen.getAllByText("アイデア1").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("アイデア20").length).toBeGreaterThan(0);
+      expect(screen.queryAllByText("アイデア21")).toHaveLength(0);
 
       // 無限スクロール要素が表示される
       expect(screen.getByText("スクロールして続きを読み込む")).toBeInTheDocument();

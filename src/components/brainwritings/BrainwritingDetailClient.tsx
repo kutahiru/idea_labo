@@ -193,7 +193,7 @@ export default function BrainwritingDetailClient({
               className={`rounded-md px-4 py-2 text-sm font-medium transition-all ${
                 activeSheetIndex === index
                   ? "bg-primary text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  : "bg-border text-muted hover:bg-border"
               }`}
             >
               シート {index + 1}

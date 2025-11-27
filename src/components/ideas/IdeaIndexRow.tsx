@@ -43,18 +43,18 @@ export default function IdeaIndexRow({
   const priorityLabel = priorityLabels[priority as keyof typeof priorityLabels] || "中";
 
   return (
-    <tr className="border-b-2 border-gray-400 transition-colors hover:bg-gray-100">
+    <tr className="border-b-2 border-gray-400 transition-colors hover:bg-surface-hover">
       <td className="w-24 px-3 py-4 text-center whitespace-nowrap">
         <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${priorityColor}`}>
           {priorityLabel}
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm font-medium text-gray-900">{name}</div>
+        <div className="text-sm font-medium text-foreground">{name}</div>
       </td>
       <td className="px-6 py-4">
-        <div className="line-clamp-2 text-sm text-gray-600">
-          {description || <span className="text-gray-400 italic">説明が設定されていません</span>}
+        <div className="line-clamp-2 text-sm text-muted">
+          {description || <span className="text-muted-foreground italic">説明が設定されていません</span>}
         </div>
       </td>
       <td className="w-32 px-2 py-4 text-center whitespace-nowrap">

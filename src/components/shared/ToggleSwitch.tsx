@@ -27,7 +27,7 @@ export default function ToggleSwitch({
 }: ToggleSwitchProps) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-sm font-medium text-gray-700">{label}：</span>
+      <span className="text-sm font-medium text-muted">{label}：</span>
       <button
         onClick={() => !disabled && onChange(!checked)}
         disabled={disabled}
@@ -36,12 +36,12 @@ export default function ToggleSwitch({
         } ${checked ? "bg-primary" : "bg-gray-400"}`}
       >
         <span
-          className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform duration-300 ${
+          className={`inline-block h-6 w-6 transform rounded-full bg-surface transition-transform duration-300 ${
             checked ? "translate-x-7" : "translate-x-1"
           }`}
         />
       </button>
-      <span className={`text-sm font-medium ${checked ? "text-primary" : "text-gray-500"}`}>
+      <span className={`text-sm font-medium ${checked ? "text-primary" : "text-muted-foreground"}`}>
         {checked ? "有効" : "無効"}
       </span>
     </div>

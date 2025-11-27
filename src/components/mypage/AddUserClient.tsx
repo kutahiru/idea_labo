@@ -100,7 +100,7 @@ export default function AddUserClient({ currentName, redirectUrl }: AddUserClien
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="mb-2 block text-sm font-medium text-muted">
           ユーザー名 *
         </label>
         <input
@@ -108,7 +108,7 @@ export default function AddUserClient({ currentName, redirectUrl }: AddUserClien
           id="name"
           value={formData.name}
           onChange={e => handleInputChange(e.target.value)}
-          className="focus:border-primary focus:ring-primary/10 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 transition-all duration-200 outline-none focus:bg-white focus:ring-2"
+          className="focus:border-primary focus:ring-primary/10 w-full rounded-lg border border-border bg-surface-hover px-4 py-3 transition-all duration-200 outline-none focus:bg-surface focus:ring-2"
           placeholder="ユーザー名を入力"
           maxLength={50}
           disabled={isSubmitting}

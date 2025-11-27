@@ -73,9 +73,9 @@ export default function InviteLinkCopy({
   };
 
   return (
-    <div className="mx-auto mb-6 max-w-4xl rounded-lg border border-gray-200 bg-gray-50 p-4">
+    <div className="mx-auto mb-6 max-w-4xl rounded-lg border border-border bg-surface-hover p-4">
       <div className="mb-4 flex items-center justify-between">
-        <label className="text-sm font-medium text-gray-700">招待リンク</label>
+        <label className="text-sm font-medium text-muted">招待リンク</label>
         <ToggleSwitch
           label="招待リンク"
           checked={isInviteActive}
@@ -88,7 +88,7 @@ export default function InviteLinkCopy({
           type="text"
           value={inviteUrl}
           readOnly
-          className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700"
+          className="flex-1 rounded-md border border-border bg-surface px-3 py-2 text-sm text-muted"
         />
         <button
           onClick={handleCopy}

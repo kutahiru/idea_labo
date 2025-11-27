@@ -25,7 +25,7 @@ export default function MandalartGuideModal({ isOpen, onClose }: MandalartGuideM
 
           {/* モーダル本体 */}
           <motion.div
-            className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl"
+            className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-surface p-6 shadow-xl"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -35,7 +35,7 @@ export default function MandalartGuideModal({ isOpen, onClose }: MandalartGuideM
             {/* 閉じるボタン */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+              className="absolute top-4 right-4 rounded-full p-2 text-muted-foreground transition-colors hover:bg-surface-hover hover:text-muted"
               aria-label="閉じる"
             >
               <X className="h-6 w-6" />
@@ -47,8 +47,8 @@ export default function MandalartGuideModal({ isOpen, onClose }: MandalartGuideM
             {/* 説明コンテンツ */}
             <div className="space-y-6">
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">マンダラートとは？</h3>
-                <p className="leading-relaxed text-gray-700">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">マンダラートとは？</h3>
+                <p className="leading-relaxed text-muted">
                   マンダラートは、9×9（81マス）のグリッドを使ってアイデアを広げていく発想法です。
                   中心にテーマを置き、その周りに関連するアイデアを配置し、さらにそれぞれのアイデアを8つに展開していくことで、
                   体系的かつ網羅的にアイデアを整理できます。
@@ -56,8 +56,8 @@ export default function MandalartGuideModal({ isOpen, onClose }: MandalartGuideM
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">基本的な流れ</h3>
-                <ol className="list-decimal space-y-2 pl-6 text-gray-700">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">基本的な流れ</h3>
+                <ol className="list-decimal space-y-2 pl-6 text-muted">
                   <li>
                     <strong>中央にテーマを入力</strong>
                     <br />
@@ -87,10 +87,10 @@ export default function MandalartGuideModal({ isOpen, onClose }: MandalartGuideM
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">具体例</h3>
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <p className="mb-2 font-semibold text-gray-800">テーマ：「英語学習」</p>
-                  <div className="space-y-2 text-gray-700">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">具体例</h3>
+                <div className="rounded-lg bg-surface-hover p-4">
+                  <p className="mb-2 font-semibold text-foreground">テーマ：「英語学習」</p>
+                  <div className="space-y-2 text-muted">
                     <p>
                       <strong>周囲8マス（サブテーマ）：</strong>
                       語彙力、リスニング、スピーキング、リーディング、ライティング、
@@ -106,8 +106,8 @@ export default function MandalartGuideModal({ isOpen, onClose }: MandalartGuideM
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">効果的な使い方のコツ</h3>
-                <ul className="list-disc space-y-2 pl-6 text-gray-700">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">効果的な使い方のコツ</h3>
+                <ul className="list-disc space-y-2 pl-6 text-muted">
                   <li>最初は質より量を重視し、思いついたことをどんどん入力しましょう</li>
                   <li>サブテーマは多様な視点から設定すると、アイデアの幅が広がります</li>
                   <li>すべてのマスを埋める必要はありません。重要なエリアに集中しても良いです</li>
@@ -117,8 +117,8 @@ export default function MandalartGuideModal({ isOpen, onClose }: MandalartGuideM
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">活用シーン</h3>
-                <ul className="list-disc space-y-2 pl-6 text-gray-700">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">活用シーン</h3>
+                <ul className="list-disc space-y-2 pl-6 text-muted">
                   <li>目標達成の行動計画を立てるとき</li>
                   <li>プロジェクトのアイデアを体系的に整理したいとき</li>
                   <li>問題解決のための多角的な視点が必要なとき</li>
@@ -128,28 +128,28 @@ export default function MandalartGuideModal({ isOpen, onClose }: MandalartGuideM
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">よくある質問</h3>
+                <h3 className="mb-3 text-lg font-semibold text-foreground">よくある質問</h3>
                 <div className="space-y-3">
                   <div>
-                    <p className="font-semibold text-gray-800">
+                    <p className="font-semibold text-foreground">
                       Q. すべてのマスを埋める必要がありますか？
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-muted">
                       A. いいえ、必ずしもすべてを埋める必要はありません。重要な部分から埋めていき、
                       アイデアが出にくい箇所は空欄のままでも構いません。
                     </p>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800">Q. 入力内容は保存されますか？</p>
-                    <p className="text-gray-700">
+                    <p className="font-semibold text-foreground">Q. 入力内容は保存されますか？</p>
+                    <p className="text-muted">
                       A. はい、フォーカスを外すと自動的に保存されます。
                     </p>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800">
+                    <p className="font-semibold text-foreground">
                       Q. どの順番で埋めるのが良いですか？
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-muted">
                       A. まず中央のテーマを決め、次にその周囲8マスにサブテーマを入力します。
                       その後、各サブテーマが外側のセクション中央に表示されるので、
                       それぞれについて8つのアイデアを展開していきます。

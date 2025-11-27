@@ -118,8 +118,8 @@ export default function CreateIdeaModal({
 
   // 共通スタイルクラス
   const inputClasses =
-    "w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 outline-none text-gray-800 font-noto-sans-jp focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/10 transition-all duration-200";
-  const labelClasses = "block text-gray-700 text-sm font-semibold font-noto-sans-jp mb-2";
+    "w-full px-4 py-3 border border-border rounded-lg bg-surface-hover outline-none text-foreground font-noto-sans-jp focus:border-primary focus:bg-surface focus:ring-2 focus:ring-primary/10 transition-all duration-200";
+  const labelClasses = "block text-muted text-sm font-semibold font-noto-sans-jp mb-2";
   const errorClasses = "mt-1 text-sm text-red-500";
 
   return (
@@ -135,7 +135,7 @@ export default function CreateIdeaModal({
 
       {/* モーダル本体 */}
       <motion.div
-        className="relative max-h-[90vh] w-[600px] overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-2xl"
+        className="relative max-h-[90vh] w-[600px] overflow-y-auto rounded-2xl border border-border bg-surface shadow-2xl"
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -175,13 +175,13 @@ export default function CreateIdeaModal({
                       placeholder="カテゴリを検索または選択してください"
                     />
                     <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-3">
-                      <ChevronDown className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                      <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     </ComboboxButton>
                   </div>
 
-                  <ComboboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg focus:outline-none">
+                  <ComboboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-border bg-surface py-1 shadow-lg focus:outline-none">
                     {filteredCategories.length === 0 && query !== "" ? (
-                      <div className="relative cursor-default px-4 py-2 text-gray-500 select-none">
+                      <div className="relative cursor-default px-4 py-2 text-muted-foreground select-none">
                         該当するカテゴリが見つかりません
                       </div>
                     ) : (
@@ -189,7 +189,7 @@ export default function CreateIdeaModal({
                         <ComboboxOption
                           key={category.id}
                           value={category}
-                          className="data-[focus]:bg-primary/10 data-[focus]:text-primary relative cursor-pointer py-2 pr-4 pl-10 text-gray-900 select-none"
+                          className="data-[focus]:bg-primary/10 data-[focus]:text-primary relative cursor-pointer py-2 pr-4 pl-10 text-foreground select-none"
                         >
                           {({ selected }) => (
                             <>
@@ -262,7 +262,7 @@ export default function CreateIdeaModal({
               value={formData.description || ""}
               onChange={e => handleInputChange("description", e.target.value)}
               rows={6}
-              className="font-noto-sans-jp focus:border-primary focus:ring-primary/10 w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 outline-none focus:bg-white focus:ring-2"
+              className="font-noto-sans-jp focus:border-primary focus:ring-primary/10 w-full resize-none rounded-lg border border-border bg-surface-hover px-4 py-3 text-foreground transition-all duration-200 outline-none focus:bg-surface focus:ring-2"
               placeholder="説明（任意）"
               maxLength={500}
               disabled={isSubmitting}

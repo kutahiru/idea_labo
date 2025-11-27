@@ -43,7 +43,7 @@ export default function IdeaCategoryIndexRow({
 }: IdeaCategoryIndexRowProps) {
   return (
     <motion.div
-      className="group hover:ring-primary/30 relative rounded-xl bg-white p-6 shadow-lg ring-1 ring-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+      className="group hover:ring-primary/30 relative rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       variants={cardVariants}
       initial="hidden"
       animate="visible"
@@ -100,11 +100,11 @@ export default function IdeaCategoryIndexRow({
         </div>
 
         {/* 説明文 */}
-        <div className="mt-4 border-t border-gray-100 pt-4 text-sm leading-relaxed text-gray-600">
+        <div className="mt-4 border-t border-border pt-4 text-sm leading-relaxed text-muted">
           {description ? (
             <p className="line-clamp-2">{description}</p>
           ) : (
-            <p className="text-gray-400 italic">説明が設定されていません</p>
+            <p className="text-muted-foreground italic">説明が設定されていません</p>
           )}
         </div>
       </div>

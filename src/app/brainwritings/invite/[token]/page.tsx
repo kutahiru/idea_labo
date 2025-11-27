@@ -105,7 +105,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 text-center">
             <h1 className="text-alert mb-4 text-2xl font-bold">招待が無効です</h1>
-            <p className="text-2xl text-gray-600">この招待リンクは既に無効になっています。</p>
+            <p className="text-2xl text-muted">この招待リンクは既に無効になっています。</p>
           </div>
         </div>
       </div>

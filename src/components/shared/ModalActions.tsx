@@ -23,11 +23,11 @@ export function ModalActions({
   submitLabel = { create: "確定", edit: "更新" },
 }: ModalActionsProps) {
   return (
-    <div className="flex justify-end space-x-3 border-t border-gray-100 pt-6">
+    <div className="flex justify-end space-x-3 border-t border-border pt-6">
       <button
         type="button"
         onClick={onClose}
-        className="font-noto-sans-jp transform rounded-lg bg-gray-100 px-6 py-3 font-medium text-gray-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-200 hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
+        className="font-noto-sans-jp transform rounded-lg bg-surface-hover px-6 py-3 font-medium text-muted transition-all duration-200 hover:-translate-y-0.5 hover:bg-border hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
         disabled={isSubmitting}
       >
         キャンセル

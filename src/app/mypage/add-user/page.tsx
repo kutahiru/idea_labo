@@ -43,11 +43,11 @@ export default async function AddUserPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen py-12">
       <div className="mx-auto max-w-md">
-        <div className="rounded-2xl bg-white p-8 shadow-lg">
-          <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
+        <div className="rounded-2xl bg-surface p-8 shadow-lg">
+          <h1 className="mb-6 text-center text-2xl font-bold text-foreground">
             ユーザー名を設定してください
           </h1>
-          <p className="mb-6 text-center text-sm text-gray-600">
+          <p className="mb-6 text-center text-sm text-muted">
             アイデア研究所へようこそ！
             <br />
             ユーザー名を設定して始めましょう。

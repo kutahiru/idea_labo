@@ -47,7 +47,7 @@ export function XPostButton({ buttonName, onClick, disabled = false }: XPostButt
       disabled={disabled}
       className={`flex items-center gap-2 rounded-md px-6 py-2 text-white transition-all ${
         disabled
-          ? "cursor-not-allowed bg-gray-400"
+          ? "cursor-not-allowed bg-muted-foreground"
           : "bg-black hover:scale-105"
       }`}
     >

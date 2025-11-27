@@ -33,8 +33,8 @@ export default function IdeaFrameworkInfo({ ideaFramework }: IdeaFrameworkInfoPr
       {/* 説明 */}
       {ideaFramework.description && (
         <div className="mx-auto mb-4 max-w-4xl">
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-            <p className="whitespace-pre-wrap text-gray-700">{ideaFramework.description}</p>
+          <div className="rounded-lg border border-border bg-surface-hover p-4">
+            <p className="whitespace-pre-wrap text-muted">{ideaFramework.description}</p>
           </div>
         </div>
       )}

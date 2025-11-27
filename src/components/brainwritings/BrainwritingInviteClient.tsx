@@ -45,7 +45,7 @@ export default function BrainwritingInviteClient({
       <div className="py-2">
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 text-center">
-            <div className="text-gray-600">読み込み中...</div>
+            <div className="text-muted">読み込み中...</div>
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@ export default function BrainwritingInviteClient({
             </h1>
           </div>
           <div className="mt-8 text-center">
-            <div className="text-gray-600">参加状況を確認中...</div>
+            <div className="text-muted">参加状況を確認中...</div>
           </div>
         </div>
       </div>
@@ -82,8 +82,8 @@ export default function BrainwritingInviteClient({
           </h1>
 
           <div className="mx-auto mb-2 max-w-2xl rounded-lg bg-blue-50 p-6 text-left">
-            <h2 className="mb-3 text-xl font-semibold text-gray-800">ブレインライティングとは？</h2>
-            <p className="mb-4 leading-relaxed text-gray-700">
+            <h2 className="mb-3 text-xl font-semibold text-foreground">ブレインライティングとは？</h2>
+            <p className="mb-4 leading-relaxed text-muted">
               ブレインライティングは、複数人でアイデアを出し合う発想法です。
               <br />
               回覧板のようにシートを回していき、前の人のアイデアを参考にしながら新しいアイデアを発展させていきます。
@@ -91,8 +91,8 @@ export default function BrainwritingInviteClient({
               発言が苦手なメンバーでも参加しやすく、多様な視点からアイデアを広げることができます。
             </p>
             <div className="border-t border-blue-200 pt-4">
-              <p className="font-semibold text-gray-800">ぜひご協力お願いします！</p>
-              <p className="text-gray-700">あなたの創造的なアイデアをお待ちしています。</p>
+              <p className="font-semibold text-foreground">ぜひご協力お願いします！</p>
+              <p className="text-muted">あなたの創造的なアイデアをお待ちしています。</p>
             </div>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function BrainwritingInviteClient({
             <div>
               <div className="mb-4 text-center">
                 <p className="text-alert mb-2 font-medium">参加できません</p>
-                <p className="text-sm text-gray-600">ブレインライティングは既に開始されています</p>
+                <p className="text-sm text-muted">ブレインライティングは既に開始されています</p>
               </div>
               <button
                 disabled
@@ -115,7 +115,7 @@ export default function BrainwritingInviteClient({
             <div>
               <div className="mb-4 text-center">
                 <p className="text-alert mb-2 font-medium">参加人数が上限に達しています</p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted">
                   現在 {status.currentCount}/{status.maxCount} 人が参加中です
                 </p>
               </div>
@@ -130,7 +130,7 @@ export default function BrainwritingInviteClient({
             <div>
               <div className="mb-4 text-center">
                 <p className="text-alert mb-2 text-lg font-medium">他の方が編集中です</p>
-                <p className="text-lg text-gray-600">
+                <p className="text-lg text-muted">
                   {status.lockExpiresAt &&
                     (() => {
                       const date = new Date(status.lockExpiresAt);
@@ -162,7 +162,7 @@ export default function BrainwritingInviteClient({
             <div>
               {status && (
                 <div className="mb-4 text-center">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted">
                     現在 {status.currentCount}/{status.maxCount} 人が参加中
                   </p>
                 </div>

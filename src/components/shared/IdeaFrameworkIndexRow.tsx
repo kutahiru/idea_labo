@@ -64,7 +64,7 @@ export default function IdeaFrameworkIndexRow({
 
   return (
     <motion.div
-      className="group hover:ring-primary/30 relative rounded-xl bg-white p-6 shadow-lg ring-1 ring-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+      className="group hover:ring-primary/30 relative rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       variants={cardVariants}
       initial="hidden"
       animate="visible"
@@ -117,7 +117,7 @@ export default function IdeaFrameworkIndexRow({
               </span>
             )}
             <time
-              className={`flex items-center text-sm text-gray-500 ${usageScopeLabel ? "" : "ml-auto"}`}
+              className={`flex items-center text-sm text-muted-foreground ${usageScopeLabel ? "" : "ml-auto"}`}
             >
               <Clock className="mr-1.5 h-3 w-3" />
               {formatDate(createdAt)}
@@ -126,7 +126,7 @@ export default function IdeaFrameworkIndexRow({
         </div>
 
         {/* 説明文 */}
-        <div className="mt-4 border-t border-gray-100 pt-4 text-sm leading-relaxed text-gray-600">
+        <div className="mt-4 border-t border-border pt-4 text-sm leading-relaxed text-muted">
           {description ? (
             <p className="line-clamp-2">{description}</p>
           ) : (

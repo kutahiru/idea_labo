@@ -100,14 +100,14 @@ export default function BrainwritingTeamClient({
             <div className="mb-4">
               <h2 className="text-primary text-xl font-bold">参加者一覧</h2>
             </div>
-            <div className="rounded-lg border border-gray-200 bg-white p-4">
-              <ul className="divide-y divide-gray-200">
+            <div className="rounded-lg border border-border bg-surface p-4">
+              <ul className="divide-y divide-border">
                 {users.map((user, index) => (
                   <li key={user.id} className="py-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <span className="mr-3 text-sm font-medium text-gray-500">{index + 1}.</span>
-                        <span className="text-gray-900">{user.user_name || "Anonymous"}</span>
+                        <span className="mr-3 text-sm font-medium text-muted-foreground">{index + 1}.</span>
+                        <span className="text-foreground">{user.user_name || "Anonymous"}</span>
                       </div>
                     </div>
                   </li>
@@ -127,7 +127,7 @@ export default function BrainwritingTeamClient({
             </div>
           ) : (
             <div className="mx-auto max-w-4xl text-center">
-              <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              <div className="rounded-lg border border-border bg-surface p-6 shadow-sm">
                 <div className="flex flex-col items-center gap-3">
                   <div className="flex items-center gap-2">
                     <div className="bg-primary h-2 w-2 animate-pulse rounded-full"></div>
@@ -137,7 +137,7 @@ export default function BrainwritingTeamClient({
                   <p className="text-primary text-lg font-medium">
                     作成者が開始するまでお待ちください
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted">
                     参加者が揃い次第、ブレインライティングが開始されます
                   </p>
                 </div>

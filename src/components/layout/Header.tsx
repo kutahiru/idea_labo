@@ -65,7 +65,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
                 : "md:pointer-events-none md:scale-95 md:opacity-0"
             }`}
           >
-            <div className="rounded-md border border-gray-200 bg-white shadow-lg">
+            <div className="rounded-md border border-border bg-surface shadow-lg">
               <div className="py-1">
                 <Link
                   href="/brainwritings"
@@ -106,7 +106,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
             <div className="mt-1 space-y-1 md:hidden">
               <Link
                 href="/brainwritings"
-                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-gray-100"
+                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-surface-hover"
                 onClick={() => {
                   setIsFrameworkOpen(false);
                   closeMenu?.();
@@ -116,7 +116,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
               </Link>
               <Link
                 href="/mandalarts"
-                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-gray-100"
+                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-surface-hover"
                 onClick={() => {
                   setIsFrameworkOpen(false);
                   closeMenu?.();
@@ -126,7 +126,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
               </Link>
               <Link
                 href="/osborn-checklists"
-                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-gray-100"
+                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-surface-hover"
                 onClick={() => {
                   setIsFrameworkOpen(false);
                   closeMenu?.();
@@ -206,7 +206,7 @@ export default function Header() {
   }
 
   return (
-    <header className="border-primary/20 relative z-50 border-b bg-white shadow-sm">
+    <header className="border-primary/20 relative z-50 border-b bg-surface shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* 左側：ロゴ */}
@@ -234,7 +234,7 @@ export default function Header() {
           {/* モバイル：ハンバーガーメニューボタン */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-inset md:hidden"
+            className="inline-flex items-center justify-center rounded-md p-2 text-muted hover:bg-surface-hover hover:text-foreground focus:ring-2 focus:ring-primary focus:outline-none focus:ring-inset md:hidden"
             aria-expanded={isMobileMenuOpen}
           >
             <span className="sr-only">メニューを開く</span>
@@ -247,7 +247,7 @@ export default function Header() {
       {/* モバイルメニュー */}
       {isMobileMenuOpen && (
         <div className="md:hidden">
-          <div className="border-t border-gray-200 bg-gray-50 px-2 pt-2 pb-3 sm:px-3">
+          <div className="border-t border-border bg-surface-hover px-2 pt-2 pb-3 sm:px-3">
             <Navigation isLoggedIn={isLoggedIn} closeMenu={closeMobileMenu} />
           </div>
         </div>

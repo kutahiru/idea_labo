@@ -95,7 +95,7 @@ export default function OsbornChecklistCell({
       }}
       className="w-full"
     >
-      <div className="rounded-xl bg-white/50 p-4 shadow-sm">
+      <div className="rounded-xl bg-surface/50 p-4 shadow-sm">
         <div className="mb-3 flex items-center gap-1">
           <h3 className="text-primary decoration-accent text-xl font-bold underline decoration-4 underline-offset-[-2px]">
             {title}
@@ -109,7 +109,7 @@ export default function OsbornChecklistCell({
           </div>
         </div>
         <div
-          className="border-primary/50 relative flex min-h-[100px] cursor-text items-start justify-center rounded-lg border-2 bg-white p-3 shadow-md transition-all duration-300 hover:shadow-lg"
+          className="border-primary/50 relative flex min-h-[100px] cursor-text items-start justify-center rounded-lg border-2 bg-surface p-3 shadow-md transition-all duration-300 hover:shadow-lg"
           onClick={() => textareaRef.current?.focus()}
         >
           <textarea

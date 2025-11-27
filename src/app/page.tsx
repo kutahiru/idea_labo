@@ -419,7 +419,7 @@ export default function Home() {
                       <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
                         チームで発想
                       </h3>
-                      <p className="leading-relaxed text-gray-600 md:text-lg">
+                      <p className="leading-relaxed text-muted md:text-lg">
                         最大6人まで参加可能。みんなのアイデアを見ながら、刺激を受けて新しい発想が生まれます。
                       </p>
                     </div>
@@ -438,7 +438,7 @@ export default function Home() {
                       <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
                         アイデアの連鎖
                       </h3>
-                      <p className="leading-relaxed text-gray-600 md:text-lg">
+                      <p className="leading-relaxed text-muted md:text-lg">
                         他の人のアイデアから発想を広げ、連鎖的に新しいアイデアが生まれる仕組みです。
                       </p>
                     </div>
@@ -457,7 +457,7 @@ export default function Home() {
                       <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
                         効率的な発想
                       </h3>
-                      <p className="leading-relaxed text-gray-600 md:text-lg">
+                      <p className="leading-relaxed text-muted md:text-lg">
                         6行×3列の形式で、1つのシートから最大18個のアイデアを効率的に生み出せます。
                       </p>
                     </div>
@@ -517,7 +517,7 @@ export default function Home() {
                       <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
                         視覚的な整理
                       </h3>
-                      <p className="leading-relaxed text-gray-600 md:text-lg">
+                      <p className="leading-relaxed text-muted md:text-lg">
                         9×9のマス目を使って、思考を視覚的に整理。全体像を見渡しながら、体系的にアイデアを配置できます。
                       </p>
                     </div>
@@ -536,7 +536,7 @@ export default function Home() {
                       <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
                         アイデアの拡張
                       </h3>
-                      <p className="leading-relaxed text-gray-600 md:text-lg">
+                      <p className="leading-relaxed text-muted md:text-lg">
                         中心から外側へと発想を広げることで、1つのテーマから最大81個のアイデアを生み出せます。
                       </p>
                     </div>
@@ -553,7 +553,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1 pt-1">
                       <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">目標達成</h3>
-                      <p className="leading-relaxed text-gray-600 md:text-lg">
+                      <p className="leading-relaxed text-muted md:text-lg">
                         大きな目標を細分化し、具体的な行動に落とし込むことで、達成への道筋が明確になります。
                       </p>
                     </div>
@@ -615,7 +615,7 @@ export default function Home() {
                       <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
                         9つの視点
                       </h3>
-                      <p className="leading-relaxed text-gray-600 md:text-lg">
+                      <p className="leading-relaxed text-muted md:text-lg">
                         転用・応用・変更・拡大・縮小・代用・再配置・逆転・結合の9つの切り口で、体系的にアイデアを発想できます。
                       </p>
                     </div>
@@ -634,7 +634,7 @@ export default function Home() {
                       <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
                         多角的な発想
                       </h3>
-                      <p className="leading-relaxed text-gray-600 md:text-lg">
+                      <p className="leading-relaxed text-muted md:text-lg">
                         様々な角度からアイデアを見直すことで、思いもよらない新しい発想が生まれます。
                       </p>
                     </div>
@@ -653,7 +653,7 @@ export default function Home() {
                       <h3 className="text-primary mb-2 text-2xl font-bold md:text-3xl">
                         既存アイデアの改善
                       </h3>
-                      <p className="leading-relaxed text-gray-600 md:text-lg">
+                      <p className="leading-relaxed text-muted md:text-lg">
                         既存の商品やサービスに9つの視点を当てることで、改善・改良のヒントが見つかります。
                       </p>
                     </div>

@@ -76,7 +76,7 @@ export default function MandalartSection({
   };
 
   return (
-    <div className="border-primary/30 grid h-full w-full grid-cols-3 gap-1 rounded-lg border-2 bg-gray-50 p-1">
+    <div className="border-primary/30 grid h-full w-full grid-cols-3 gap-1 rounded-lg border-2 bg-surface-hover p-1">
       {[0, 1, 2].map(rowIndex =>
         [0, 1, 2].map(columnIndex => (
           <MandalartCell

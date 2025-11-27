@@ -33,7 +33,7 @@ export default function OsbornChecklistGuideModal({
 
           {/* モーダル本体 */}
           <motion.div
-            className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl"
+            className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-surface p-6 shadow-xl"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -43,7 +43,7 @@ export default function OsbornChecklistGuideModal({
             {/* 閉じるボタン */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+              className="absolute top-4 right-4 rounded-full p-2 text-muted-foreground transition-colors hover:bg-surface-hover hover:text-muted"
               aria-label="閉じる"
             >
               <X className="h-6 w-6" />
@@ -57,18 +57,18 @@ export default function OsbornChecklistGuideModal({
             {/* 説明コンテンツ */}
             <div className="space-y-6">
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">
                   オズボーンのチェックリストとは？
                 </h3>
-                <p className="leading-relaxed text-gray-700">
+                <p className="leading-relaxed text-muted">
                   オズボーンのチェックリストは、既存のアイデアや製品を9つの視点から見直すことで、新しいアイデアを発想する手法です。
                   「転用」「応用」「変更」「拡大」「縮小」「代用」「再配置」「逆転」「結合」の9つの視点から、アイデアを広げていきます。
                 </p>
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">基本的な流れ</h3>
-                <ol className="list-decimal space-y-2 pl-6 text-gray-700">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">基本的な流れ</h3>
+                <ol className="list-decimal space-y-2 pl-6 text-muted">
                   <li>
                     <strong>テーマ設定</strong>
                     <br />
@@ -93,8 +93,8 @@ export default function OsbornChecklistGuideModal({
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">9つの視点の活用例</h3>
-                <ul className="list-disc space-y-2 pl-6 text-gray-700">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">9つの視点の活用例</h3>
+                <ul className="list-disc space-y-2 pl-6 text-muted">
                   <li>
                     <strong>転用：</strong>コーヒーカップを鉛筆立てに、古着をクッションカバーに
                   </li>
@@ -126,8 +126,8 @@ export default function OsbornChecklistGuideModal({
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">効果的な使い方のコツ</h3>
-                <ul className="list-disc space-y-2 pl-6 text-gray-700">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">効果的な使い方のコツ</h3>
+                <ul className="list-disc space-y-2 pl-6 text-muted">
                   <li>各視点の?アイコンをホバーすると、具体的な例が表示されます</li>
                   <li>すべての項目を埋める必要はありません。思いつくものから記入しましょう</li>
                   <li>突飛なアイデアでも構いません。とにかく書き出してみましょう</li>
@@ -136,27 +136,27 @@ export default function OsbornChecklistGuideModal({
               </section>
 
               <section>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">よくある質問</h3>
+                <h3 className="mb-3 text-lg font-semibold text-foreground">よくある質問</h3>
                 <div className="space-y-3">
                   <div>
-                    <p className="font-semibold text-gray-800">
+                    <p className="font-semibold text-foreground">
                       Q. すべての項目を埋める必要がありますか？
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-muted">
                       A.
                       いいえ、必ずしもすべてを埋める必要はありません。思いつく項目から記入していきましょう。
                     </p>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800">Q. アイデアが思いつかない時は？</p>
-                    <p className="text-gray-700">
+                    <p className="font-semibold text-foreground">Q. アイデアが思いつかない時は？</p>
+                    <p className="text-muted">
                       A.
                       ?アイコンの例を参考にしたり、他の視点で考えたアイデアを組み合わせてみましょう。
                     </p>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800">Q. 入力内容は保存されますか？</p>
-                    <p className="text-gray-700">
+                    <p className="font-semibold text-foreground">Q. 入力内容は保存されますか？</p>
+                    <p className="text-muted">
                       A. はい、フォーカスを外すと自動的に保存されます。
                     </p>
                   </div>

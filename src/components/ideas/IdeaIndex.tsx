@@ -96,17 +96,17 @@ export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexPr
       {filteredIdeas.length === 0 && searchTerm ? (
         // 0件の場合
         <div className="py-12 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-            <Search className="h-6 w-6 text-gray-400" />
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-hover">
+            <Search className="h-6 w-6 text-muted-foreground" />
           </div>
-          <h3 className="mt-4 text-sm font-medium text-gray-900">検索結果が見つかりません</h3>
-          <p className="mt-2 text-sm text-gray-500">{searchTerm}に一致するアイデアがありません</p>
+          <h3 className="mt-4 text-sm font-medium text-foreground">検索結果が見つかりません</h3>
+          <p className="mt-2 text-sm text-muted-foreground">{searchTerm}に一致するアイデアがありません</p>
         </div>
       ) : filteredIdeas.length === 0 ? (
         // データが0件の場合
         <div className="py-12 text-center">
-          <h3 className="mt-4 text-sm font-medium text-gray-900">アイデアがまだありません</h3>
-          <p className="mt-2 text-sm text-gray-500">新規作成ボタンからアイデアを追加してください</p>
+          <h3 className="mt-4 text-sm font-medium text-foreground">アイデアがまだありません</h3>
+          <p className="mt-2 text-sm text-muted-foreground">新規作成ボタンからアイデアを追加してください</p>
         </div>
       ) : (
         // 0件以外の場合
@@ -116,7 +116,7 @@ export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexPr
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <table className="min-w-full divide-y-2 divide-gray-400 overflow-hidden rounded-lg border-r-4 border-l-4 border-gray-400 bg-white shadow-md">
+          <table className="min-w-full divide-y-2 divide-gray-400 overflow-hidden rounded-lg border-r-4 border-l-4 border-gray-400 bg-surface shadow-md">
             <thead className="bg-primary text-white">
               <tr>
                 <th className="w-24 px-3 py-3 text-center text-sm font-medium tracking-wider uppercase">
@@ -141,7 +141,7 @@ export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexPr
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y-2 divide-gray-400 bg-white">
+            <tbody className="divide-y-2 divide-gray-400 bg-surface">
               {filteredIdeas.map(idea => (
                 <IdeaIndexRow
                   key={idea.id}
@@ -159,17 +159,17 @@ export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexPr
               {loading ? (
                 <div className="flex items-center justify-center">
                   <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-                  <span className="ml-2 text-sm text-gray-500">読み込み中...</span>
+                  <span className="ml-2 text-sm text-muted-foreground">読み込み中...</span>
                 </div>
               ) : (
-                <div className="text-sm text-gray-400">スクロールして続きを読み込む</div>
+                <div className="text-sm text-muted-foreground">スクロールして続きを読み込む</div>
               )}
             </div>
           )}
 
           {/* 全データ表示完了メッセージ */}
           {!searchTerm && !hasMore && initialData.length > 20 && (
-            <div className="py-4 text-center text-sm text-gray-400">全てのデータを表示しました</div>
+            <div className="py-4 text-center text-sm text-muted-foreground">全てのデータを表示しました</div>
           )}
 
           {/* 検索時の下部余白 */}

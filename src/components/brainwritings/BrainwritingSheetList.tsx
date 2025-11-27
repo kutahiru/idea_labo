@@ -65,20 +65,20 @@ export default function BrainwritingSheetList({
                 className={`rounded-lg border p-4 shadow-sm transition-shadow hover:shadow-md ${
                   isCurrentUser
                     ? "bg-primary border-primary text-white"
-                    : "border-gray-200 bg-white"
+                    : "border-border bg-surface"
                 }`}
               >
                 <div className="mb-2">
                   <span
-                    className={`text-lg font-semibold ${isCurrentUser ? "text-white" : "text-gray-900"}`}
+                    className={`text-lg font-semibold ${isCurrentUser ? "text-white" : "text-foreground"}`}
                   >
                     シート {index + 1}
                   </span>
                 </div>
-                <div className={`text-sm ${isCurrentUser ? "text-white/90" : "text-gray-600"}`}>
+                <div className={`text-sm ${isCurrentUser ? "text-white/90" : "text-muted"}`}>
                   <span className="font-medium">現在のユーザー:</span>
                   <br />
-                  <span className={isCurrentUser ? "text-white" : "text-gray-900"}>
+                  <span className={isCurrentUser ? "text-white" : "text-foreground"}>
                     {getUserName(sheet.current_user_id)}
                   </span>
                 </div>
@@ -113,7 +113,7 @@ export default function BrainwritingSheetList({
               className={`rounded-md px-4 py-2 text-sm font-medium transition-all ${
                 activeSheetIndex === index
                   ? "bg-primary text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  : "bg-border text-muted hover:bg-border"
               }`}
             >
               シート {index + 1}

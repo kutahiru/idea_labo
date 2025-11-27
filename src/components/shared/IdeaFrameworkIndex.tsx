@@ -79,11 +79,11 @@ export default function IdeaFrameworkIndex<T extends BaseListItem>({
       {filteredItems.length === 0 && searchTerm ? (
         // 0件の場合
         <div className="py-12 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-hover">
             <Search className="h-6 w-6 text-gray-400" />
           </div>
-          <h3 className="mt-4 text-sm font-medium text-gray-900">検索結果が見つかりません</h3>
-          <p className="mt-2 text-sm text-gray-500">
+          <h3 className="mt-4 text-sm font-medium text-foreground">検索結果が見つかりません</h3>
+          <p className="mt-2 text-sm text-muted-foreground">
             {searchTerm}に一致する{frameworkName}がありません
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function IdeaFrameworkIndex<T extends BaseListItem>({
               {loading ? (
                 <div className="flex items-center justify-center">
                   <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-                  <span className="ml-2 text-sm text-gray-500">読み込み中...</span>
+                  <span className="ml-2 text-sm text-muted-foreground">読み込み中...</span>
                 </div>
               ) : (
                 <div className="text-sm text-gray-400">スクロールして続きを読み込む</div>

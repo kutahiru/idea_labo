@@ -133,7 +133,7 @@ export default function OsbornChecklistDetailClient({
             disabled={isGenerating}
             className={`inline-flex items-center rounded-md px-6 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 ${
               isGenerating
-                ? "cursor-not-allowed bg-gray-400"
+                ? "cursor-not-allowed bg-muted"
                 : "menu-link bg-primary hover:scale-105 hover:shadow-xl"
             }`}
           >

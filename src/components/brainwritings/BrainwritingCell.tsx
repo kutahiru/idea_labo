@@ -105,7 +105,7 @@ export default function BrainwritingCell({
         className={`relative flex h-[72px] items-center justify-center rounded-lg transition-all duration-300 ${
           isHighlighted
             ? "border-accent bg-accent/10 shadow-accent/20 border-4 shadow-xl"
-            : "border-primary/50 border-2 bg-white shadow-md hover:shadow-lg"
+            : "border-primary/50 border-2 bg-surface shadow-md hover:shadow-lg"
         }`}
       >
         {readOnly && (

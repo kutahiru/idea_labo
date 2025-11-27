@@ -119,7 +119,7 @@ export default function MandalartCell({
     if (isHighlightCell) {
       return "border-primary bg-primary/10 shadow-primary/10 border-2 shadow-xl";
     }
-    return "border-primary/50 border-2 bg-white shadow-md hover:shadow-lg";
+    return "border-primary/50 border-2 bg-surface shadow-md hover:shadow-lg";
   };
 
   return (

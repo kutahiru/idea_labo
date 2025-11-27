@@ -34,8 +34,8 @@ export default function UsageScopeSelector({
   return (
     <div>
       <div className="mb-2 flex items-center gap-2">
-        <label className="block text-sm font-semibold font-noto-sans-jp text-gray-700">利用方法</label>
-        {disabled && <span className="text-xs text-gray-500">（編集時は変更できません）</span>}
+        <label className="block text-sm font-semibold font-noto-sans-jp text-muted">利用方法</label>
+        {disabled && <span className="text-xs text-muted-foreground">（編集時は変更できません）</span>}
       </div>
       <div className="flex space-x-4">
         <label className="flex-1 cursor-pointer">
@@ -51,7 +51,7 @@ export default function UsageScopeSelector({
             className={`flex w-full items-center justify-center rounded-lg border-2 px-4 py-3 transition-all duration-200 ${
               value === USAGE_SCOPE.XPOST
                 ? "bg-primary border-primary text-white shadow-lg"
-                : "hover:border-primary border-gray-200 bg-white text-gray-700 hover:shadow-md"
+                : "hover:border-primary border-border bg-surface text-muted hover:shadow-md"
             }`}
           >
             <div className="text-center">
@@ -73,7 +73,7 @@ export default function UsageScopeSelector({
             className={`flex w-full items-center justify-center rounded-lg border-2 px-4 py-3 transition-all duration-200 ${
               value === USAGE_SCOPE.TEAM
                 ? "bg-primary border-primary text-white shadow-lg"
-                : "hover:border-primary border-gray-200 bg-white text-gray-700 hover:shadow-md"
+                : "hover:border-primary border-border bg-surface text-muted hover:shadow-md"
             }`}
           >
             <div className="text-center">

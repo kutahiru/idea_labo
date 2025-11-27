@@ -5,7 +5,7 @@ export default function PrivacyPolicyPage() {
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">プライバシーポリシー</h1>
 
-      <div className="space-y-6 text-gray-700">
+      <div className="space-y-6 text-muted">
         <section>
           <p className="mb-4">
             アイデア研究所(以下「当サービス」といいます)は、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー(以下「本ポリシー」といいます)を定めます。
@@ -138,7 +138,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="pt-4">
-          <p className="text-sm text-gray-600">制定日: 2025年10月15日</p>
+          <p className="text-sm text-muted">制定日: 2025年10月15日</p>
         </section>
       </div>
 

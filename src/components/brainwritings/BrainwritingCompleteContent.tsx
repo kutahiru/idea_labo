@@ -34,7 +34,7 @@ export default function BrainwritingCompleteContent({
       <div className="mt-2 text-center">
         <div className="mb-6">
           <h1 className="text-primary mb-2 text-3xl font-bold">回答完了</h1>
-          <p className="mt-4 text-gray-600">
+          <p className="mt-4 text-muted">
             ブレインライティングへの回答が完了しました
             <br />
             ご協力ありがとうございました

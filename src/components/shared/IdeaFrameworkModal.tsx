@@ -99,8 +99,8 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
 
   // 共通スタイルクラス
   const inputClasses =
-    "w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 outline-none text-gray-800 font-noto-sans-jp focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/10 transition-all duration-200";
-  const labelClasses = "block text-gray-700 text-sm font-semibold font-noto-sans-jp mb-2";
+    "w-full px-4 py-3 border border-border rounded-lg bg-surface-hover outline-none text-foreground font-noto-sans-jp focus:border-primary focus:bg-surface focus:ring-2 focus:ring-primary/10 transition-all duration-200";
+  const labelClasses = "block text-muted text-sm font-semibold font-noto-sans-jp mb-2";
   const errorClasses = "mt-1 text-sm text-red-500";
 
   return (
@@ -116,7 +116,7 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
 
       {/* モーダル本体 */}
       <motion.div
-        className="relative max-h-[90vh] w-[600px] overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-2xl"
+        className="relative max-h-[90vh] w-[600px] overflow-y-auto rounded-2xl border border-border bg-surface shadow-2xl"
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -179,7 +179,7 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
               value={formData.description || ""}
               onChange={e => handleInputChange("description" as keyof T, e.target.value)}
               rows={4}
-              className="font-noto-sans-jp focus:border-primary focus:ring-primary/10 w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 outline-none focus:bg-white focus:ring-2"
+              className="font-noto-sans-jp focus:border-primary focus:ring-primary/10 w-full resize-none rounded-lg border border-border bg-surface-hover px-4 py-3 text-foreground transition-all duration-200 outline-none focus:bg-surface focus:ring-2"
               placeholder="説明（任意）"
               maxLength={500}
               disabled={isSubmitting}
@@ -193,11 +193,11 @@ export default function IdeaFrameworkModal<T extends BaseIdeaFormData>({
             : children}
 
           {/* ボタン */}
-          <div className="flex justify-end space-x-3 border-t border-gray-100 pt-6">
+          <div className="flex justify-end space-x-3 border-t border-border pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="font-noto-sans-jp transform rounded-lg bg-gray-100 px-6 py-3 font-medium text-gray-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-200 hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="font-noto-sans-jp transform rounded-lg bg-surface-hover px-6 py-3 font-medium text-muted transition-all duration-200 hover:-translate-y-0.5 hover:bg-border hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
               disabled={isSubmitting}
             >
               キャンセル

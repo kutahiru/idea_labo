@@ -73,7 +73,7 @@ export default function MyPageClient({ initialData }: MyPageClientProps) {
   return (
     <div className="mx-auto max-w-2xl">
       {/* ユーザー情報カード */}
-      <div className="rounded-2xl border border-gray-100 bg-white shadow-lg overflow-hidden">
+      <div className="rounded-2xl border border-border bg-surface shadow-lg overflow-hidden">
         {/* ヘッダー */}
         <div className="bg-primary px-8 py-6">
           <h2 className="text-2xl font-semibold text-white text-center">
@@ -85,10 +85,10 @@ export default function MyPageClient({ initialData }: MyPageClientProps) {
         <div className="p-8 space-y-6">
           {/* 名前 */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-muted mb-2">
               名前
             </label>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800">
+            <div className="bg-surface-hover border border-border rounded-lg px-4 py-3 text-foreground">
               {user.name}
             </div>
           </div>

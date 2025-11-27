@@ -232,7 +232,7 @@ export default function Home() {
             variants={container}
           >
             <motion.h1
-              className="font-wdxl-lubrifont text-primary mb-4 flex items-center justify-center gap-4 text-5xl tracking-widest md:gap-6 md:text-6xl lg:text-7xl xl:text-8xl"
+              className="font-wdxl-lubrifont text-primary mb-4 flex flex-col items-center justify-center gap-2 text-5xl tracking-widest md:flex-row md:gap-6 md:text-6xl lg:text-7xl xl:text-8xl"
               variants={item}
             >
               <motion.div variants={logoItem} initial="hidden" animate="show">
@@ -242,7 +242,7 @@ export default function Home() {
                   width={120}
                   height={120}
                   priority
-                  className="h-16 w-auto translate-x-4 md:h-20 md:translate-x-5 lg:h-24 xl:h-32"
+                  className="h-16 w-auto md:h-20 md:translate-x-5 lg:h-24 xl:h-32"
                 />
               </motion.div>
               <span className="title-underline">

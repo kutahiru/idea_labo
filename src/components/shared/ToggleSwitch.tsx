@@ -36,7 +36,7 @@ export default function ToggleSwitch({
         } ${checked ? "bg-primary" : "bg-gray-400"}`}
       >
         <span
-          className={`inline-block h-6 w-6 transform rounded-full bg-surface transition-transform duration-300 ${
+          className={`inline-block h-6 w-6 transform rounded-full bg-white shadow transition-transform duration-300 ${
             checked ? "translate-x-7" : "translate-x-1"
           }`}
         />

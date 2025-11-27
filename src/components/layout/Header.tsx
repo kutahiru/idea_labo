@@ -58,14 +58,9 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
           </button>
 
           {/* デスクトップ用ドロップダウン */}
-          <div
-            className={`hidden md:block md:absolute md:left-0 md:top-full md:mt-1 md:w-56 md:origin-top md:transition-all md:duration-200 ${
-              isFrameworkOpen
-                ? "md:scale-100 md:opacity-100"
-                : "md:pointer-events-none md:scale-95 md:opacity-0"
-            }`}
-          >
-            <div className="rounded-md border border-border bg-surface shadow-lg">
+          {isFrameworkOpen && (
+            <div className="hidden md:absolute md:left-0 md:top-full md:z-50 md:mt-1 md:block md:w-56">
+              <div className="rounded-md border border-border bg-white shadow-lg dark:bg-[#1a1a1a]">
               <div className="py-1">
                 <Link
                   href="/brainwritings"
@@ -100,13 +95,14 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
               </div>
             </div>
           </div>
+          )}
 
           {/* モバイル用展開リスト */}
           {isFrameworkOpen && (
-            <div className="mt-1 space-y-1 md:hidden">
+            <div className="mt-1 space-y-1 rounded-md bg-surface py-1 md:hidden">
               <Link
                 href="/brainwritings"
-                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-surface-hover"
+                className="font-lora header-link text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium"
                 onClick={() => {
                   setIsFrameworkOpen(false);
                   closeMenu?.();
@@ -116,7 +112,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
               </Link>
               <Link
                 href="/mandalarts"
-                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-surface-hover"
+                className="font-lora header-link text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium"
                 onClick={() => {
                   setIsFrameworkOpen(false);
                   closeMenu?.();
@@ -126,7 +122,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
               </Link>
               <Link
                 href="/osborn-checklists"
-                className="font-lora text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium transition-colors hover:bg-surface-hover"
+                className="font-lora header-link text-primary block rounded-md py-2 pl-6 pr-3 text-base font-medium"
                 onClick={() => {
                   setIsFrameworkOpen(false);
                   closeMenu?.();
@@ -206,7 +202,7 @@ export default function Header() {
   }
 
   return (
-    <header className="border-primary/20 relative z-50 border-b bg-surface shadow-sm">
+    <header className="border-primary/20 sticky top-0 z-50 border-b bg-surface shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* 左側：ロゴ */}

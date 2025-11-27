@@ -83,34 +83,36 @@ export default function InviteLinkCopy({
           disabled={isUpdating}
         />
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <input
           type="text"
           value={inviteUrl}
           readOnly
-          className="flex-1 rounded-md border border-border bg-surface px-3 py-2 text-sm text-muted"
+          className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-muted sm:flex-1"
         />
-        <button
-          onClick={handleCopy}
-          disabled={!isInviteActive}
-          className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform ${
-            !isInviteActive ? "cursor-not-allowed bg-gray-400" : "bg-primary hover:scale-105"
-          }`}
-        >
-          <Copy className="h-4 w-4" />
-          コピー
-        </button>
-        <Link
-          href={inviteUrl}
-          className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform ${
-            !isInviteActive
-              ? "pointer-events-none cursor-not-allowed bg-gray-400"
-              : "bg-primary hover:scale-105"
-          }`}
-        >
-          <ExternalLink className="h-4 w-4" />
-          開く
-        </Link>
+        <div className="flex gap-2">
+          <button
+            onClick={handleCopy}
+            disabled={!isInviteActive}
+            className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform sm:flex-none ${
+              !isInviteActive ? "cursor-not-allowed bg-gray-400" : "bg-primary hover:scale-105"
+            }`}
+          >
+            <Copy className="h-4 w-4" />
+            コピー
+          </button>
+          <Link
+            href={inviteUrl}
+            className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform sm:flex-none ${
+              !isInviteActive
+                ? "pointer-events-none cursor-not-allowed bg-gray-400"
+                : "bg-primary hover:scale-105"
+            }`}
+          >
+            <ExternalLink className="h-4 w-4" />
+            開く
+          </Link>
+        </div>
       </div>
     </div>
   );

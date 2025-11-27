@@ -145,9 +145,9 @@ export default function BrainwritingDetailClient({
 
       {/* X投稿ボタン（X投稿版） */}
       {brainwriting.usageScope === USAGE_SCOPE.XPOST && (
-        <div className="mt-8 mb-6 flex items-center justify-center gap-6">
+        <div className="mt-8 mb-6 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
           <XPostButton buttonName="共有" onClick={handleXPost} disabled={!isInviteActive} />
-          <div className="bg-primary/10 rounded-lg px-4 py-3">
+          <div className="bg-primary/10 w-56 rounded-lg px-4 py-3 sm:w-auto">
             <ToggleSwitch
               label="共有リンク"
               checked={isInviteActive}
@@ -155,7 +155,7 @@ export default function BrainwritingDetailClient({
               disabled={isUpdating}
             />
           </div>
-          <div className="group bg-primary/10 relative rounded-lg px-4 py-3">
+          <div className="group bg-primary/10 relative w-56 rounded-lg px-4 py-3 sm:w-auto">
             <ToggleSwitch
               label="結果公開"
               checked={isResultsPublic}

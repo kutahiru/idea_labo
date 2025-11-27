@@ -5,7 +5,7 @@ import { Search, Loader2 } from "lucide-react";
 import SearchBar from "@/components/layout/SearchBar";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useSearch } from "@/hooks/useSearch";
-import IdeaIndexRow from "./IdeaIndexRow";
+import IdeaIndexRow, { IdeaCard } from "./IdeaIndexRow";
 import { motion } from "framer-motion";
 import { useState, useMemo } from "react";
 
@@ -111,47 +111,61 @@ export default function IdeaIndex({ initialData, onEdit, onDelete }: IdeaIndexPr
       ) : (
         // 0件以外の場合
         <motion.div
-          className="overflow-x-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <table className="min-w-full divide-y-2 divide-gray-400 overflow-hidden rounded-lg border-r-4 border-l-4 border-gray-400 bg-surface shadow-md">
-            <thead className="bg-primary text-white">
-              <tr>
-                <th className="w-24 px-3 py-3 text-center text-sm font-medium tracking-wider uppercase">
-                  <button
-                    onClick={handleSortToggle}
-                    className="flex w-full items-center justify-center gap-1 transition-colors hover:text-gray-200"
-                  >
-                    重要度
-                    {sortOrder === "desc" && <span>▼</span>}
-                    {sortOrder === "asc" && <span>▲</span>}
-                    {sortOrder === null && <span className="text-gray-300">⇅</span>}
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium tracking-wider uppercase">
-                  アイデア名
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium tracking-wider uppercase">
-                  説明
-                </th>
-                <th className="w-32 px-2 py-3 text-center text-sm font-medium tracking-wider uppercase">
-                  操作
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y-2 divide-gray-400 bg-surface">
-              {filteredIdeas.map(idea => (
-                <IdeaIndexRow
-                  key={idea.id}
-                  {...idea}
-                  onEdit={onEdit ? () => onEdit(idea) : undefined}
-                  onDelete={onDelete ? () => onDelete(idea) : undefined}
-                />
-              ))}
-            </tbody>
-          </table>
+          {/* モバイル用カードリスト */}
+          <div className="flex flex-col gap-3 sm:hidden">
+            {filteredIdeas.map(idea => (
+              <IdeaCard
+                key={idea.id}
+                {...idea}
+                onEdit={onEdit ? () => onEdit(idea) : undefined}
+                onDelete={onDelete ? () => onDelete(idea) : undefined}
+              />
+            ))}
+          </div>
+
+          {/* PC用テーブル */}
+          <div className="hidden overflow-x-auto sm:block">
+            <table className="min-w-full divide-y-2 divide-gray-400 overflow-hidden rounded-lg border-r-4 border-l-4 border-gray-400 bg-surface shadow-md">
+              <thead className="bg-primary text-white">
+                <tr>
+                  <th className="w-24 px-3 py-3 text-center text-sm font-medium tracking-wider uppercase">
+                    <button
+                      onClick={handleSortToggle}
+                      className="flex w-full items-center justify-center gap-1 transition-colors hover:text-gray-200"
+                    >
+                      重要度
+                      {sortOrder === "desc" && <span>▼</span>}
+                      {sortOrder === "asc" && <span>▲</span>}
+                      {sortOrder === null && <span className="text-gray-300">⇅</span>}
+                    </button>
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium tracking-wider uppercase">
+                    アイデア名
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium tracking-wider uppercase">
+                    説明
+                  </th>
+                  <th className="w-32 px-2 py-3 text-center text-sm font-medium tracking-wider uppercase">
+                    操作
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y-2 divide-gray-400 bg-surface">
+                {filteredIdeas.map(idea => (
+                  <IdeaIndexRow
+                    key={idea.id}
+                    {...idea}
+                    onEdit={onEdit ? () => onEdit(idea) : undefined}
+                    onDelete={onDelete ? () => onDelete(idea) : undefined}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {/* 無限スクロール用の監視要素 */}
           {!searchTerm && hasMore && (

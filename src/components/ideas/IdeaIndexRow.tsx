@@ -24,6 +24,7 @@ const priorityLabels = {
  *
  * アイデアの重要度を色付きバッジで表示し（高：赤、中：黄、低：緑）、
  * アイデア名、説明、操作ボタン（編集・削除）を含むテーブル行を構成します。
+ * スマホではカード形式、PC（sm以上）ではテーブル行で表示します。
  *
  * @param name - アイデア名
  * @param description - アイデアの説明
@@ -78,5 +79,52 @@ export default function IdeaIndexRow({
         </div>
       </td>
     </tr>
+  );
+}
+
+/**
+ * アイデアをカード形式で表示するコンポーネント（モバイル用）
+ */
+export function IdeaCard({
+  name,
+  description,
+  priority,
+  onEdit,
+  onDelete,
+}: IdeaIndexRowProps) {
+  const priorityColor =
+    priorityColors[priority as keyof typeof priorityColors] || priorityColors.medium;
+  const priorityLabel = priorityLabels[priority as keyof typeof priorityLabels] || "中";
+
+  return (
+    <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${priorityColor}`}>
+          {priorityLabel}
+        </span>
+        <div className="flex items-center gap-2">
+          {onEdit && (
+            <button
+              onClick={onEdit}
+              className="inline-flex items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+            >
+              編集
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={onDelete}
+              className="bg-alert inline-flex cursor-pointer items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+            >
+              削除
+            </button>
+          )}
+        </div>
+      </div>
+      <h3 className="mb-2 text-base font-medium text-foreground">{name}</h3>
+      <p className="line-clamp-2 text-sm text-muted">
+        {description || <span className="text-muted-foreground italic">説明が設定されていません</span>}
+      </p>
+    </div>
   );
 }

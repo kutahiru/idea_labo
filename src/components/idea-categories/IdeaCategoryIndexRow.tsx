@@ -52,7 +52,7 @@ export default function IdeaCategoryIndexRow({
       <div className="relative">
         {/* ヘッダー部分 */}
         <div className="mb-4">
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-0">
             <div className="min-w-0 flex-1">
               <h3 className="text-primary truncate text-lg font-semibold">
                 <span
@@ -69,19 +69,19 @@ export default function IdeaCategoryIndexRow({
               </h3>
             </div>
 
-            <div className="flex flex-col items-end gap-2">
-              {/* アクションボタン */}
-              <div className="flex items-center gap-2">
-                <Link
-                  href={`/idea-categories/${id}`}
-                  className="bg-primary inline-flex items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
-                >
-                  アイデア一覧
-                </Link>
+            {/* アクションボタン */}
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+              <Link
+                href={`/idea-categories/${id}`}
+                className="bg-primary inline-flex w-full items-center justify-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105 sm:w-auto"
+              >
+                アイデア一覧
+              </Link>
+              <div className="flex gap-2">
                 {onEdit && (
                   <button
                     onClick={onEdit}
-                    className="inline-flex items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+                    className="inline-flex flex-1 items-center justify-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105 sm:flex-none"
                   >
                     編集
                   </button>
@@ -89,7 +89,7 @@ export default function IdeaCategoryIndexRow({
                 {onDelete && (
                   <button
                     onClick={onDelete}
-                    className="bg-alert inline-flex cursor-pointer items-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+                    className="bg-alert inline-flex flex-1 cursor-pointer items-center justify-center rounded-md px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105 sm:flex-none"
                   >
                     削除
                   </button>

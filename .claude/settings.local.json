@@ -7,7 +7,8 @@
       "Bash(for file in /app/src/components/mandalarts/MandalartDetailClient.tsx /app/src/components/osborn-checklists/OsbornChecklistDetailClient.tsx /app/src/components/brainwritings/BrainwritingInviteClient.tsx /app/src/components/brainwritings/BrainwritingInputClient.tsx /app/src/components/brainwritings/BrainwritingTeamClient.tsx /app/src/components/mypage/MyPageClient.tsx /app/src/components/mypage/AddUserClient.tsx /app/src/components/ideas/CreateIdeaButton.tsx)",
       "Bash(do)",
       "Bash(sed:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(npm test:*)"
     ],
     "deny": [],
     "ask": []

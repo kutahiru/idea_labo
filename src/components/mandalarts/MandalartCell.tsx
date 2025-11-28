@@ -136,8 +136,14 @@ export default function MandalartCell({
       <div
         className={
           "relative flex h-[72px] items-center justify-center rounded-lg transition-all duration-300 " +
-          getCellStyle()
+          getCellStyle() +
+          (readOnly ? "" : " cursor-text")
         }
+        onClick={() => {
+          if (!readOnly && textareaRef.current) {
+            textareaRef.current.focus();
+          }
+        }}
       >
         <textarea
           ref={textareaRef}

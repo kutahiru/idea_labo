@@ -81,7 +81,7 @@ export default function IdeaCategoryIndexRow({
                 {onEdit && (
                   <button
                     onClick={onEdit}
-                    className="inline-flex flex-1 items-center justify-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105 sm:flex-none"
+                    className="inline-flex flex-1 cursor-pointer items-center justify-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105 sm:flex-none"
                   >
                     編集
                   </button>

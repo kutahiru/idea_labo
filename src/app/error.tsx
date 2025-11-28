@@ -23,7 +23,7 @@ export default function Error({
       </p>
       <button
         onClick={reset}
-        className="mt-8 inline-flex items-center gap-2 rounded-md bg-primary px-8 py-4 text-lg font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-primary-hover hover:shadow-xl"
+        className="mt-8 inline-flex cursor-pointer items-center gap-2 rounded-md bg-primary px-8 py-4 text-lg font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-primary-hover hover:shadow-xl"
       >
         <RefreshCw size={20} />
         再試行

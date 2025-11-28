@@ -48,7 +48,7 @@ export default function BrainwritingCompleteContent({
         <div className="flex justify-center gap-4">
           <button
             onClick={() => router.push("/")}
-            className="rounded-md bg-gray-500 px-6 py-2 text-white transition-transform hover:scale-105"
+            className="cursor-pointer rounded-md bg-gray-500 px-6 py-2 text-white transition-transform hover:scale-105"
           >
             トップページに戻る
           </button>

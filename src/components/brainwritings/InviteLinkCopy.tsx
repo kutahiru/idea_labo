@@ -95,7 +95,7 @@ export default function InviteLinkCopy({
             onClick={handleCopy}
             disabled={!isInviteActive}
             className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform sm:flex-none ${
-              !isInviteActive ? "cursor-not-allowed bg-gray-400" : "bg-primary hover:scale-105"
+              !isInviteActive ? "cursor-not-allowed bg-gray-400" : "cursor-pointer bg-primary hover:scale-105"
             }`}
           >
             <Copy className="h-4 w-4" />
@@ -106,7 +106,7 @@ export default function InviteLinkCopy({
             className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-transform sm:flex-none ${
               !isInviteActive
                 ? "pointer-events-none cursor-not-allowed bg-gray-400"
-                : "bg-primary hover:scale-105"
+                : "cursor-pointer bg-primary hover:scale-105"
             }`}
           >
             <ExternalLink className="h-4 w-4" />

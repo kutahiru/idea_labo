@@ -120,7 +120,7 @@ export default function BrainwritingTeamClient({
             <div className="mx-auto max-w-4xl text-center">
               <button
                 onClick={handleStart}
-                className="bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white transition-transform hover:scale-105"
+                className="bg-primary inline-flex cursor-pointer items-center rounded-md px-20 py-2 text-base font-medium text-white transition-transform hover:scale-105"
               >
                 開始
               </button>

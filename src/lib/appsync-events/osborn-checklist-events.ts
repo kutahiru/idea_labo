@@ -8,10 +8,14 @@ import { OsbornChecklistEventType } from "./event-types";
 /**
  * オズボーンのチェックリストのイベントを発行
  * エラーが発生してもメイン処理には影響しない
+ * @param osbornChecklistId - オズボーンのチェックリストID
+ * @param eventType - イベントタイプ
+ * @param errorMessage - エラーメッセージ（失敗時のみ）
  */
 export async function publishOsbornChecklistEvent(
   osbornChecklistId: number,
-  eventType: OsbornChecklistEventType
+  eventType: OsbornChecklistEventType,
+  errorMessage?: string
 ): Promise<void> {
   try {
     await publishEvent({
@@ -19,6 +23,7 @@ export async function publishOsbornChecklistEvent(
       channel: `/osborn-checklist/${osbornChecklistId}`,
       data: {
         type: eventType,
+        ...(errorMessage && { errorMessage }),
       },
     });
   } catch (error) {

@@ -97,7 +97,7 @@ export default function MyPageClient({ initialData }: MyPageClientProps) {
           <div className="flex justify-center pt-4">
             <button
               onClick={handleOpenEditModal}
-              className="bg-primary text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 inline-flex items-center"
+              className="bg-primary text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 inline-flex items-center cursor-pointer"
             >
               <Pencil className="mr-2 h-5 w-5" />
               編集

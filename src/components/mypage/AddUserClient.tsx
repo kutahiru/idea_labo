@@ -119,7 +119,7 @@ export default function AddUserClient({ currentName, redirectUrl }: AddUserClien
       <button
         type="submit"
         disabled={isSubmitting}
-        className="bg-primary w-full rounded-lg py-3 font-medium text-white transition-all hover:shadow-lg disabled:bg-gray-400 disabled:hover:shadow-none"
+        className="bg-primary w-full cursor-pointer rounded-lg py-3 font-medium text-white transition-all hover:shadow-lg disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:shadow-none"
       >
         {isSubmitting ? "設定中..." : "設定して始める"}
       </button>

@@ -63,7 +63,7 @@ export default function IdeaIndexRow({
           {onEdit && (
             <button
               onClick={onEdit}
-              className="inline-flex items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+              className="inline-flex cursor-pointer items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
             >
               編集
             </button>
@@ -106,7 +106,7 @@ export function IdeaCard({
           {onEdit && (
             <button
               onClick={onEdit}
-              className="inline-flex items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
+              className="inline-flex cursor-pointer items-center rounded-md bg-gray-500 px-3 py-1 text-sm font-medium text-white transition-transform hover:scale-105"
             >
               編集
             </button>

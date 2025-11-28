@@ -1,5 +1,11 @@
 # アイデア研究所
 
+<a href="https://idea-kenkyujo.com">
+  <img src="https://github.com/user-attachments/assets/64c711c4-d8f9-481d-9009-3212c5ee6413" alt="アイデア研究所" width="600">
+</a>
+
+**🌐 アプリURL:** https://idea-kenkyujo.com
+
 ## サービス概要
 
 当アプリはアイデアの発想と管理を可能とするアプリとなります。
@@ -67,21 +73,21 @@ RUNTEQ生の役に立つアプリを主題に考えました。
 - ブレインライティングをXに投稿することで不特定多数からのアイデアを募集できます。
 - 1つのプラットフォームで3つのフレームワークを利用することができます。
 
-## 機能候補
-
-### MVP機能
-
-#### ログイン機能
+## 機能
+### ログイン機能
 
 - Googleによるログインを可能とする。
 
-#### プロフィール管理
+### プロフィール管理
 
 - ユーザー名の設定を可能とする。
 
-#### 使い方
+### 使い方
 
 - 各フレームワークの使い方を記載する。
+
+### 🧠ブレインライティング
+<img width="600" height="1513" alt="brainwriting_guide" src="https://github.com/user-attachments/assets/1374d0ce-a3ca-48aa-b27c-905fb30cf70f" />
 
 #### ブレインライティング(X投稿版)
 
@@ -120,38 +126,39 @@ RUNTEQ生の役に立つアプリを主題に考えました。
 - 自身の担当の共有リンク押下でアイデアシート画面を開き、未入力の先頭1行の入力を可能とする。
 - 人数分の共有リンクがあるので繰り返す(全部で1人6回記入)
 
-#### アイデアカテゴリ管理
+### アイデアカテゴリ管理
 
 - アイデアカテゴリの登録を可能とする。
 - グループ名、説明を設定可能とする。
 
-#### アイデア管理
+### アイデア管理
 
 - アイデアの登録を可能とする。
 - アイデア名、説明、重要度(低、中、高)を設定可能とする。
 
-### 本リリース機能
-
-#### マンダラート
+### 📊マンダラート
+<img width="600" height="1699" alt="mandalart_guide" src="https://github.com/user-attachments/assets/0b5c02bd-2fe4-4ad9-9146-5ee1b6f47838" />
 
 - 9×9の81マスのマス目を用意してマス毎に入力を可能とする。
 - 中央の9マスのブロックの中心を除く8マスに記載された内容は、  
   　中央のブロックの周囲に配置されているブロックの中心にコピーする。
 
-#### オズボーンのチェックリスト
+### 📋オズボーンのチェックリスト
+<img width="600" height="1614" alt="osborn_checklist_guide" src="https://github.com/user-attachments/assets/064958a1-038d-4710-8ff0-b04bd50dfef6" />
 
 - テーマの設定を可能とする。
 - 9マスの入力可能なテキストボックスを用意し、  
   　それぞれに「転用」「応用」「変更」「拡大」「縮小」「代用」「置換」「逆転」「結合」  
   　の視点から入力を可能とする。
+- AIによる自動入力を可能とする。
 
-## 機能の実装方針
+## 使用技術
 
 - React
 - TypeScript
 - Tailwind CSS
 - Next.js
-- NextAuth.js
+- Auth.js
 - PostgreSQL
 - Drizzle
 
@@ -161,6 +168,7 @@ https://www.figma.com/design/sfQLmmaGqgEwSyDF21QqVL/%E3%82%A2%E3%82%A4%E3%83%87%
 
 ## ER図
 
-<img width="1728" height="1734" alt="ER図" src="https://github.com/user-attachments/assets/27b7aead-c3cc-4f46-8557-05daa07ec272" />
+<img width="1061" height="1480" alt="Untitled (5)" src="https://github.com/user-attachments/assets/812a015b-9ca6-43ff-a953-b1473393d786" />
+
 
 論理名はdbdiagramファイルで確認可能

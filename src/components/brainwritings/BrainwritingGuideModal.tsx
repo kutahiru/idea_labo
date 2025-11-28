@@ -43,7 +43,7 @@ export default function BrainwritingGuideModal({ isOpen, onClose }: Brainwriting
             {/* 閉じるボタン */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 rounded-full p-2 text-muted-foreground transition-colors hover:bg-surface-hover hover:text-muted"
+              className="absolute top-4 right-4 cursor-pointer rounded-full p-2 text-muted-foreground transition-colors hover:bg-surface-hover hover:text-muted"
               aria-label="閉じる"
             >
               <X className="h-6 w-6" />
@@ -56,7 +56,7 @@ export default function BrainwritingGuideModal({ isOpen, onClose }: Brainwriting
             <div className="mb-6 flex gap-2 border-b border-border">
               <button
                 onClick={() => setActiveTab("xpost")}
-                className={`px-4 py-2 font-medium transition-colors ${
+                className={`cursor-pointer px-4 py-2 font-medium transition-colors ${
                   activeTab === "xpost"
                     ? "border-primary text-primary border-b-2"
                     : "text-muted-foreground hover:text-muted"
@@ -66,7 +66,7 @@ export default function BrainwritingGuideModal({ isOpen, onClose }: Brainwriting
               </button>
               <button
                 onClick={() => setActiveTab("team")}
-                className={`px-4 py-2 font-medium transition-colors ${
+                className={`cursor-pointer px-4 py-2 font-medium transition-colors ${
                   activeTab === "team"
                     ? "border-primary text-primary border-b-2"
                     : "text-muted-foreground hover:text-muted"
@@ -240,7 +240,7 @@ export default function BrainwritingGuideModal({ isOpen, onClose }: Brainwriting
             <div className="mt-8 text-center">
               <button
                 onClick={onClose}
-                className="bg-primary hover:bg-primary-hover rounded-md px-6 py-2 font-medium text-white transition-colors"
+                className="bg-primary hover:bg-primary-hover cursor-pointer rounded-md px-6 py-2 font-medium text-white transition-colors"
               >
                 閉じる
               </button>

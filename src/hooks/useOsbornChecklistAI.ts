@@ -35,6 +35,7 @@ export function useOsbornChecklistAI({
   const { isConfigured } = useAmplifyConfig();
   const [isGenerating, setIsGenerating] = useState(false);
   const [loadingToastId, setLoadingToastId] = useState<string | null>(null);
+  const [hasFailedInSession, setHasFailedInSession] = useState(false);
 
   // AI生成のステータスに応じてローディング状態を更新
   useEffect(() => {
@@ -87,11 +88,15 @@ export function useOsbornChecklistAI({
                   case OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_COMPLETED:
                     // データを再取得してトーストを表示
                     fetchLatestData();
-                    toast.success("AIでアイデアを生成しました！");
+                    toast.success("AIでアイデアを生成しました");
                     break;
                   case OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED:
                     // データを再取得してエラートーストを表示
                     fetchLatestData();
+                    setHasFailedInSession(true);
+                    toast.error(message.event.errorMessage || "AIでのアイデア生成に失敗しました", {
+                      duration: 10000,
+                    });
                     break;
                 }
               }
@@ -115,7 +120,8 @@ export function useOsbornChecklistAI({
         unsubscribe.unsubscribe();
       }
     };
-  }, [isConfigured, osbornChecklistId, fetchLatestData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConfigured, osbornChecklistId]);
 
   /**
    * AI自動生成を開始する
@@ -140,7 +146,12 @@ export function useOsbornChecklistAI({
     }
 
     if (aiGeneration?.status === "completed") {
-      toast.error("AI生成は既に完了しています");
+      toast.error("AI生成は10分に1回可能です");
+      return;
+    }
+
+    if (hasFailedInSession) {
+      toast.error("テーマを変更してから再度お試しください");
       return;
     }
 

@@ -61,7 +61,7 @@ export default function CreateIdeaButton() {
       {/* 右下のアイデア登録ボタン */}
       <button
         onClick={handleOpenModal}
-        className="bg-primary hover:bg-primary-hover text-accent fixed right-6 bottom-28 z-40 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-all hover:scale-110"
+        className="bg-primary hover:bg-primary-hover text-accent fixed right-6 bottom-28 z-40 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full shadow-lg transition-all hover:scale-110"
         aria-label="アイデアを登録"
         disabled={isLoadingCategories}
       >

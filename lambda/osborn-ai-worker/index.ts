@@ -82,7 +82,7 @@ function getDb() {
 // ============================================
 // AppSync Events通知（API Key認証）
 // ============================================
-async function publishEvent(channel: string, eventType: string) {
+async function publishEvent(channel: string, eventType: string, errorMessage?: string) {
   try {
     const appsyncUrl = process.env.APPSYNC_EVENTS_URL;
     const apiKey = process.env.APPSYNC_API_KEY;
@@ -107,6 +107,12 @@ async function publishEvent(channel: string, eventType: string) {
       apiKey: apiKey ? "✓" : "✗",
     });
 
+    // イベントデータを構築
+    const eventData: { type: string; errorMessage?: string } = { type: eventType };
+    if (errorMessage) {
+      eventData.errorMessage = errorMessage;
+    }
+
     // API Key認証でリクエスト
     const response = await fetch(appsyncUrl, {
       method: "POST",
@@ -116,7 +122,7 @@ async function publishEvent(channel: string, eventType: string) {
       },
       body: JSON.stringify({
         channel: fullChannel,
-        events: [JSON.stringify({ type: eventType })],
+        events: [JSON.stringify(eventData)],
       }),
     });
 
@@ -389,7 +395,7 @@ JSON形式で以下のように出力してください：
 
     // テーマが不適切な場合は失敗として処理
     if (!result.isValid) {
-      const errorMsg = `テーマが適切ではありません: ${result.reason}`;
+      const errorMsg = "テーマが適切ではありません";
       await db
         .update(osborn_ai_generations)
         .set({
@@ -401,10 +407,11 @@ JSON形式で以下のように出力してください：
 
       await publishEvent(
         `/osborn-checklist/${osbornChecklistId}`,
-        "AI_GENERATION_FAILED"
+        "AI_GENERATION_FAILED",
+        errorMsg
       );
 
-      throw new Error(errorMsg);
+      return;
     }
 
     const ideas = result.ideas;
@@ -426,10 +433,11 @@ JSON形式で以下のように出力してください：
 
       await publishEvent(
         `/osborn-checklist/${osbornChecklistId}`,
-        "AI_GENERATION_FAILED"
+        "AI_GENERATION_FAILED",
+        "AIでのアイデア生成に失敗しました。再度お試しください。"
       );
 
-      throw new Error(errorMsg);
+      return;
     }
 
     // データベースに保存（既存の入力が空でない場合はスキップ）
@@ -505,9 +513,8 @@ JSON形式で以下のように出力してください：
 
     await publishEvent(
       `/osborn-checklist/${osbornChecklistId}`,
-      "AI_GENERATION_FAILED"
+      "AI_GENERATION_FAILED",
+      "AIでのアイデア生成に失敗しました。再度お試しください。"
     );
-
-    throw error;
   }
-};
+}

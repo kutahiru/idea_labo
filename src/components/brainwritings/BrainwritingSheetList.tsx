@@ -110,7 +110,7 @@ export default function BrainwritingSheetList({
             <button
               key={sheet.id}
               onClick={() => setActiveSheetIndex(index)}
-              className={`rounded-md px-4 py-2 text-sm font-medium transition-all ${
+              className={`cursor-pointer rounded-md px-4 py-2 text-sm font-medium transition-all ${
                 activeSheetIndex === index
                   ? "bg-primary text-white"
                   : "bg-border text-muted hover:bg-border"

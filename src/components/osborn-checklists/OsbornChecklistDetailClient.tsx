@@ -134,7 +134,7 @@ export default function OsbornChecklistDetailClient({
             className={`inline-flex items-center rounded-md px-6 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 ${
               isGenerating
                 ? "cursor-not-allowed bg-muted"
-                : "menu-link bg-primary hover:scale-105 hover:shadow-xl"
+                : "menu-link cursor-pointer bg-primary hover:scale-105 hover:shadow-xl"
             }`}
           >
             {isGenerating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

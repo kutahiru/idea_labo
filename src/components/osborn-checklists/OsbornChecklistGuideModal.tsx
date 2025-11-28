@@ -43,7 +43,7 @@ export default function OsbornChecklistGuideModal({
             {/* 閉じるボタン */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 rounded-full p-2 text-muted-foreground transition-colors hover:bg-surface-hover hover:text-muted"
+              className="absolute top-4 right-4 cursor-pointer rounded-full p-2 text-muted-foreground transition-colors hover:bg-surface-hover hover:text-muted"
               aria-label="閉じる"
             >
               <X className="h-6 w-6" />
@@ -168,7 +168,7 @@ export default function OsbornChecklistGuideModal({
             <div className="mt-8 text-center">
               <button
                 onClick={onClose}
-                className="bg-primary hover:bg-primary-hover rounded-md px-6 py-2 font-medium text-white transition-colors"
+                className="bg-primary hover:bg-primary-hover cursor-pointer rounded-md px-6 py-2 font-medium text-white transition-colors"
               >
                 閉じる
               </button>

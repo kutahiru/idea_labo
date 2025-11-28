@@ -210,7 +210,7 @@ export default function BrainwritingInputClient({
         {brainwriting.usageScope === USAGE_SCOPE.TEAM && (
           <button
             onClick={() => router.push(`/brainwritings/${brainwriting.id}/team`)}
-            className="rounded-md bg-gray-500 px-6 py-2 text-white transition-transform hover:scale-105"
+            className="cursor-pointer rounded-md bg-gray-500 px-6 py-2 text-white transition-transform hover:scale-105"
           >
             戻る
           </button>
@@ -218,7 +218,7 @@ export default function BrainwritingInputClient({
         <button
           onClick={handleCompleteClick}
           disabled={isCompleting || isAllReadOnly}
-          className="bg-primary rounded-md px-6 py-2 text-white transition-transform hover:scale-105 disabled:bg-gray-400 disabled:hover:scale-100"
+          className="bg-primary cursor-pointer rounded-md px-6 py-2 text-white transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:scale-100"
         >
           {isAllReadOnly ? "回答済" : isCompleting ? "完了処理中..." : "回答を完了する"}
         </button>

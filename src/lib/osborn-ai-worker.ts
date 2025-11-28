@@ -141,13 +141,14 @@ JSON形式で以下のように出力してください：
 
     // テーマが不適切な場合は失敗として処理
     if (!result.isValid) {
-      const errorMsg = `テーマが適切ではありません: ${result.reason}`;
+      const errorMsg = "テーマが適切ではありません";
       await updateAIGenerationStatus(generationId, "failed", errorMsg);
       await publishOsbornChecklistEvent(
         osbornChecklistId,
-        OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED
+        OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED,
+        errorMsg
       );
-      throw new Error(errorMsg);
+      return;
     }
 
     const ideas = result.ideas;
@@ -161,9 +162,10 @@ JSON形式で以下のように出力してください：
       await updateAIGenerationStatus(generationId, "failed", errorMsg);
       await publishOsbornChecklistEvent(
         osbornChecklistId,
-        OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED
+        OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED,
+        "AIでのアイデア生成に失敗しました。再度お試しください。"
       );
-      throw new Error(errorMsg);
+      return;
     }
 
     // データベースに保存（既存の入力が空でない場合はスキップ）
@@ -220,9 +222,8 @@ JSON形式で以下のように出力してください：
     await updateAIGenerationStatus(generationId, "failed", errorMsg);
     await publishOsbornChecklistEvent(
       osbornChecklistId,
-      OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED
+      OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED,
+      "AIでのアイデア生成に失敗しました。再度お試しください。"
     );
-
-    throw error;
   }
 }

@@ -169,7 +169,7 @@ export default function BrainwritingInviteClient({
               )}
               <button
                 onClick={handleJoin}
-                className="menu-link group bg-primary inline-flex items-center rounded-md px-20 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="menu-link group bg-primary inline-flex cursor-pointer items-center rounded-md px-20 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
                 {isLoggedIn ? "参加する" : "ログインして参加する"}
               </button>
@@ -182,7 +182,7 @@ export default function BrainwritingInviteClient({
           <div className="mt-4 text-center">
             <button
               onClick={() => router.push(`/brainwritings/${brainwriting.id}/results`)}
-              className="menu-link bg-primary inline-flex items-center rounded-md px-8 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="menu-link bg-primary inline-flex cursor-pointer items-center rounded-md px-8 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
             >
               結果を確認
             </button>

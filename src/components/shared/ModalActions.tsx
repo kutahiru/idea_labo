@@ -27,14 +27,14 @@ export function ModalActions({
       <button
         type="button"
         onClick={onClose}
-        className="font-noto-sans-jp transform rounded-lg bg-surface-hover px-6 py-3 font-medium text-muted transition-all duration-200 hover:-translate-y-0.5 hover:bg-border hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
+        className="font-noto-sans-jp transform cursor-pointer rounded-lg bg-surface-hover px-6 py-3 font-medium text-muted transition-all duration-200 hover:-translate-y-0.5 hover:bg-border hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
         disabled={isSubmitting}
       >
         キャンセル
       </button>
       <button
         type="submit"
-        className="bg-primary hover:bg-primary/90 font-noto-sans-jp transform rounded-lg px-8 py-3 font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
+        className="bg-primary hover:bg-primary/90 font-noto-sans-jp transform cursor-pointer rounded-lg px-8 py-3 font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
         disabled={isSubmitting}
       >
         {isSubmitting ? (

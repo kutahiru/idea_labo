@@ -32,7 +32,7 @@ export default function ToggleSwitch({
         onClick={() => !disabled && onChange(!checked)}
         disabled={disabled}
         className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-300 ${
-          disabled ? "cursor-not-allowed" : ""
+          disabled ? "cursor-not-allowed" : "cursor-pointer"
         } ${checked ? "bg-primary" : "bg-gray-400"}`}
       >
         <span

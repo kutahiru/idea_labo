@@ -49,7 +49,7 @@ function Navigation({ isLoggedIn, closeMenu }: NavigationProps) {
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsFrameworkOpen(!isFrameworkOpen)}
-            className="font-lora header-link text-primary flex w-full items-center justify-end gap-1 rounded-md px-3 py-2 text-base font-medium transition-all md:justify-start md:text-sm"
+            className="font-lora header-link text-primary flex w-full cursor-pointer items-center justify-end gap-1 rounded-md px-3 py-2 text-base font-medium transition-all md:justify-start md:text-sm"
           >
             フレームワーク
             <ChevronDown

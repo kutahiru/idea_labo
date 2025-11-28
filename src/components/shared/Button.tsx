@@ -15,7 +15,7 @@ export function CreateButton({ onClick, className = "" }: CreateButtonProps) {
   return (
     <button
       onClick={onClick}
-      className={`menu-link group bg-primary inline-flex items-center rounded-md px-25 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl ${className}`}
+      className={`menu-link group bg-primary inline-flex cursor-pointer items-center rounded-md px-25 py-2 text-base font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl ${className}`}
     >
       <Plus className="mr-2 h-4 w-4 transition-transform group-hover:rotate-90" />
       新規作成
@@ -48,7 +48,7 @@ export function XPostButton({ buttonName, onClick, disabled = false }: XPostButt
       className={`flex items-center gap-2 rounded-md px-6 py-2 text-white transition-all ${
         disabled
           ? "cursor-not-allowed bg-muted-foreground"
-          : "bg-black hover:scale-105"
+          : "cursor-pointer bg-black hover:scale-105"
       }`}
     >
       <XIcon />

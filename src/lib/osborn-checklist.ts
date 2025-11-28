@@ -12,9 +12,9 @@ import { generateToken } from "@/lib/token";
 
 /**
  * AI生成状態の有効期限（ミリ秒）
- * 10分以内の状態のみ有効とする
+ * 5分以内の状態のみ有効とする
  */
-const AI_GENERATION_EXPIRY_MS = 10 * 60 * 1000;
+const AI_GENERATION_EXPIRY_MS = 5 * 60 * 1000;
 
 //#region ユーザーIDに紐づくオズボーンの一覧を取得
 /**
@@ -355,6 +355,7 @@ export async function getAIGenerationByOsbornChecklistId(osbornChecklistId: numb
         gte(osborn_ai_generations.updated_at, expiryTime)
       )
     )
+    .orderBy(desc(osborn_ai_generations.id))
     .limit(1);
 
   return result[0] || null;

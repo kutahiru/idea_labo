@@ -35,7 +35,7 @@ export default function GuidePage() {
               <h3 className="text-primary text-xl font-semibold">ブレインライティング</h3>
               <button
                 onClick={() => setIsBrainwritingModalOpen(true)}
-                className="text-primary hover:text-primary-hover text-sm font-medium underline"
+                className="text-primary hover:text-primary-hover cursor-pointer text-sm font-medium underline"
               >
                 詳細を見る
               </button>
@@ -87,7 +87,7 @@ export default function GuidePage() {
               <h3 className="text-primary text-xl font-semibold">マンダラート</h3>
               <button
                 onClick={() => setIsMandalartModalOpen(true)}
-                className="text-primary hover:text-primary-hover text-sm font-medium underline"
+                className="text-primary hover:text-primary-hover cursor-pointer text-sm font-medium underline"
               >
                 詳細を見る
               </button>
@@ -117,7 +117,7 @@ export default function GuidePage() {
               <h3 className="text-primary text-xl font-semibold">オズボーンのチェックリスト</h3>
               <button
                 onClick={() => setIsOsbornModalOpen(true)}
-                className="text-primary hover:text-primary-hover text-sm font-medium underline"
+                className="text-primary hover:text-primary-hover cursor-pointer text-sm font-medium underline"
               >
                 詳細を見る
               </button>
@@ -145,7 +145,7 @@ export default function GuidePage() {
         <div className="mt-8 flex justify-center">
           <Link
             href="/"
-            className="rounded-md bg-muted px-6 py-2 text-white transition-transform hover:scale-105"
+            className="bg-primary hover:bg-primary-hover cursor-pointer rounded-md px-6 py-2 font-medium text-white transition-colors"
           >
             トップページに戻る
           </Link>

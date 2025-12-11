@@ -236,6 +236,7 @@ describe('OsbornChecklist Data Access Layer', () => {
       const mockAIGenerationChain = {
         from: vi.fn().mockReturnThis(),
         where: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
         limit: vi.fn().mockResolvedValue([]),
       }
 

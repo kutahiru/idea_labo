@@ -119,9 +119,29 @@ export async function checkCategoryOwnership(categoryId: number, userId: string)
       id: idea_categories.id,
     })
     .from(idea_categories)
-    .where(and(eq(idea_categories.id, categoryId), eq(idea_categories.user_id, userId)))
-    .limit(1);
+    .where(and(eq(idea_categories.id, categoryId), eq(idea_categories.user_id, userId)));
 
   return result.length > 0;
+}
+//#endregion
+
+//#region カテゴリ情報取得
+/**
+ * カテゴリ情報を取得（所有者確認付き）
+ * @param categoryId - カテゴリID
+ * @param userId - ユーザーID
+ * @returns カテゴリ情報（所有者でない場合はnull）
+ */
+export async function getCategoryById(categoryId: number, userId: string) {
+  const result = await db
+    .select({
+      id: idea_categories.id,
+      name: idea_categories.name,
+      description: idea_categories.description,
+    })
+    .from(idea_categories)
+    .where(and(eq(idea_categories.id, categoryId), eq(idea_categories.user_id, userId)));
+
+  return result[0] || null;
 }
 //#endregion

@@ -22,9 +22,8 @@ if (SKIP_INTEGRATION_TESTS) {
     it.skip("統合テストはOPENAI_API_KEYが設定されている場合のみ実行されます", () => {});
   });
 } else {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  /* eslint-disable @typescript-eslint/no-require-imports */
   const { handler } = require("./index");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const {
     createTestUser,
     deleteTestUser,
@@ -38,8 +37,8 @@ if (SKIP_INTEGRATION_TESTS) {
     osborn_checklist_inputs,
     TEST_USER_ID,
   } = require("./test-helpers");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { eq } = require("drizzle-orm");
+  /* eslint-enable @typescript-eslint/no-require-imports */
 
   // テストで作成したチェックリストIDを保持
   const createdChecklistIds: number[] = [];
@@ -223,11 +222,11 @@ if (SKIP_INTEGRATION_TESTS) {
     expect(inputs.length).toBe(9);
 
     // transferの入力は既存のものがそのまま残っているか
-    const transferInput = inputs.find((i) => i.checklist_type === "transfer");
+    const transferInput = inputs.find((i: { checklist_type: string }) => i.checklist_type === "transfer");
     expect(transferInput?.content).toBe(existingContent);
 
     // 他の8つは新しく生成されているか
-    const otherInputs = inputs.filter((i) => i.checklist_type !== "transfer");
+    const otherInputs = inputs.filter((i: { checklist_type: string }) => i.checklist_type !== "transfer");
     expect(otherInputs.length).toBe(8);
     for (const input of otherInputs) {
       expect(input.content).toBeTruthy();

@@ -168,8 +168,7 @@ describe('IdeaCategory Data Access Layer', () => {
 
       const mockChain = {
         from: vi.fn().mockReturnThis(),
-        where: vi.fn().mockReturnThis(),
-        limit: vi.fn().mockResolvedValue(mockResult),
+        where: vi.fn().mockResolvedValue(mockResult),
       }
 
       vi.mocked(db.select).mockReturnValue(mockChain as any)
@@ -182,8 +181,7 @@ describe('IdeaCategory Data Access Layer', () => {
     it('所有者でない場合falseを返す', async () => {
       const mockChain = {
         from: vi.fn().mockReturnThis(),
-        where: vi.fn().mockReturnThis(),
-        limit: vi.fn().mockResolvedValue([]),
+        where: vi.fn().mockResolvedValue([]),
       }
 
       vi.mocked(db.select).mockReturnValue(mockChain as any)

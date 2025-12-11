@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { auth } from "@/app/lib/auth";
 import { getIdeasByCategoryId } from "@/lib/idea";
-import { checkCategoryOwnership } from "@/lib/idea-category";
+import { getCategoryById } from "@/lib/idea-category";
 import IdeaPageClient from "@/components/ideas/IdeaPageClient";
 import { LoginRequiredMessage } from "@/components/shared/Message";
 
@@ -44,13 +44,13 @@ export default async function IdeaCategoryDetailPage({
     return <div className="py-8 text-center">カテゴリが見つかりません</div>;
   }
 
-  // カテゴリの所有者確認
-  const isOwner = await checkCategoryOwnership(categoryId, session.user.id);
-  if (!isOwner) {
+  // カテゴリ情報取得（所有者確認含む）
+  const category = await getCategoryById(categoryId, session.user.id);
+  if (!category) {
     return <div className="py-8 text-center">カテゴリが見つかりません</div>;
   }
 
   const ideas = await getIdeasByCategoryId(categoryId, session.user.id);
 
-  return <IdeaPageClient initialData={ideas} categoryId={categoryId} />;
+  return <IdeaPageClient initialData={ideas} categoryId={categoryId} categoryName={category.name} />;
 }

@@ -13,6 +13,7 @@ import { IdeaFormData } from "@/schemas/idea";
 interface IdeaPageClientProps {
   initialData: IdeaListItem[];
   categoryId: number;
+  categoryName: string;
 }
 
 /**
@@ -26,7 +27,11 @@ interface IdeaPageClientProps {
  * @param initialData - サーバーから取得したアイデア一覧の初期データ
  * @param categoryId - 固定されたカテゴリID（新規作成時に自動設定される）
  */
-export default function IdeaPageClient({ initialData, categoryId }: IdeaPageClientProps) {
+export default function IdeaPageClient({
+  initialData,
+  categoryId,
+  categoryName,
+}: IdeaPageClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<IdeaListItem | null>(null);
   const router = useRouter();
@@ -68,7 +73,8 @@ export default function IdeaPageClient({ initialData, categoryId }: IdeaPageClie
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-primary mb-6 text-center text-3xl font-bold">アイデア一覧</h1>
+      <h1 className="text-primary mb-4 text-center text-3xl font-bold">アイデア一覧</h1>
+      <p className="text-primary mb-4 text-center text-3xl font-bold">{categoryName}</p>
 
       {/* 新規作成ボタン */}
       <div className="mb-4 flex justify-center">

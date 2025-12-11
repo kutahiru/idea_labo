@@ -1,55 +1,70 @@
 /**
  * Lambda関数の統合テスト
- * 
+ *
  * テストの流れ：
  * 1. テストデータをDBに作成
  * 2. Lambda handler を実行
  * 3. 結果を検証
  * 4. テストデータを削除（afterEach）
+ *
+ * 注意: このテストはOpenAI APIキーが必要です。
+ * 環境変数 OPENAI_API_KEY が設定されていない場合はスキップされます。
  */
 
 import { describe, it, expect, beforeAll, afterEach, afterAll } from "vitest";
-import { handler } from "./index";
-import { Context } from "aws-lambda";
-import {
-  createTestUser,
-  deleteTestUser,
-  createTestOsbornChecklist,
-  createTestAIGeneration,
-  createTestInput,
-  deleteTestOsbornChecklist,
-  getTestDb,
-  closeTestDb,
-  osborn_ai_generations,
-  osborn_checklist_inputs,
-  TEST_USER_ID,
-} from "./test-helpers";
-import { eq } from "drizzle-orm";
+import type { Context } from "aws-lambda";
 
-// テストで作成したチェックリストIDを保持
-const createdChecklistIds: number[] = [];
+// OpenAI APIキーがない場合は早期リターン
+const SKIP_INTEGRATION_TESTS = !process.env.OPENAI_API_KEY;
 
-beforeAll(async () => {
-  // 全テスト開始前にテストユーザーを作成
-  await createTestUser();
-});
+if (SKIP_INTEGRATION_TESTS) {
+  describe("osborn-ai-worker Lambda function", () => {
+    it.skip("統合テストはOPENAI_API_KEYが設定されている場合のみ実行されます", () => {});
+  });
+} else {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { handler } = require("./index");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const {
+    createTestUser,
+    deleteTestUser,
+    createTestOsbornChecklist,
+    createTestAIGeneration,
+    createTestInput,
+    deleteTestOsbornChecklist,
+    getTestDb,
+    closeTestDb,
+    osborn_ai_generations,
+    osborn_checklist_inputs,
+    TEST_USER_ID,
+  } = require("./test-helpers");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { eq } = require("drizzle-orm");
 
-afterEach(async () => {
-  // 各テスト後にテストデータをクリーンアップ
-  for (const id of createdChecklistIds) {
-    await deleteTestOsbornChecklist(id);
-  }
-  createdChecklistIds.length = 0;
-});
+  // テストで作成したチェックリストIDを保持
+  const createdChecklistIds: number[] = [];
 
-afterAll(async () => {
-  // 全テスト終了後にテストユーザーを削除
-  await deleteTestUser();
-  // DB接続をクローズ
-  await closeTestDb();
-});
+  beforeAll(async () => {
+    // 全テスト開始前にテストユーザーを作成
+    await createTestUser();
+  });
 
-describe("osborn-ai-worker Lambda function", () => {
+  afterEach(async () => {
+    // 各テスト後にテストデータをクリーンアップ
+    for (const id of createdChecklistIds) {
+      await deleteTestOsbornChecklist(id);
+    }
+    createdChecklistIds.length = 0;
+  });
+
+  afterAll(async () => {
+    // 全テスト終了後にテストユーザーを削除
+    await deleteTestUser();
+    // DB接続をクローズ
+    await closeTestDb();
+  });
+
+  describe("osborn-ai-worker Lambda function", () => {
   it("正常系: 適切なテーマでAI生成が成功する", async () => {
     // テストデータ作成
     const checklist = await createTestOsbornChecklist({
@@ -220,3 +235,4 @@ describe("osborn-ai-worker Lambda function", () => {
     }
   }, 60000);
 });
+}

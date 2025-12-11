@@ -169,25 +169,24 @@ describe('osborn-ai-worker', () => {
       )
     })
 
-    it('チェックリストが見つからない場合はエラーをスローする', async () => {
+    it('チェックリストが見つからない場合は失敗ステータスを更新する', async () => {
       mockGetOsbornChecklistById.mockResolvedValueOnce(null)
 
-      await expect(
-        generateOsbornIdeas({
-          generationId: 1,
-          osbornChecklistId: 1,
-          userId: 'user123',
-        })
-      ).rejects.toThrow('オズボーンのチェックリストが見つかりません')
+      await generateOsbornIdeas({
+        generationId: 1,
+        osbornChecklistId: 1,
+        userId: 'user123',
+      })
 
-      expect(mockUpdateAIGenerationStatus).toHaveBeenCalledWith(1, 'failed', expect.any(String))
+      expect(mockUpdateAIGenerationStatus).toHaveBeenCalledWith(1, 'failed', 'オズボーンのチェックリストが見つかりません')
       expect(mockPublishOsbornChecklistEvent).toHaveBeenCalledWith(
         1,
-        'AI_GENERATION_FAILED'
+        'AI_GENERATION_FAILED',
+        'AIでのアイデア生成に失敗しました。再度お試しください。'
       )
     })
 
-    it('テーマが不適切な場合はエラーをスローする', async () => {
+    it('テーマが不適切な場合は失敗ステータスを更新する', async () => {
       mockGetOsbornChecklistById.mockResolvedValueOnce(mockOsbornChecklist)
       mockCreate.mockResolvedValueOnce({
         choices: [
@@ -203,26 +202,25 @@ describe('osborn-ai-worker', () => {
         ],
       })
 
-      await expect(
-        generateOsbornIdeas({
-          generationId: 1,
-          osbornChecklistId: 1,
-          userId: 'user123',
-        })
-      ).rejects.toThrow('テーマが適切ではありません: 無意味な文字列です')
+      await generateOsbornIdeas({
+        generationId: 1,
+        osbornChecklistId: 1,
+        userId: 'user123',
+      })
 
       expect(mockUpdateAIGenerationStatus).toHaveBeenCalledWith(
         1,
         'failed',
-        'テーマが適切ではありません: 無意味な文字列です'
+        'テーマが適切ではありません'
       )
       expect(mockPublishOsbornChecklistEvent).toHaveBeenCalledWith(
         1,
-        'AI_GENERATION_FAILED'
+        'AI_GENERATION_FAILED',
+        'テーマが適切ではありません'
       )
     })
 
-    it('AI応答が空の場合はエラーをスローする', async () => {
+    it('AI応答が空の場合は失敗ステータスを更新する', async () => {
       mockGetOsbornChecklistById.mockResolvedValueOnce(mockOsbornChecklist)
       mockCreate.mockResolvedValueOnce({
         choices: [
@@ -234,16 +232,21 @@ describe('osborn-ai-worker', () => {
         ],
       })
 
-      await expect(
-        generateOsbornIdeas({
-          generationId: 1,
-          osbornChecklistId: 1,
-          userId: 'user123',
-        })
-      ).rejects.toThrow('AI応答が空です')
+      await generateOsbornIdeas({
+        generationId: 1,
+        osbornChecklistId: 1,
+        userId: 'user123',
+      })
+
+      expect(mockUpdateAIGenerationStatus).toHaveBeenCalledWith(1, 'failed', 'AI応答が空です')
+      expect(mockPublishOsbornChecklistEvent).toHaveBeenCalledWith(
+        1,
+        'AI_GENERATION_FAILED',
+        'AIでのアイデア生成に失敗しました。再度お試しください。'
+      )
     })
 
-    it('必要なキーが不足している場合はエラーをスローする', async () => {
+    it('必要なキーが不足している場合は失敗ステータスを更新する', async () => {
       mockGetOsbornChecklistById.mockResolvedValueOnce(mockOsbornChecklist)
       mockCreate.mockResolvedValueOnce({
         choices: [
@@ -262,17 +265,17 @@ describe('osborn-ai-worker', () => {
         ],
       })
 
-      await expect(
-        generateOsbornIdeas({
-          generationId: 1,
-          osbornChecklistId: 1,
-          userId: 'user123',
-        })
-      ).rejects.toThrow('AI応答に必要なキーが不足しています')
+      await generateOsbornIdeas({
+        generationId: 1,
+        osbornChecklistId: 1,
+        userId: 'user123',
+      })
 
+      expect(mockUpdateAIGenerationStatus).toHaveBeenCalledWith(1, 'failed', expect.stringContaining('AI応答に必要なキーが不足しています'))
       expect(mockPublishOsbornChecklistEvent).toHaveBeenCalledWith(
         1,
-        'AI_GENERATION_FAILED'
+        'AI_GENERATION_FAILED',
+        'AIでのアイデア生成に失敗しました。再度お試しください。'
       )
     })
 
@@ -308,13 +311,11 @@ describe('osborn-ai-worker', () => {
       mockGetOsbornChecklistById.mockResolvedValueOnce(mockOsbornChecklist)
       mockCreate.mockRejectedValueOnce(new Error('OpenAI API Error'))
 
-      await expect(
-        generateOsbornIdeas({
-          generationId: 1,
-          osbornChecklistId: 1,
-          userId: 'user123',
-        })
-      ).rejects.toThrow('OpenAI API Error')
+      await generateOsbornIdeas({
+        generationId: 1,
+        osbornChecklistId: 1,
+        userId: 'user123',
+      })
 
       expect(mockUpdateAIGenerationStatus).toHaveBeenCalledWith(
         1,
@@ -323,7 +324,8 @@ describe('osborn-ai-worker', () => {
       )
       expect(mockPublishOsbornChecklistEvent).toHaveBeenCalledWith(
         1,
-        'AI_GENERATION_FAILED'
+        'AI_GENERATION_FAILED',
+        'AIでのアイデア生成に失敗しました。再度お試しください。'
       )
 
       consoleSpy.mockRestore()

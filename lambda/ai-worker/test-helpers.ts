@@ -157,26 +157,23 @@ export async function createTestInput(params: {
 export async function createTestUser() {
   const db = getTestDb();
 
-  try {
-    const [user] = await db
-      .insert(users)
-      .values({
-        id: TEST_USER_ID,
-        name: "Test User (Vitest)",
-        email: "test-vitest@example.com",
-      })
-      .returning();
-
-    return user;
-  } catch (error: unknown) {
-    // ユーザーが既に存在する場合はエラーを無視
-    if (typeof error === "object" && error !== null && "code" in error && error.code === "23505") {
-      // unique constraint violation
-      const [existingUser] = await db.select().from(users).where(eq(users.id, TEST_USER_ID));
-      return existingUser;
-    }
-    throw error;
+  // まず既存ユーザーを確認
+  const [existingUser] = await db.select().from(users).where(eq(users.id, TEST_USER_ID));
+  if (existingUser) {
+    return existingUser;
   }
+
+  // 存在しない場合は新規作成
+  const [user] = await db
+    .insert(users)
+    .values({
+      id: TEST_USER_ID,
+      name: "Test User (Vitest)",
+      email: "test-vitest@example.com",
+    })
+    .returning();
+
+  return user;
 }
 
 // テストユーザー削除ヘルパー

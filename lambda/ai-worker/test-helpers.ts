@@ -39,12 +39,37 @@ export const osborn_checklist_inputs = pgTable("osborn_checklist_inputs", {
   updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const osborn_ai_generations = pgTable("osborn_ai_generations", {
+export const ai_generations = pgTable("ai_generations", {
   id: serial("id").primaryKey(),
-  osborn_checklist_id: integer("osborn_checklist_id").notNull().unique(),
+  target_type: varchar("target_type", { length: 30 }).notNull(),
+  target_id: integer("target_id").notNull(),
   generation_status: varchar("generation_status", { length: 20 }).notNull(),
   generation_result: text("generation_result"),
   error_message: text("error_message"),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+  updated_at: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const mandalarts = pgTable("mandalarts", {
+  id: serial("id").primaryKey(),
+  user_id: text("user_id").notNull(),
+  title: varchar("title", { length: 200 }).notNull(),
+  theme_name: varchar("theme_name", { length: 100 }).notNull(),
+  description: varchar("description", { length: 1000 }),
+  public_token: varchar("public_token", { length: 100 }).notNull().unique(),
+  is_results_public: boolean("is_results_public").notNull().default(false),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+  updated_at: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const mandalart_inputs = pgTable("mandalart_inputs", {
+  id: serial("id").primaryKey(),
+  mandalart_id: integer("mandalart_id").notNull(),
+  section_row_index: integer("section_row_index").notNull(),
+  section_column_index: integer("section_column_index").notNull(),
+  row_index: integer("row_index").notNull(),
+  column_index: integer("column_index").notNull(),
+  content: varchar("content", { length: 100 }),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -98,9 +123,10 @@ export async function createTestAIGeneration(osbornChecklistId: number) {
   const db = getTestDb();
 
   const [generation] = await db
-    .insert(osborn_ai_generations)
+    .insert(ai_generations)
     .values({
-      osborn_checklist_id: osbornChecklistId,
+      target_type: "osborn_checklist",
+      target_id: osbornChecklistId,
       generation_status: "pending",
     })
     .returning();
@@ -165,9 +191,84 @@ export async function deleteTestOsbornChecklist(id: number) {
 
   // 関連データを削除
   await db.delete(osborn_checklist_inputs).where(eq(osborn_checklist_inputs.osborn_checklist_id, id));
-  await db.delete(osborn_ai_generations).where(eq(osborn_ai_generations.osborn_checklist_id, id));
+  await db.delete(ai_generations).where(eq(ai_generations.target_id, id));
   await db.delete(osborn_checklists).where(eq(osborn_checklists.id, id));
 }
 
 // テスト用のユーザーID（固定）
 export const TEST_USER_ID = "test-user-vitest";
+
+// マンダラート用ヘルパー関数
+export async function createTestMandalart(params: {
+  userId: string;
+  title?: string;
+  themeName?: string;
+  description?: string;
+}) {
+  const db = getTestDb();
+  const publicToken = 'test-mandalart-' + Math.random().toString(36).substring(2, 12);
+
+  const [mandalart] = await db
+    .insert(mandalarts)
+    .values({
+      user_id: params.userId,
+      title: params.title || "テスト用マンダラート",
+      theme_name: params.themeName || "目標達成",
+      description: params.description || "テスト用の説明",
+      public_token: publicToken,
+      is_results_public: false,
+    })
+    .returning();
+
+  return mandalart;
+}
+
+export async function createTestMandalartAIGeneration(mandalartId: number) {
+  const db = getTestDb();
+
+  const [generation] = await db
+    .insert(ai_generations)
+    .values({
+      target_type: "mandalart",
+      target_id: mandalartId,
+      generation_status: "pending",
+    })
+    .returning();
+
+  return generation;
+}
+
+export async function createTestMandalartInput(params: {
+  mandalartId: number;
+  sectionRowIndex: number;
+  sectionColumnIndex: number;
+  rowIndex: number;
+  columnIndex: number;
+  content: string;
+}) {
+  const db = getTestDb();
+
+  const [input] = await db
+    .insert(mandalart_inputs)
+    .values({
+      mandalart_id: params.mandalartId,
+      section_row_index: params.sectionRowIndex,
+      section_column_index: params.sectionColumnIndex,
+      row_index: params.rowIndex,
+      column_index: params.columnIndex,
+      content: params.content,
+    })
+    .returning();
+
+  return input;
+}
+
+// マンダラートテストデータ削除ヘルパー
+export async function deleteTestMandalart(id: number) {
+  const db = getTestDb();
+
+  // 関連データを削除
+  await db.delete(mandalart_inputs).where(eq(mandalart_inputs.mandalart_id, id));
+  await db.delete(ai_generations).where(eq(ai_generations.target_id, id));
+  await db.delete(mandalarts).where(eq(mandalarts.id, id));
+}

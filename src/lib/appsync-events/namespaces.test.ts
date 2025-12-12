@@ -7,8 +7,8 @@ describe('namespaces', () => {
       expect(NAMESPACES.BRAINWRITING).toBe('brainwriting')
     })
 
-    it('MANDALAが定義されている', () => {
-      expect(NAMESPACES.MANDALA).toBe('mandala')
+    it('MANDALARTが定義されている', () => {
+      expect(NAMESPACES.MANDALART).toBe('mandalart')
     })
 
     it('OSBORNが定義されている', () => {
@@ -35,11 +35,11 @@ describe('namespaces', () => {
   describe('Namespace型', () => {
     it('有効な名前空間値が型に適合する', () => {
       const brainwriting: Namespace = 'brainwriting'
-      const mandala: Namespace = 'mandala'
+      const mandalart: Namespace = 'mandalart'
       const osborn: Namespace = 'osborn'
 
       expect(brainwriting).toBe('brainwriting')
-      expect(mandala).toBe('mandala')
+      expect(mandalart).toBe('mandalart')
       expect(osborn).toBe('osborn')
     })
   })

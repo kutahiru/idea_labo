@@ -23,4 +23,8 @@ export interface MandalartInputData {
 
 export interface MandalartDetail extends MandalartListItem {
   inputs: MandalartInputData[];
+  aiGeneration?: {
+    status: string;
+    errorMessage: string | null;
+  } | null;
 }

@@ -3,7 +3,7 @@
  */
 export const NAMESPACES = {
   BRAINWRITING: "brainwriting",
-  MANDALA: "mandala",
+  MANDALART: "mandalart",
   OSBORN: "osborn",
 } as const;
 

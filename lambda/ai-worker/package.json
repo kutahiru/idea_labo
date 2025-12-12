@@ -1,7 +1,7 @@
 {
-  "name": "osborn-ai-worker",
+  "name": "ai-worker",
   "version": "1.0.0",
-  "description": "AWS Lambda function for Osborn Checklist AI generation",
+  "description": "AWS Lambda function for AI idea generation (Osborn Checklist & Mandalart)",
   "main": "index.js",
   "scripts": {
     "build": "esbuild index.ts --bundle --platform=node --target=es2020 --format=cjs --outfile=index.js --external:pg-native",

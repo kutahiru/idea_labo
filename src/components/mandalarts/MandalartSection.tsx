@@ -5,7 +5,7 @@ import MandalartCell from "./MandalartCell";
 interface MandalartSectionProps {
   sectionRowIndex: number;
   sectionColumnIndex: number;
-  inputs: Map<string, string>;
+  inputs: Record<string, string>;
   onCellChange: (
     sectionRowIndex: number,
     sectionColumnIndex: number,
@@ -29,7 +29,7 @@ interface MandalartSectionProps {
  *
  * @param sectionRowIndex - セクションの行インデックス（0-2）
  * @param sectionColumnIndex - セクションの列インデックス（0-2）
- * @param inputs - 全セルの入力データを格納したMap
+ * @param inputs - 全セルの入力データを格納したRecord
  * @param onCellChange - セルの値変更時のコールバック関数
  * @param mandalartTheme - マンダラートのテーマ名
  * @param readOnly - 読み取り専用モード（全セルに適用）
@@ -60,11 +60,11 @@ export default function MandalartSection({
     // 各セクションの中央セルの場合は、中央セクションの対応する位置の値を返す
     if (isCenterCell(rowIndex, columnIndex)) {
       const centerKey = `1-1-${sectionRowIndex}-${sectionColumnIndex}`;
-      return inputs.get(centerKey) || "";
+      return inputs[centerKey] || "";
     }
 
     const key = `${sectionRowIndex}-${sectionColumnIndex}-${rowIndex}-${columnIndex}`;
-    return inputs.get(key) || "";
+    return inputs[key] || "";
   };
 
   const handleCellChange = (rowIndex: number, columnIndex: number, value: string) => {

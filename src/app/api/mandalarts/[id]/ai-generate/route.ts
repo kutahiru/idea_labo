@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 import {
-  getOsbornChecklistById,
-  getAIGenerationByOsbornChecklistId,
-  createAIGeneration,
-} from "@/lib/osborn-checklist";
-import { generateOsbornIdeas } from "@/lib/osborn-ai-worker";
+  getMandalartById,
+  getAIGenerationByMandalartId,
+  createMandalartAIGeneration,
+} from "@/lib/mandalart";
+import { generateMandalartIdeas } from "@/lib/mandalart-ai-worker";
 
 // Lambda Function URLの設定確認
 console.log("[診断] Lambda設定:", {
@@ -15,42 +15,26 @@ console.log("[診断] Lambda設定:", {
 });
 
 /**
- * オズボーンのチェックリストのAI生成を開始するPOST APIエンドポイント
+ * マンダラートのAI生成を開始するPOST APIエンドポイント
  *
- * OpenAI APIを使用して、オズボーンの9つの視点からアイデアを自動生成します。
+ * OpenAI APIを使用して、マンダラートのアイデアを自動生成します。
  * バックグラウンドで非同期処理を実行し、即座にレスポンスを返します。
  *
- * エンドポイント: POST /api/osborn-checklists/[id]/ai-generate
+ * エンドポイント: POST /api/mandalarts/[id]/ai-generate
  *
  * 実行環境による動作の違い：
  * - 開発環境（development）: ローカルで直接AI生成関数を実行
  * - 本番環境（production）: AWS Lambda Function URLを呼び出し
  *
  * 処理フロー：
- * 1. オズボーンのチェックリストの存在確認
+ * 1. マンダラートの存在確認
  * 2. 既存のAI生成レコード確認（処理中/完了の場合は409エラー）
  * 3. AI生成レコードをDBに作成（status: pending）
  * 4. バックグラウンドでAI生成を開始（非同期）
  * 5. 即座にレスポンスを返す
  *
- * レスポンス例（成功時）:
- * ```json
- * {
- *   "generationId": 789,
- *   "status": "pending",
- *   "message": "AI生成を開始しました"
- * }
- * ```
- *
- * レスポンス例（既に処理中の場合）:
- * ```json
- * {
- *   "error": "AI生成は既に実行中です"
- * }
- * ```
- *
  * @param _request - Next.jsのRequestオブジェクト（未使用）
- * @param params - ルートパラメータ（id: オズボーンのチェックリストID）
+ * @param params - ルートパラメータ（id: マンダラートID）
  * @returns AI生成開始結果を含むJSONレスポンス、またはエラーレスポンス（409: 処理中/完了済み）
  */
 export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -65,16 +49,16 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
       return validateResult.error;
     }
 
-    const { userId, id: osbornChecklistId } = validateResult;
+    const { userId, id: mandalartId } = validateResult;
 
-    // オズボーンのチェックリストを取得
-    const osbornChecklist = await getOsbornChecklistById(osbornChecklistId, userId);
-    if (!osbornChecklist) {
-      return apiErrors.notFound("オズボーンのチェックリスト");
+    // マンダラートを取得
+    const mandalart = await getMandalartById(mandalartId, userId);
+    if (!mandalart) {
+      return apiErrors.notFound("マンダラート");
     }
 
     // 既に処理中または完了している場合はエラー
-    const existingGeneration = await getAIGenerationByOsbornChecklistId(osbornChecklistId);
+    const existingGeneration = await getAIGenerationByMandalartId(mandalartId);
 
     if (existingGeneration) {
       if (
@@ -89,20 +73,20 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
     }
 
     // AI生成レコードをDBに作成（status: pending）
-    const aiGeneration = await createAIGeneration(osbornChecklistId);
+    const aiGeneration = await createMandalartAIGeneration(mandalartId);
 
     // 開発環境ではローカルで実行、本番環境ではLambda Function URLを呼び出し
     if (process.env.NODE_ENV === "development") {
       // ローカル環境での直接実行（非同期）
-      generateOsbornIdeas({
+      generateMandalartIdeas({
         generationId: aiGeneration.id,
-        osbornChecklistId,
+        mandalartId,
         userId,
       }).catch(error => {
         console.error("ローカルAI生成エラー:", error);
       });
     } else {
-      // 本番環境でのLambda Function URL呼び出し
+      // 本番環境でのLambda Function URL呼び出し（オズボーンと共通のLambda）
       const lambdaFunctionUrl = process.env.LAMBDA_FUNCTION_URL;
       const secretToken = process.env.LAMBDA_SECRET_TOKEN;
 
@@ -115,8 +99,8 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
         console.log("Lambda Function URL呼び出し開始:", {
           url: lambdaFunctionUrl,
           generationId: aiGeneration.id,
-          targetType: "osborn_checklist",
-          targetId: osbornChecklistId,
+          targetType: "mandalart",
+          targetId: mandalartId,
         });
 
         // Lambda Function URLを非同期で呼び出し（レスポンスを待たない）
@@ -128,8 +112,8 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
           },
           body: JSON.stringify({
             generationId: aiGeneration.id,
-            targetType: "osborn_checklist",
-            targetId: osbornChecklistId,
+            targetType: "mandalart",
+            targetId: mandalartId,
             userId,
           }),
         }).then(response => {

@@ -17,3 +17,11 @@ export const OSBORN_CHECKLIST_EVENT_TYPES = {
 
 export type OsbornChecklistEventType =
   (typeof OSBORN_CHECKLIST_EVENT_TYPES)[keyof typeof OSBORN_CHECKLIST_EVENT_TYPES];
+
+export const MANDALART_EVENT_TYPES = {
+  AI_GENERATION_COMPLETED: "AI_GENERATION_COMPLETED",
+  AI_GENERATION_FAILED: "AI_GENERATION_FAILED",
+} as const;
+
+export type MandalartEventType =
+  (typeof MANDALART_EVENT_TYPES)[keyof typeof MANDALART_EVENT_TYPES];

@@ -1,7 +1,6 @@
 /**
  * オズボーンのチェックリスト用 AI生成ロジック
  */
-import OpenAI from "openai";
 import { eq, and, sql } from "drizzle-orm";
 import { GeneratorContext, GeneratorResult } from "./types";
 

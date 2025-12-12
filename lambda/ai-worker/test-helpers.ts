@@ -6,7 +6,7 @@
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { pgTable, serial, integer, varchar, text, timestamp, boolean } from "drizzle-orm/pg-core";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 // DB Schema定義（index.tsと同じ）
 export const users = pgTable("users", {

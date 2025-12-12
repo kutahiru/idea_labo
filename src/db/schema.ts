@@ -206,11 +206,10 @@ export const ideas = pgTable("ideas", {
     .$onUpdate(() => new Date()),
 });
 
-export const osborn_ai_generations = pgTable("osborn_ai_generations", {
+export const ai_generations = pgTable("ai_generations", {
   id: serial("id").primaryKey(),
-  osborn_checklist_id: integer("osborn_checklist_id")
-    .notNull()
-    .references(() => osborn_checklists.id, { onDelete: "cascade" }),
+  target_type: varchar("target_type", { length: 30 }).notNull(), // 'osborn_checklist', 'mandalart'
+  target_id: integer("target_id").notNull(),
   generation_status: varchar("generation_status", { length: 20 }).notNull(), // 'pending', 'processing', 'completed', 'failed'
   generation_result: text("generation_result"), // JSON文字列として保存
   error_message: text("error_message"),

@@ -21,13 +21,6 @@ export async function publishEvent({ namespace, channel, data }: PublishEventPar
     const appsyncUrl = process.env.APPSYNC_EVENTS_URL;
     const apiKey = process.env.APPSYNC_API_KEY;
 
-    console.log("📡 AppSync Events発行:", {
-      fullChannel,
-      data,
-      appsyncUrl: appsyncUrl ? "✓" : "✗",
-      apiKey: apiKey ? "✓" : "✗",
-    });
-
     if (!appsyncUrl) {
       throw new Error("APPSYNC_EVENTS_URL is not set");
     }
@@ -59,7 +52,6 @@ export async function publishEvent({ namespace, channel, data }: PublishEventPar
       throw new Error(`Failed to publish event: ${response.status}`);
     }
 
-    console.log("✅ AppSync Events発行成功");
     return { success: true };
   } catch (error) {
     console.error("publishEvent エラー:", error);

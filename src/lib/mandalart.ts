@@ -4,11 +4,17 @@
  */
 
 import { db } from "@/db";
-import { mandalart_inputs, mandalarts } from "@/db/schema";
+import { mandalart_inputs, mandalarts, ai_generations } from "@/db/schema";
 import { MandalartInputData, MandalartListItem } from "@/types/mandalart";
 import { MandalartFormData } from "@/schemas/mandalart";
-import { desc, eq, and, sql } from "drizzle-orm";
+import { desc, eq, and, sql, gte } from "drizzle-orm";
 import { generateToken } from "@/lib/token";
+
+/**
+ * AI生成状態の有効期限（ミリ秒）
+ * 5分以内の状態のみ有効とする
+ */
+const AI_GENERATION_EXPIRY_MS = 5 * 60 * 1000;
 
 //#region ユーザーIDに紐づくマンダラートの一覧を取得
 /**
@@ -161,9 +167,18 @@ export async function getMandalartDetailById(mandalartId: number, userId: string
   // 入力データ取得
   const inputs = await getMandalartInputsByMandalartId(mandalartId);
 
+  // AI生成情報を取得
+  const aiGeneration = await getAIGenerationByMandalartId(mandalartId);
+
   return {
     ...mandalart,
     inputs,
+    aiGeneration: aiGeneration
+      ? {
+          status: aiGeneration.generation_status,
+          errorMessage: aiGeneration.error_message,
+        }
+      : null,
   };
 }
 //#endregion
@@ -331,5 +346,92 @@ export async function updateMandalartIsResultsPublic(
       updated_at: sql`NOW()`,
     })
     .where(and(eq(mandalarts.id, mandalartId), eq(mandalarts.user_id, userId)));
+}
+//#endregion
+
+//#region AI生成の取得(指定時刻以内)
+/**
+ * AI生成状態を取得
+ * @param mandalartId - マンダラートID
+ * @returns AI生成状態（存在しない場合はnull）
+ */
+export async function getAIGenerationByMandalartId(mandalartId: number) {
+  const expiryTime = new Date(Date.now() - AI_GENERATION_EXPIRY_MS);
+
+  const result = await db
+    .select()
+    .from(ai_generations)
+    .where(
+      and(
+        eq(ai_generations.target_type, "mandalart"),
+        eq(ai_generations.target_id, mandalartId),
+        gte(ai_generations.updated_at, expiryTime)
+      )
+    )
+    .orderBy(desc(ai_generations.id))
+    .limit(1);
+
+  return result[0] || null;
+}
+//#endregion
+
+//#region AI生成ジョブの作成
+/**
+ * AI生成ジョブを作成
+ * @param mandalartId - マンダラートID
+ * @returns 作成されたジョブ
+ */
+export async function createMandalartAIGeneration(mandalartId: number) {
+  const result = await db
+    .insert(ai_generations)
+    .values({
+      target_type: "mandalart",
+      target_id: mandalartId,
+      generation_status: "pending",
+    })
+    .returning();
+
+  return result[0];
+}
+//#endregion
+
+//#region AI生成状態の更新
+/**
+ * AI生成状態を更新
+ * @param id - AI生成ID
+ * @param status - ステータス
+ * @param errorMessage - エラーメッセージ（オプション）
+ */
+export async function updateMandalartAIGenerationStatus(
+  id: number,
+  status: "pending" | "processing" | "completed" | "failed",
+  errorMessage?: string
+) {
+  await db
+    .update(ai_generations)
+    .set({
+      generation_status: status,
+      error_message: errorMessage || null,
+      updated_at: sql`NOW()`,
+    })
+    .where(eq(ai_generations.id, id));
+}
+//#endregion
+
+//#region AI生成結果の保存
+/**
+ * AI生成結果を保存
+ * @param id - AI生成ID
+ * @param result - 生成結果（JSON文字列）
+ */
+export async function updateMandalartAIGenerationResult(id: number, result: string) {
+  await db
+    .update(ai_generations)
+    .set({
+      generation_status: "completed",
+      generation_result: result,
+      updated_at: sql`NOW()`,
+    })
+    .where(eq(ai_generations.id, id));
 }
 //#endregion

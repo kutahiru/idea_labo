@@ -31,7 +31,8 @@ export default function AmplifyProvider({ children }: { children: React.ReactNod
         const response = await fetch("/api/auth/cognito-credentials");
 
         if (!response.ok) {
-          console.error("Failed to get Cognito credentials");
+          const errorText = await response.text();
+          console.error("Failed to get Cognito credentials:", response.status, errorText);
           setIsConfigured(false);
           return;
         }
@@ -74,7 +75,7 @@ export default function AmplifyProvider({ children }: { children: React.ReactNod
     };
 
     configureAmplify();
-  }, [session, status]);
+  }, [session, status, isConfigured]);
 
   return (
     <AmplifyConfigContext.Provider value={{ isConfigured }}>

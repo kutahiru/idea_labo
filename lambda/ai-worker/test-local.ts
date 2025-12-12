@@ -22,7 +22,7 @@ process.env.APPSYNC_API_KEY = process.env.NEXT_PUBLIC_APPSYNC_API_KEY;
 // テストイベントデータ
 // TODO: 実際のDBレコードのIDに変更してください
 const EVENT = {
-  generationId: 1, // osborn_ai_generations テーブルのID
+  generationId: 1, // ai_generations テーブルのID
   osbornChecklistId: 1, // osborn_checklists テーブルのID
   userId: "test-user-id", // 実際のユーザーID
 };

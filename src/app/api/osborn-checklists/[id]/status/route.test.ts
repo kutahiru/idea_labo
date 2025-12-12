@@ -16,13 +16,14 @@ vi.mock('@/db', () => ({
 
 // スキーマをモック
 vi.mock('@/db/schema', () => ({
-  osborn_ai_generations: { osborn_checklist_id: 'osborn_checklist_id' },
+  ai_generations: { target_type: 'target_type', target_id: 'target_id' },
   osborn_checklist_inputs: { osborn_checklist_id: 'osborn_checklist_id' },
 }))
 
 // drizzle-ormをモック
 vi.mock('drizzle-orm', () => ({
   eq: vi.fn((field, value) => ({ field, value })),
+  and: vi.fn((...conditions) => ({ conditions })),
 }))
 
 // API utilsをモック
@@ -66,7 +67,8 @@ describe('GET /api/osborn-checklists/[id]/status', () => {
   it('AI生成ステータスと入力数を正常に取得する', async () => {
     const mockGeneration = {
       id: 1,
-      osborn_checklist_id: 1,
+      target_type: 'osborn_checklist',
+      target_id: 1,
       generation_status: 'completed',
       created_at: new Date(),
       updated_at: new Date(),
@@ -105,7 +107,8 @@ describe('GET /api/osborn-checklists/[id]/status', () => {
 
     expect(response.status).toBe(200)
     expect(data.generation.id).toBe(mockGeneration.id)
-    expect(data.generation.osborn_checklist_id).toBe(mockGeneration.osborn_checklist_id)
+    expect(data.generation.target_type).toBe(mockGeneration.target_type)
+    expect(data.generation.target_id).toBe(mockGeneration.target_id)
     expect(data.generation.generation_status).toBe(mockGeneration.generation_status)
     expect(data.inputsCount.filled).toBe(2) // 空でないcontentが2つ
     expect(data.inputsCount.total).toBe(9) // OSBORN_CHECKLIST_TYPESの数
@@ -242,7 +245,8 @@ describe('GET /api/osborn-checklists/[id]/status', () => {
   it('processing状態のAI生成を正しく返す', async () => {
     const mockGeneration = {
       id: 1,
-      osborn_checklist_id: 1,
+      target_type: 'osborn_checklist',
+      target_id: 1,
       generation_status: 'processing',
       created_at: new Date(),
       updated_at: new Date(),
@@ -277,7 +281,8 @@ describe('GET /api/osborn-checklists/[id]/status', () => {
   it('failed状態のAI生成を正しく返す', async () => {
     const mockGeneration = {
       id: 1,
-      osborn_checklist_id: 1,
+      target_type: 'osborn_checklist',
+      target_id: 1,
       generation_status: 'failed',
       error_message: 'AIエラー',
       created_at: new Date(),

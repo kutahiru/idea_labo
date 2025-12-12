@@ -1,15 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { events } from "aws-amplify/data";
-import { OSBORN_CHECKLIST_TYPES } from "@/schemas/osborn-checklist";
-import { OsbornChecklistInputData } from "@/types/osborn-checklist";
+import { MandalartInputData } from "@/types/mandalart";
 import { parseJsonSafe } from "@/lib/client-utils";
-import { OSBORN_CHECKLIST_EVENT_TYPES } from "@/lib/appsync-events/event-types";
+import { MANDALART_EVENT_TYPES } from "@/lib/appsync-events/event-types";
 import { useAmplifyConfig } from "@/components/providers/AmplifyProvider";
 
-interface UseOsbornChecklistAIOptions {
-  osbornChecklistId: number;
-  currentInputs: OsbornChecklistInputData[];
+interface UseMandalartAIOptions {
+  mandalartId: number;
+  currentInputs: MandalartInputData[];
   aiGeneration: {
     status: string;
     errorMessage: string | null;
@@ -18,20 +17,20 @@ interface UseOsbornChecklistAIOptions {
 }
 
 /**
- * オズボーンのチェックリストAI自動生成機能を管理するカスタムフック
+ * マンダラートAI自動生成機能を管理するカスタムフック
  * AI生成の実行、生成状態の管理、AppSync Eventsによるリアルタイム更新を提供
- * @param options.osbornChecklistId - オズボーンのチェックリストID
+ * @param options.mandalartId - マンダラートID
  * @param options.currentInputs - 現在の入力データ一覧
  * @param options.aiGeneration - AI生成の状態情報
  * @param options.onRefresh - データ再取得関数
  * @returns isGenerating - AI生成中かどうか, handleAIGenerate - AI生成を開始する関数
  */
-export function useOsbornChecklistAI({
-  osbornChecklistId,
+export function useMandalartAI({
+  mandalartId,
   currentInputs,
   aiGeneration,
   onRefresh,
-}: UseOsbornChecklistAIOptions) {
+}: UseMandalartAIOptions) {
   const { isConfigured } = useAmplifyConfig();
   const [isGenerating, setIsGenerating] = useState(false);
   const [loadingToastId, setLoadingToastId] = useState<string | null>(null);
@@ -75,7 +74,7 @@ export function useOsbornChecklistAI({
     const connect = async () => {
       try {
         // AWS Amplify Eventsでチャンネルを購読（IAM認証、名前空間指定）
-        const channel = await events.connect(`osborn/osborn-checklist/${osbornChecklistId}`);
+        const channel = await events.connect(`mandalart/mandalart/${mandalartId}`);
 
         unsubscribe = channel.subscribe({
           next: (data: unknown) => {
@@ -85,12 +84,12 @@ export function useOsbornChecklistAI({
               if (message.event && message.event.type) {
                 // イベントタイプに応じて処理
                 switch (message.event.type) {
-                  case OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_COMPLETED:
+                  case MANDALART_EVENT_TYPES.AI_GENERATION_COMPLETED:
                     // データを再取得してトーストを表示
                     fetchLatestData();
                     toast.success("AIでアイデアを生成しました");
                     break;
-                  case OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED:
+                  case MANDALART_EVENT_TYPES.AI_GENERATION_FAILED:
                     // データを再取得してエラートーストを表示
                     fetchLatestData();
                     setHasFailedInSession(true);
@@ -126,7 +125,7 @@ export function useOsbornChecklistAI({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConfigured, osbornChecklistId]);
+  }, [isConfigured, mandalartId]);
 
   /**
    * AI自動生成を開始する
@@ -134,13 +133,16 @@ export function useOsbornChecklistAI({
    * 生成完了はAppSync Eventsで通知される
    */
   const handleAIGenerate = async () => {
-    // 全ての項目が既に入力されているかチェック
-    const allChecklistTypes = Object.values(OSBORN_CHECKLIST_TYPES);
+    // マンダラートは81セル（9×9）あり、中央の9セル（3×3）のうち8セルがサブテーマ
+    // 周囲の8セクションにそれぞれ8セルのアイデア = 64セル
+    // 合計: 8（サブテーマ）+ 64（アイデア）= 72セルが対象
+    // 中央9セルのうち1セル（テーマ名）と各セクションの中央1セル（サブテーマ名）は除外
+    const totalTargetCells = 72;
     const filledInputs = currentInputs.filter(
       input => input.content && input.content.trim() !== ""
     );
 
-    if (filledInputs.length === allChecklistTypes.length) {
+    if (filledInputs.length >= totalTargetCells) {
       toast.error("全ての項目が既に入力されています");
       return;
     }
@@ -161,7 +163,7 @@ export function useOsbornChecklistAI({
     }
 
     try {
-      const response = await fetch(`/api/osborn-checklists/${osbornChecklistId}/ai-generate`, {
+      const response = await fetch(`/api/mandalarts/${mandalartId}/ai-generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

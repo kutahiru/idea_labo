@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiErrors, validateIdRequest } from "@/lib/api/utils";
 import { db } from "@/db";
-import { osborn_ai_generations, osborn_checklist_inputs } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { ai_generations, osborn_checklist_inputs } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import { OSBORN_CHECKLIST_TYPES } from "@/schemas/osborn-checklist";
 
 /**
@@ -64,8 +64,13 @@ export async function GET(
     // AI生成ステータスを取得
     const [generation] = await db
       .select()
-      .from(osborn_ai_generations)
-      .where(eq(osborn_ai_generations.osborn_checklist_id, osbornChecklistId))
+      .from(ai_generations)
+      .where(
+        and(
+          eq(ai_generations.target_type, "osborn_checklist"),
+          eq(ai_generations.target_id, osbornChecklistId)
+        )
+      )
       .limit(1);
 
     // 入力データも取得（完了時に表示するため）

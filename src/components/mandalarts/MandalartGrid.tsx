@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import MandalartSection from "./MandalartSection";
 import { MandalartInputData } from "@/types/mandalart";
 
@@ -21,7 +20,7 @@ interface MandalartGridProps {
  * マンダラートの9×9グリッド全体を表示するコンポーネント
  *
  * 3×3のセクションを9個配置し、合計81個のセルで構成される9×9グリッドを形成します。
- * 入力データをMapで管理し、セルの変更を効率的に処理します。
+ * 入力データをpropsから直接計算し、セルの変更を効率的に処理します。
  * 各セクションはMandalartSectionコンポーネントで構成されます。
  *
  * @param themeName - マンダラートのテーマ名（中心セルに表示）
@@ -35,37 +34,17 @@ export default function MandalartGrid({
   onInputChange,
   readOnly = false,
 }: MandalartGridProps) {
-  const [inputsMap, setInputsMap] = useState<Map<string, string>>(() => {
-    const map = new Map<string, string>();
-    inputs.forEach(input => {
+  // propsから直接inputsMapを計算（オズボーンと同じ方式）
+  const inputsMap = inputs.reduce(
+    (acc, input) => {
       if (input.content) {
         const key = `${input.section_row_index}-${input.section_column_index}-${input.row_index}-${input.column_index}`;
-        map.set(key, input.content);
+        acc[key] = input.content;
       }
-    });
-    return map;
-  });
-
-  const handleCellChange = (
-    sectionRowIndex: number,
-    sectionColumnIndex: number,
-    rowIndex: number,
-    columnIndex: number,
-    value: string
-  ) => {
-    const key = `${sectionRowIndex}-${sectionColumnIndex}-${rowIndex}-${columnIndex}`;
-    setInputsMap(prev => {
-      const newMap = new Map(prev);
-      if (value) {
-        newMap.set(key, value);
-      } else {
-        newMap.delete(key);
-      }
-      return newMap;
-    });
-
-    onInputChange(sectionRowIndex, sectionColumnIndex, rowIndex, columnIndex, value);
-  };
+      return acc;
+    },
+    {} as Record<string, string>
+  );
 
   return (
     <div className="mx-auto max-w-[1200px] overflow-x-auto">
@@ -80,7 +59,7 @@ export default function MandalartGrid({
               sectionRowIndex={sectionRowIndex}
               sectionColumnIndex={sectionColumnIndex}
               inputs={inputsMap}
-              onCellChange={handleCellChange}
+              onCellChange={onInputChange}
               mandalartTheme={themeName}
               readOnly={readOnly}
             />

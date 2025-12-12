@@ -33,7 +33,7 @@
 SELECT id, user_id, title, theme_name FROM osborn_checklists ORDER BY created_at DESC LIMIT 1;
 
 -- 最新のAI生成レコードを確認
-SELECT id, osborn_checklist_id, generation_status FROM osborn_ai_generations ORDER BY created_at DESC LIMIT 1;
+SELECT id, target_type, target_id, generation_status FROM ai_generations WHERE target_type = 'osborn_checklist' ORDER BY created_at DESC LIMIT 1;
 ```
 
 ### 2. テストスクリプトのIDを更新
@@ -42,7 +42,7 @@ SELECT id, osborn_checklist_id, generation_status FROM osborn_ai_generations ORD
 
 ```typescript
 const EVENT = {
-  generationId: 1,           // osborn_ai_generations.id
+  generationId: 1,           // ai_generations.id
   osbornChecklistId: 1,      // osborn_checklists.id
   userId: "test-user-id",    // osborn_checklists.user_id
 };
@@ -113,7 +113,7 @@ AI生成が正常に完了しました
 
 ```sql
 -- AI生成の状態を確認
-SELECT * FROM osborn_ai_generations WHERE id = 1;
+SELECT * FROM ai_generations WHERE id = 1;
 
 -- 生成されたアイデアを確認
 SELECT checklist_type, content 

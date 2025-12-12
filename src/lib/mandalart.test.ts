@@ -223,6 +223,12 @@ describe('Mandalart Data Access Layer', () => {
         },
       ]
 
+      const mockAIGeneration = {
+        id: 1,
+        generation_status: 'completed',
+        error_message: null,
+      }
+
       // getMandalartById のモック
       const mockMandalartChain = {
         from: vi.fn().mockReturnThis(),
@@ -237,15 +243,28 @@ describe('Mandalart Data Access Layer', () => {
         orderBy: vi.fn().mockResolvedValue(mockInputs),
       }
 
+      // getAIGenerationByMandalartId のモック
+      const mockAIGenerationChain = {
+        from: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockResolvedValue([mockAIGeneration]),
+      }
+
       vi.mocked(db.select)
         .mockReturnValueOnce(mockMandalartChain as any)
         .mockReturnValueOnce(mockInputsChain as any)
+        .mockReturnValueOnce(mockAIGenerationChain as any)
 
       const result = await mandalartLib.getMandalartDetailById(1, 'user-123')
 
       expect(result).toEqual({
         ...mockMandalart,
         inputs: mockInputs,
+        aiGeneration: {
+          status: 'completed',
+          errorMessage: null,
+        },
       })
     })
 

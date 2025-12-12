@@ -4,7 +4,7 @@
  */
 
 import { db } from "@/db";
-import { osborn_checklists, osborn_checklist_inputs, osborn_ai_generations } from "@/db/schema";
+import { osborn_checklists, osborn_checklist_inputs, ai_generations } from "@/db/schema";
 import { OsbornChecklistListItem, OsbornChecklistInputData } from "@/types/osborn-checklist";
 import { OsbornChecklistFormData, OsbornChecklistType } from "@/schemas/osborn-checklist";
 import { desc, eq, and, sql, gte } from "drizzle-orm";
@@ -348,14 +348,15 @@ export async function getAIGenerationByOsbornChecklistId(osbornChecklistId: numb
 
   const result = await db
     .select()
-    .from(osborn_ai_generations)
+    .from(ai_generations)
     .where(
       and(
-        eq(osborn_ai_generations.osborn_checklist_id, osbornChecklistId),
-        gte(osborn_ai_generations.updated_at, expiryTime)
+        eq(ai_generations.target_type, "osborn_checklist"),
+        eq(ai_generations.target_id, osbornChecklistId),
+        gte(ai_generations.updated_at, expiryTime)
       )
     )
-    .orderBy(desc(osborn_ai_generations.id))
+    .orderBy(desc(ai_generations.id))
     .limit(1);
 
   return result[0] || null;
@@ -370,9 +371,10 @@ export async function getAIGenerationByOsbornChecklistId(osbornChecklistId: numb
  */
 export async function createAIGeneration(osbornChecklistId: number) {
   const result = await db
-    .insert(osborn_ai_generations)
+    .insert(ai_generations)
     .values({
-      osborn_checklist_id: osbornChecklistId,
+      target_type: "osborn_checklist",
+      target_id: osbornChecklistId,
       generation_status: "pending",
     })
     .returning();
@@ -394,13 +396,13 @@ export async function updateAIGenerationStatus(
   errorMessage?: string
 ) {
   await db
-    .update(osborn_ai_generations)
+    .update(ai_generations)
     .set({
       generation_status: status,
       error_message: errorMessage || null,
       updated_at: sql`NOW()`,
     })
-    .where(eq(osborn_ai_generations.id, id));
+    .where(eq(ai_generations.id, id));
 }
 //#endregion
 
@@ -412,12 +414,12 @@ export async function updateAIGenerationStatus(
  */
 export async function updateAIGenerationResult(id: number, result: string) {
   await db
-    .update(osborn_ai_generations)
+    .update(ai_generations)
     .set({
       generation_status: "completed",
       generation_result: result,
       updated_at: sql`NOW()`,
     })
-    .where(eq(osborn_ai_generations.id, id));
+    .where(eq(ai_generations.id, id));
 }
 //#endregion

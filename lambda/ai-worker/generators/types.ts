@@ -6,10 +6,15 @@ import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 // DB Schemaの型（Lambda内で定義したテーブル）
 export interface DbSchemas {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   osborn_checklists: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   osborn_checklist_inputs: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mandalarts: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mandalart_inputs: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ai_generations: any;
 }
 

@@ -96,12 +96,19 @@ const schemas: DbSchemas = {
 };
 
 // ============================================
-// OpenAI初期化
+// OpenAI初期化（遅延初期化）
 // ============================================
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  timeout: 3 * 60 * 1000, // 3分のタイムアウト
-});
+let openaiInstance: OpenAI | null = null;
+
+function getOpenAI(): OpenAI {
+  if (!openaiInstance) {
+    openaiInstance = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      timeout: 3 * 60 * 1000, // 3分のタイムアウト
+    });
+  }
+  return openaiInstance;
+}
 
 // ============================================
 // DB接続（グローバルで再利用）
@@ -360,7 +367,7 @@ async function processAIGeneration({
     // ターゲットタイプに応じた生成処理を実行
     const ctx = {
       db,
-      openai,
+      openai: getOpenAI(),
       targetId,
       userId,
       schemas,

@@ -4,6 +4,15 @@ import userEvent from "@testing-library/user-event";
 import MandalartDetailClient from "./MandalartDetailClient";
 import { MandalartDetail } from "@/types/mandalart";
 
+// next/navigationのモック
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    refresh: vi.fn(),
+    back: vi.fn(),
+  }),
+}));
+
 // framer-motionのモック
 vi.mock("framer-motion", () => ({
   motion: {
@@ -18,11 +27,26 @@ vi.mock("@/lib/x-post", () => ({
   postMandalartToX: vi.fn(),
 }));
 
+// useMandalartAIのモック
+vi.mock("@/hooks/useMandalartAI", () => ({
+  useMandalartAI: () => ({
+    isGenerating: false,
+    handleAIGenerate: vi.fn(),
+  }),
+}));
+
+// AmplifyProviderのモック
+vi.mock("@/components/providers/AmplifyProvider", () => ({
+  useAmplifyConfig: () => ({ isConfigured: true }),
+}));
+
 // react-hot-toastのモック
 vi.mock("react-hot-toast", () => ({
   default: {
     success: vi.fn(),
     error: vi.fn(),
+    loading: vi.fn(),
+    dismiss: vi.fn(),
   },
 }));
 
@@ -57,6 +81,7 @@ describe("MandalartDetailClient", () => {
         updated_at: new Date(),
       },
     ],
+    aiGeneration: null,
   };
 
   beforeEach(() => {

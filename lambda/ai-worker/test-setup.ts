@@ -25,9 +25,8 @@ const requiredEnvVars = [
 const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
 
 if (missingEnvVars.length > 0) {
-  console.error("❌ 必要な環境変数が設定されていません:", missingEnvVars.join(", "));
-  console.error("   .env.local ファイルを確認してください");
-  process.exit(1);
+  console.warn("⚠️ 統合テスト用の環境変数が設定されていません:", missingEnvVars.join(", "));
+  console.warn("   統合テストはスキップされます");
+} else {
+  console.log("✅ テスト環境変数の読み込み完了");
 }
-
-console.log("✅ テスト環境変数の読み込み完了");

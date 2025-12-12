@@ -21,7 +21,7 @@ describe("MandalartSection", () => {
 
   describe("表示", () => {
     it("9つのセルが表示される", () => {
-      const inputs = new Map<string, string>();
+      const inputs: Record<string, string> = {};
       render(
         <MandalartSection
           sectionRowIndex={0}
@@ -37,7 +37,7 @@ describe("MandalartSection", () => {
     });
 
     it("中央セクション（1,1）の中央セルにテーマが表示される", () => {
-      const inputs = new Map<string, string>();
+      const inputs: Record<string, string> = {};
       render(
         <MandalartSection
           sectionRowIndex={1}
@@ -52,8 +52,9 @@ describe("MandalartSection", () => {
     });
 
     it("非中央セクションの中央セルには中央セクションの対応位置の値が表示される", () => {
-      const inputs = new Map<string, string>();
-      inputs.set("1-1-0-0", "サブテーマ1"); // 中央セクション（1,1）の(0,0)位置の値
+      const inputs: Record<string, string> = {
+        "1-1-0-0": "サブテーマ1", // 中央セクション（1,1）の(0,0)位置の値
+      };
 
       render(
         <MandalartSection
@@ -70,9 +71,10 @@ describe("MandalartSection", () => {
     });
 
     it("inputsに保存されている値がセルに表示される", () => {
-      const inputs = new Map<string, string>();
-      inputs.set("0-0-0-0", "アイデア1");
-      inputs.set("0-0-2-2", "アイデア2");
+      const inputs: Record<string, string> = {
+        "0-0-0-0": "アイデア1",
+        "0-0-2-2": "アイデア2",
+      };
 
       render(
         <MandalartSection
@@ -91,7 +93,7 @@ describe("MandalartSection", () => {
 
   describe("readOnly", () => {
     it("readOnly=trueの場合、すべてのセルが読み取り専用になる", () => {
-      const inputs = new Map<string, string>();
+      const inputs: Record<string, string> = {};
       render(
         <MandalartSection
           sectionRowIndex={0}
@@ -110,8 +112,9 @@ describe("MandalartSection", () => {
     });
 
     it("中央セルは常に読み取り専用である", () => {
-      const inputs = new Map<string, string>();
-      inputs.set("1-1-0-0", "サブテーマ");
+      const inputs: Record<string, string> = {
+        "1-1-0-0": "サブテーマ",
+      };
 
       render(
         <MandalartSection
@@ -130,7 +133,7 @@ describe("MandalartSection", () => {
     });
 
     it("中央セクションの中央セル（テーマセル）は読み取り専用", () => {
-      const inputs = new Map<string, string>();
+      const inputs: Record<string, string> = {};
 
       render(
         <MandalartSection
@@ -151,7 +154,7 @@ describe("MandalartSection", () => {
   describe("onCellChange", () => {
     it("セルの値が変更されるとonCellChangeが呼ばれる", async () => {
       const user = userEvent.setup();
-      const inputs = new Map<string, string>();
+      const inputs: Record<string, string> = {};
 
       render(
         <MandalartSection
@@ -179,7 +182,7 @@ describe("MandalartSection", () => {
 
     it("onCellChangeに正しい引数が渡される", async () => {
       const user = userEvent.setup();
-      const inputs = new Map<string, string>();
+      const inputs: Record<string, string> = {};
 
       render(
         <MandalartSection
@@ -215,8 +218,9 @@ describe("MandalartSection", () => {
 
   describe("セクション位置による動作", () => {
     it("セクション(0,0)の中央セルには1-1-0-0のキーの値が表示される", () => {
-      const inputs = new Map<string, string>();
-      inputs.set("1-1-0-0", "左上のサブテーマ");
+      const inputs: Record<string, string> = {
+        "1-1-0-0": "左上のサブテーマ",
+      };
 
       render(
         <MandalartSection
@@ -232,8 +236,9 @@ describe("MandalartSection", () => {
     });
 
     it("セクション(2,2)の中央セルには1-1-2-2のキーの値が表示される", () => {
-      const inputs = new Map<string, string>();
-      inputs.set("1-1-2-2", "右下のサブテーマ");
+      const inputs: Record<string, string> = {
+        "1-1-2-2": "右下のサブテーマ",
+      };
 
       render(
         <MandalartSection

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import IdeaFrameworkModal from "./IdeaFrameworkModal";
 import { z } from "zod";
@@ -155,26 +155,40 @@ describe("IdeaFrameworkModal", () => {
   });
 
   it("送信中はボタンが無効化される", async () => {
-    const user = userEvent.setup();
-    const onSubmit = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 100))) as (data: BaseIdeaFormData) => Promise<void>;
+    let resolvePromise: () => void;
+    const onSubmit = vi.fn(() => new Promise<void>((resolve) => {
+      resolvePromise = resolve;
+    })) as (data: BaseIdeaFormData) => Promise<void>;
     render(<IdeaFrameworkModal {...defaultProps} onSubmit={onSubmit} />);
 
     const submitButton = screen.getByRole("button", { name: "確定" });
-    await user.click(submitButton);
+    fireEvent.click(submitButton);
 
-    const cancelButton = screen.getByRole("button", { name: "キャンセル" });
-    expect(cancelButton).toBeDisabled();
+    await waitFor(() => {
+      const cancelButton = screen.getByRole("button", { name: "キャンセル" });
+      expect(cancelButton).toBeDisabled();
+    });
+
+    // クリーンアップ：Promiseを解決
+    resolvePromise!();
   });
 
   it("送信中は「保存中...」と表示される", async () => {
-    const user = userEvent.setup();
-    const onSubmit = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 100))) as (data: BaseIdeaFormData) => Promise<void>;
+    let resolvePromise: () => void;
+    const onSubmit = vi.fn(() => new Promise<void>((resolve) => {
+      resolvePromise = resolve;
+    })) as (data: BaseIdeaFormData) => Promise<void>;
     render(<IdeaFrameworkModal {...defaultProps} onSubmit={onSubmit} />);
 
     const submitButton = screen.getByRole("button", { name: "確定" });
-    await user.click(submitButton);
+    fireEvent.click(submitButton);
 
-    expect(screen.getByText("保存中...")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("保存中...")).toBeInTheDocument();
+    });
+
+    // クリーンアップ：Promiseを解決
+    resolvePromise!();
   });
 
   it("編集モードで送信ボタンに「更新」と表示される", () => {

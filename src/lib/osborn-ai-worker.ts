@@ -1,6 +1,6 @@
 /**
- * オズボーンのチェックリスト AI生成ワーカー
- * Lambda関数とローカル実行の両方で使用可能な共有ロジック
+ * オズボーンのチェックリスト AI生成ワーカー（ローカル実行用）
+ * Lambda側は lambda/ai-worker/generators/osborn.ts に別実装あり
  */
 import OpenAI from "openai";
 import { db } from "@/db";
@@ -12,7 +12,7 @@ import {
   updateAIGenerationResult,
 } from "./osborn-checklist";
 import { publishOsbornChecklistEvent } from "./appsync-events/osborn-checklist-events";
-import { OSBORN_CHECKLIST_EVENT_TYPES } from "./appsync-events/event-types";
+import { AI_GENERATION_EVENT_TYPES } from "./appsync-events/event-types";
 
 // チェックリストタイプ定義
 const OSBORN_CHECKLIST_TYPES = {
@@ -145,7 +145,7 @@ JSON形式で以下のように出力してください：
       await updateAIGenerationStatus(generationId, "failed", errorMsg);
       await publishOsbornChecklistEvent(
         osbornChecklistId,
-        OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED,
+        AI_GENERATION_EVENT_TYPES.FAILED,
         errorMsg
       );
       return;
@@ -162,7 +162,7 @@ JSON形式で以下のように出力してください：
       await updateAIGenerationStatus(generationId, "failed", errorMsg);
       await publishOsbornChecklistEvent(
         osbornChecklistId,
-        OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED,
+        AI_GENERATION_EVENT_TYPES.FAILED,
         "AIでのアイデア生成に失敗しました。再度お試しください。"
       );
       return;
@@ -212,7 +212,7 @@ JSON形式で以下のように出力してください：
     // AppSync Eventsで通知
     await publishOsbornChecklistEvent(
       osbornChecklistId,
-      OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_COMPLETED
+      AI_GENERATION_EVENT_TYPES.COMPLETED
     );
   } catch (error) {
     console.error("AI生成ワーカーエラー:", error);
@@ -222,7 +222,7 @@ JSON形式で以下のように出力してください：
     await updateAIGenerationStatus(generationId, "failed", errorMsg);
     await publishOsbornChecklistEvent(
       osbornChecklistId,
-      OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED,
+      AI_GENERATION_EVENT_TYPES.FAILED,
       "AIでのアイデア生成に失敗しました。再度お試しください。"
     );
   }

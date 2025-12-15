@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import {
   BRAINWRITING_EVENT_TYPES,
-  OSBORN_CHECKLIST_EVENT_TYPES,
+  AI_GENERATION_EVENT_TYPES,
   type BrainwritingEventType,
-  type OsbornChecklistEventType,
+  type AIGenerationEventType,
 } from './event-types'
 
 describe('event-types', () => {
@@ -37,23 +37,23 @@ describe('event-types', () => {
     })
   })
 
-  describe('OSBORN_CHECKLIST_EVENT_TYPES', () => {
-    it('AI_GENERATION_COMPLETEDが定義されている', () => {
-      expect(OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_COMPLETED).toBe('AI_GENERATION_COMPLETED')
+  describe('AI_GENERATION_EVENT_TYPES', () => {
+    it('COMPLETEDが定義されている', () => {
+      expect(AI_GENERATION_EVENT_TYPES.COMPLETED).toBe('AI_GENERATION_COMPLETED')
     })
 
-    it('AI_GENERATION_FAILEDが定義されている', () => {
-      expect(OSBORN_CHECKLIST_EVENT_TYPES.AI_GENERATION_FAILED).toBe('AI_GENERATION_FAILED')
+    it('FAILEDが定義されている', () => {
+      expect(AI_GENERATION_EVENT_TYPES.FAILED).toBe('AI_GENERATION_FAILED')
     })
 
     it('すべてのイベントタイプが文字列である', () => {
-      Object.values(OSBORN_CHECKLIST_EVENT_TYPES).forEach((value) => {
+      Object.values(AI_GENERATION_EVENT_TYPES).forEach((value) => {
         expect(typeof value).toBe('string')
       })
     })
 
     it('イベントタイプは2種類ある', () => {
-      expect(Object.keys(OSBORN_CHECKLIST_EVENT_TYPES)).toHaveLength(2)
+      expect(Object.keys(AI_GENERATION_EVENT_TYPES)).toHaveLength(2)
     })
   })
 
@@ -69,10 +69,10 @@ describe('event-types', () => {
       expect(rotated).toBe('SHEET_ROTATED')
     })
 
-    it('OsbornChecklistEventTypeが正しい型を持つ', () => {
+    it('AIGenerationEventTypeが正しい型を持つ', () => {
       // 型チェックのためのテスト
-      const completed: OsbornChecklistEventType = 'AI_GENERATION_COMPLETED'
-      const failed: OsbornChecklistEventType = 'AI_GENERATION_FAILED'
+      const completed: AIGenerationEventType = 'AI_GENERATION_COMPLETED'
+      const failed: AIGenerationEventType = 'AI_GENERATION_FAILED'
 
       expect(completed).toBe('AI_GENERATION_COMPLETED')
       expect(failed).toBe('AI_GENERATION_FAILED')

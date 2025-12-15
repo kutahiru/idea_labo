@@ -260,7 +260,7 @@ describe('useBrainwritingRealtime', () => {
         json: () => Promise.resolve({ inputs: newInputs }),
       } as Response)
 
-    const { result } = renderHook(() =>
+    renderHook(() =>
       useBrainwritingRealtime({
         brainwritingId: 1,
         initialUsers: mockInitialUsers,

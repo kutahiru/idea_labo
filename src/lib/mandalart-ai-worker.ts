@@ -1,6 +1,6 @@
 /**
- * マンダラート AI生成ワーカー
- * Lambda関数とローカル実行の両方で使用可能な共有ロジック
+ * マンダラート AI生成ワーカー（ローカル実行用）
+ * Lambda側は lambda/ai-worker/generators/mandalart.ts に別実装あり
  */
 import OpenAI from "openai";
 import { db } from "@/db";
@@ -12,7 +12,7 @@ import {
   updateMandalartAIGenerationResult,
 } from "./mandalart";
 import { publishMandalartEvent } from "./appsync-events/mandalart-events";
-import { MANDALART_EVENT_TYPES } from "./appsync-events/event-types";
+import { AI_GENERATION_EVENT_TYPES } from "./appsync-events/event-types";
 
 interface GenerateMandalartIdeasParams {
   generationId: number;
@@ -224,7 +224,7 @@ JSON形式で以下のように出力してください：
       await updateMandalartAIGenerationStatus(generationId, "failed", errorMsg);
       await publishMandalartEvent(
         mandalartId,
-        MANDALART_EVENT_TYPES.AI_GENERATION_FAILED,
+        AI_GENERATION_EVENT_TYPES.FAILED,
         errorMsg
       );
       return;
@@ -315,7 +315,7 @@ JSON形式で以下のように出力してください：
     // AppSync Eventsで通知
     await publishMandalartEvent(
       mandalartId,
-      MANDALART_EVENT_TYPES.AI_GENERATION_COMPLETED
+      AI_GENERATION_EVENT_TYPES.COMPLETED
     );
   } catch (error) {
     console.error("AI生成ワーカーエラー:", error);
@@ -325,7 +325,7 @@ JSON形式で以下のように出力してください：
     await updateMandalartAIGenerationStatus(generationId, "failed", errorMsg);
     await publishMandalartEvent(
       mandalartId,
-      MANDALART_EVENT_TYPES.AI_GENERATION_FAILED,
+      AI_GENERATION_EVENT_TYPES.FAILED,
       "AIでのアイデア生成に失敗しました。再度お試しください。"
     );
   }

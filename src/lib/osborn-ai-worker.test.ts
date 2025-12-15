@@ -76,9 +76,9 @@ vi.mock('./appsync-events/osborn-checklist-events', () => ({
 }))
 
 vi.mock('./appsync-events/event-types', () => ({
-  OSBORN_CHECKLIST_EVENT_TYPES: {
-    AI_GENERATION_COMPLETED: 'AI_GENERATION_COMPLETED',
-    AI_GENERATION_FAILED: 'AI_GENERATION_FAILED',
+  AI_GENERATION_EVENT_TYPES: {
+    COMPLETED: 'AI_GENERATION_COMPLETED',
+    FAILED: 'AI_GENERATION_FAILED',
   },
 }))
 

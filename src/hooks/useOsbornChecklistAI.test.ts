@@ -141,7 +141,7 @@ describe("useOsbornChecklistAI", () => {
     await waitFor(() => {
       expect(result.current.isGenerating).toBe(true);
     });
-    expect(toast.loading).toHaveBeenCalledWith("AIでアイデアの生成を開始しました");
+    expect(toast.loading).toHaveBeenCalledWith("AIでアイデアの生成を開始しました", { duration: Infinity });
 
     // ステータスをcompletedに変更
     rerender({

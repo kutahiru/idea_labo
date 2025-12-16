@@ -74,9 +74,9 @@ vi.mock('./appsync-events/mandalart-events', () => ({
 }))
 
 vi.mock('./appsync-events/event-types', () => ({
-  MANDALART_EVENT_TYPES: {
-    AI_GENERATION_COMPLETED: 'AI_GENERATION_COMPLETED',
-    AI_GENERATION_FAILED: 'AI_GENERATION_FAILED',
+  AI_GENERATION_EVENT_TYPES: {
+    COMPLETED: 'AI_GENERATION_COMPLETED',
+    FAILED: 'AI_GENERATION_FAILED',
   },
 }))
 

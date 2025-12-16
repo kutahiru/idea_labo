@@ -153,7 +153,7 @@ describe("useMandalartAI", () => {
     await waitFor(() => {
       expect(result.current.isGenerating).toBe(true);
     });
-    expect(toast.loading).toHaveBeenCalledWith("AIでアイデアの生成を開始しました");
+    expect(toast.loading).toHaveBeenCalledWith("AIでアイデアの生成を開始しました", { duration: Infinity });
 
     // ステータスをcompletedに変更
     rerender({
@@ -177,7 +177,7 @@ describe("useMandalartAI", () => {
     await waitFor(() => {
       expect(result.current.isGenerating).toBe(true);
     });
-    expect(toast.loading).toHaveBeenCalledWith("AIでアイデアの生成を開始しました");
+    expect(toast.loading).toHaveBeenCalledWith("AIでアイデアの生成を開始しました", { duration: Infinity });
   });
 
   it("aiGeneration.statusがprocessingの場合、重複実行を防ぐ", async () => {

@@ -11,6 +11,7 @@ import { BrainwritingDetail, BrainwritingInputData } from "@/types/brainwriting"
 import { USAGE_SCOPE, convertToRowData, sortUsersByFirstRow } from "@/utils/brainwriting";
 import { postBrainwritingToX } from "@/lib/x-post";
 import { useBrainwritingDataChange } from "@/hooks/useBrainwritingDataChange";
+import { useResultsPublic } from "@/hooks/useResultsPublic";
 
 interface BrainwritingDetailClientProps {
   brainwritingDetail: BrainwritingDetail;
@@ -31,8 +32,13 @@ export default function BrainwritingDetailClient({
   const [currentInputs, setCurrentInputs] = useState(inputs);
   const [activeSheetIndex, setActiveSheetIndex] = useState(0);
   const [isInviteActive, setIsInviteActive] = useState(brainwriting.isInviteActive ?? true);
-  const [isResultsPublic, setIsResultsPublic] = useState(brainwriting.isResultsPublic ?? false);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isInviteUpdating, setIsInviteUpdating] = useState(false);
+
+  // 結果公開の状態管理
+  const { isResultsPublic, isUpdating: isResultsUpdating, handleUpdateIsResultsPublic } = useResultsPublic({
+    apiEndpoint: `/api/brainwritings/${brainwriting.id}/results-public`,
+    initialValue: brainwriting.isResultsPublic ?? false,
+  });
 
   // データ変更処理
   const { handleDataChange } = useBrainwritingDataChange(brainwriting.id, setCurrentInputs);
@@ -80,9 +86,9 @@ export default function BrainwritingDetailClient({
   /** URLの有効無効更新 */
   const handleUpdateIsInviteActive = async (newValue: boolean) => {
     // 更新中は処理をスキップ（連打対策）
-    if (isUpdating) return;
+    if (isInviteUpdating) return;
 
-    setIsUpdating(true);
+    setIsInviteUpdating(true);
     try {
       const response = await fetch(`/api/brainwritings/${brainwriting.id}/invite-active`, {
         method: "PATCH",
@@ -94,7 +100,7 @@ export default function BrainwritingDetailClient({
 
       if (!response.ok) {
         const error = await response.json();
-        toast.error(error.error || "の状態更新に失敗しました");
+        toast.error(error.error || "共有リンクの状態更新に失敗しました");
         return;
       }
 
@@ -104,38 +110,7 @@ export default function BrainwritingDetailClient({
       console.error("共有リンクの状態更新エラー:", error);
       toast.error("共有リンクの状態更新に失敗しました");
     } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  /** 結果公開の有効無効更新 */
-  const handleUpdateIsResultsPublic = async (newValue: boolean) => {
-    // 更新中は処理をスキップ（連打対策）
-    if (isUpdating) return;
-
-    setIsUpdating(true);
-    try {
-      const response = await fetch(`/api/brainwritings/${brainwriting.id}/results-public`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ isResultsPublic: newValue }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        toast.error(error.error || "結果公開の状態更新に失敗しました");
-        return;
-      }
-
-      setIsResultsPublic(newValue);
-      toast.success(newValue ? "結果を公開しました" : "結果を非公開にしました");
-    } catch (error) {
-      console.error("結果公開の状態更新エラー:", error);
-      toast.error("結果公開の状態更新に失敗しました");
-    } finally {
-      setIsUpdating(false);
+      setIsInviteUpdating(false);
     }
   };
 
@@ -152,7 +127,7 @@ export default function BrainwritingDetailClient({
               label="共有リンク"
               checked={isInviteActive}
               onChange={handleUpdateIsInviteActive}
-              disabled={isUpdating}
+              disabled={isInviteUpdating}
             />
           </div>
           <div className="group bg-primary/10 relative w-56 rounded-lg px-4 py-3 sm:w-auto">
@@ -160,7 +135,7 @@ export default function BrainwritingDetailClient({
               label="結果公開"
               checked={isResultsPublic}
               onChange={handleUpdateIsResultsPublic}
-              disabled={isUpdating}
+              disabled={isResultsUpdating}
             />
             <div className="bg-primary invisible absolute top-full left-1/2 z-10 mt-2 w-max max-w-80 -translate-x-1/2 rounded-lg p-3 text-sm text-white opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100">
               <div className="bg-primary absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45"></div>

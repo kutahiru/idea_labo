@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import OsbornChecklistGrid from "./OsbornChecklistGrid";
 import { OsbornChecklistInputData } from "@/types/osborn-checklist";
-import { OSBORN_CHECKLIST_TYPES, OSBORN_CHECKLIST_NAMES } from "@/schemas/osborn-checklist";
+import { OSBORN_CHECKLIST_NAMES } from "@/schemas/osborn-checklist";
 
 // framer-motionのモック
 vi.mock("framer-motion", () => ({

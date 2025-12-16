@@ -49,7 +49,7 @@ export default function MandalartGrid({
   return (
     <div className="mx-auto max-w-[1200px] overflow-x-auto">
       <div
-        className="grid grid-cols-3 gap-1 rounded-xl bg-surface p-4 shadow-lg"
+        className="mx-auto grid grid-cols-3 gap-1 rounded-xl bg-surface p-4 shadow-lg"
         style={{ width: "1106px", height: "736px" }}
       >
         {[0, 1, 2].map(sectionRowIndex =>

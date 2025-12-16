@@ -3,7 +3,7 @@
  */
 import { publishEvent } from "./server";
 import { NAMESPACES } from "./namespaces";
-import { MandalartEventType } from "./event-types";
+import { AIGenerationEventType } from "./event-types";
 
 /**
  * マンダラートのイベントを発行
@@ -14,7 +14,7 @@ import { MandalartEventType } from "./event-types";
  */
 export async function publishMandalartEvent(
   mandalartId: number,
-  eventType: MandalartEventType,
+  eventType: AIGenerationEventType,
   errorMessage?: string
 ): Promise<void> {
   try {

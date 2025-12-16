@@ -3,7 +3,7 @@
  */
 import { publishEvent } from "./server";
 import { NAMESPACES } from "./namespaces";
-import { OsbornChecklistEventType } from "./event-types";
+import { AIGenerationEventType } from "./event-types";
 
 /**
  * オズボーンのチェックリストのイベントを発行
@@ -14,7 +14,7 @@ import { OsbornChecklistEventType } from "./event-types";
  */
 export async function publishOsbornChecklistEvent(
   osbornChecklistId: number,
-  eventType: OsbornChecklistEventType,
+  eventType: AIGenerationEventType,
   errorMessage?: string
 ): Promise<void> {
   try {
